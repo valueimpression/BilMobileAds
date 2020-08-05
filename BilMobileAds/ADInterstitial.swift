@@ -53,7 +53,7 @@ public class ADInterstitial: NSObject, GADInterstitialDelegate, CloseListenerDel
                                 cmp.closeDelegate = self
                                 cmp.open(self.adUIViewCtr, appName: PBMobileAds.shared.appName)
                             } else {
-                                self.load()
+                                self.preLoad()
                             }
                         }
                         break

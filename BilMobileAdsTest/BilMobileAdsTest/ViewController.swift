@@ -25,7 +25,6 @@ class ViewController: UIViewController, ADBannerDelegate, ADInterstitialDelegate
         bannerView2.backgroundColor = .red
         
         banner = ADBanner(self, view: bannerView2, placement: "1001")
-        banner.setAdSize(size: .Banner300x250)
         banner.setAutoRefreshMillis(timeMillis: 30000)
 
 //        interstitialAD = ADInterstitial(self, placement: "1002")

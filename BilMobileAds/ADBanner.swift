@@ -141,6 +141,10 @@ public class ADBanner : NSObject, GADBannerViewDelegate, CloseListenerDelegate {
             Targeting.shared.gdprConsentString = CMPConsentToolAPI().consentString
         }
         
+        // Setup ad size
+        let bannerSize: BannerSize = self.getBannerSize(w:self.adUnitObj.width!,h:self.adUnitObj.height!)
+        self.setAdSize(size: bannerSize)
+        
         let adInfor: AdInfor
         if self.adFormatDefault == .vast {
             guard let infor = self.getAdInfor(isVideo: true) else {
@@ -218,7 +222,7 @@ public class ADBanner : NSObject, GADBannerViewDelegate, CloseListenerDelegate {
         self.defaultAnchor = anchor
     }
     
-    public func setAdSize(size: BannerSize){
+    private func setAdSize(size: BannerSize){
         let cgSize = self.getBannerSize(typeBanner: size)
         let gadSize = self.getGADBannerSize(typeBanner: size)
         self.curBannerSize = MyBannerSize(cgSize: cgSize, gadSize: gadSize)
@@ -301,6 +305,24 @@ public class ADBanner : NSObject, GADBannerViewDelegate, CloseListenerDelegate {
         case .Banner728x90:
             return kGADAdSizeLeaderboard
         }
+    }
+    
+    func getBannerSize(w: String, h: String) -> BannerSize {
+        let typeBanner = "\(w)x\(h)"
+        
+        if typeBanner == "320x50" {
+            return .Banner320x50
+        } else if typeBanner == "320x100" {
+            return .Banner320x100
+        } else if typeBanner ==  "300x250" {
+            return .Banner300x250
+        } else if typeBanner ==  "468x60"{
+            return .Banner468x60
+        } else if typeBanner ==  "728x90"{
+            return .Banner728x90
+        }
+        
+        return .Banner320x50
     }
     
     func setupAnchor(_ view: GADBannerView){
