@@ -120,7 +120,6 @@ public class ADRewarded: NSObject, GADRewardedAdDelegate, CloseListenerDelegate 
             }
         } else {
             if resultCode == ResultCode.prebidDemandNoBids {
-                self.adFormatDefault = self.adFormatDefault == .html ? .vast : .html
                 if !self.isLoadAfterPreload {
                     self.deplayCallPreload()
                 }

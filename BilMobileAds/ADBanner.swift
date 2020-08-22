@@ -209,7 +209,6 @@ public class ADBanner : NSObject, GADBannerViewDelegate, CloseListenerDelegate {
             self.stopAutoRefresh()
             
             if resultCode == ResultCode.prebidDemandNoBids {
-                self.adFormatDefault = self.adFormatDefault == .html ? .vast : .html
                 self.deplayCallPreload()
             } else if resultCode == ResultCode.prebidDemandTimedOut {
                 self.deplayCallPreload()

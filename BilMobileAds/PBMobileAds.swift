@@ -128,6 +128,10 @@ public class PBMobileAds {
     public func setGender(gender: Gender) {
         Targeting.shared.gender = gender;
     }
+    
+    public func setYearOfBirth(yob: Int) throws {
+        try Targeting.shared.setYearOfBirth(yob: yob);
+    }
 }
 
 //internal extension Date {
