@@ -107,7 +107,7 @@ public class PBMobileAds {
         })
     }
     
-    func log( _ object: Any, filename: String = #file, line: Int = #line, column: Int = #column, funcName: String = #function) {
+    public func log( _ object: Any, filename: String = #file, line: Int = #line, column: Int = #column, funcName: String = #function) {
         if !isLog { return }
         print("[PBMobileAds] \(Date().toString()) | [\(self.sourceFileName(filePath: filename))]:\(line) \(column) | \(funcName) -> \(object)")
     }

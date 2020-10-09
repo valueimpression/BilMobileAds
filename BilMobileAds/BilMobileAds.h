@@ -52,4 +52,3 @@ FOUNDATION_EXPORT const unsigned char BilMobileAdsVersionString[];
 #import <BilMobileAds/CMPSettings.h>
 #import <BilMobileAds/CMPConsentToolAPI.h>
 #import <BilMobileAds/CMPConsentToolUtil.h>
-

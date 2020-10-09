@@ -28,16 +28,15 @@ public class ADBanner : NSObject, GADBannerViewDelegate, CloseListenerDelegate {
     private var adFormatDefault: ADFormat!
     private var curBannerSize: MyBannerSize!
     private var timeAutoRefesh: Double = Constants.BANNER_AUTO_REFRESH_DEFAULT
-    private var isLoadBannerSucc: Bool = false; // true => banner đang chạy
-    private var isRecallingPreload: Bool = false // Check đang đợi gọi lại preload
+    private var isLoadBannerSucc: Bool = false
+    private var isRecallingPreload: Bool = false
     
     // MARK: - Init + DeInit
     public init(_ adUIViewCtr: UIViewController, view adView: UIView, placement: String) {
         super.init()
-        PBMobileAds.shared.log("AD Banner Init")
+        PBMobileAds.shared.log("ADBanner Init: \(placement)")
         
         self.defaultAnchor = .Center
-        self.setAdSize(size: .Banner320x50)
         
         self.adUIViewCtr = adUIViewCtr
         self.appBannerView = adView
@@ -52,7 +51,7 @@ public class ADBanner : NSObject, GADBannerViewDelegate, CloseListenerDelegate {
                 PBMobileAds.shared.getADConfig(adUnit: self.placement) { (res: Result<AdUnitObj, Error>) in
                     switch res{
                     case .success(let data):
-                        PBMobileAds.shared.log("getADConfig placement: \(String(describing: self.placement)) Succ")
+                        PBMobileAds.shared.log("Get Config ADBanner placement: '\(String(describing: self.placement))' Success")
                         DispatchQueue.main.async{
                             self.adUnitObj = data
                             
@@ -66,7 +65,7 @@ public class ADBanner : NSObject, GADBannerViewDelegate, CloseListenerDelegate {
                         }
                         break
                     case .failure(let err):
-                        PBMobileAds.shared.log("getADConfig placement: \(String(describing: self.placement)) Fail \(err.localizedDescription)")
+                        PBMobileAds.shared.log("Get Config ADBanner placement: '\(String(describing: self.placement))' Fail with Error: \(err.localizedDescription)")
                         break
                     }
                 }
@@ -75,13 +74,13 @@ public class ADBanner : NSObject, GADBannerViewDelegate, CloseListenerDelegate {
     }
     
     deinit {
-        PBMobileAds.shared.log("AD Banner Deinit")
+        PBMobileAds.shared.log("ADBanner Placement '\(String(describing: self.placement))' Deinit")
         self.destroy()
     }
     
     public func onWebViewClosed(_ consentStr: String) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            PBMobileAds.shared.log("ConsentStr: \(String(describing: consentStr))")
+            PBMobileAds.shared.log("ADBanner Placement '\(String(describing: self.placement))' with ConsentStr: \(String(describing: consentStr))")
             self.load()
         }
     }
@@ -104,109 +103,25 @@ public class ADBanner : NSObject, GADBannerViewDelegate, CloseListenerDelegate {
         return nil
     }
     
-    public func load() {
-        PBMobileAds.shared.log(" | isRunning: \(self.isLoaded()) |  isRecallingPreload: \(self.isRecallingPreload)")
-        if self.adUnitObj == nil || self.isLoaded() == true || self.isRecallingPreload == true { return }
-        PBMobileAds.shared.log("Load Banner AD")
+    func resetAD() {
+        if self.adUnit == nil || self.amBanner == nil { return }
         
-        // Get Data Config
-        if self.adUnitObj == nil {
-            guard let adUnitObj = PBMobileAds.shared.getAdUnitObj(placement: self.placement) else {
-                PBMobileAds.shared.log("Placement is not exist")
-                return
-            }
-            
-            self.adUnitObj = adUnitObj
-        }
+        self.isRecallingPreload = false
+        self.isLoadBannerSucc = false
+        self.appBannerView?.removeFromSuperview()
         
-        // Check Active
-        if !adUnitObj.isActive {
-            PBMobileAds.shared.log("Ad is not actived")
-            return
-        }
+        self.adUnit?.stopAutoRefresh()
+        self.adUnit = nil
         
-        // Check and set default
-        self.adFormatDefault = self.adFormatDefault == nil ? ADFormat(rawValue: adUnitObj.defaultType) : self.adFormatDefault
-        // set adformat theo loại duy nhất có
-        if adUnitObj.adInfor.count < 2 {
-            self.adFormatDefault = adUnitObj.adInfor[0].isVideo ? .vast : .html
-        }
-        
-        // Remove Ad
-        self.destroy()
-        
-        // Set GDPR
-        if PBMobileAds.shared.gdprConfirm {
-            Targeting.shared.subjectToGDPR = true
-            Targeting.shared.gdprConsentString = CMPConsentToolAPI().consentString
-        }
-        
-        // Setup ad size
-        let bannerSize: BannerSize = self.getBannerSize(w:self.adUnitObj.width!,h:self.adUnitObj.height!)
-        self.setAdSize(size: bannerSize)
-        
-        let adInfor: AdInfor
-        if self.adFormatDefault == .vast {
-            guard let infor = self.getAdInfor(isVideo: true) else {
-                PBMobileAds.shared.log("AdInfor is not exist")
-                return
-            }
-            adInfor = infor
-            
-            PBMobileAds.shared.setupPBS(host: adInfor.host)
-            PBMobileAds.shared.log("[Banner Video] - configID: '\(adInfor.configId)' | adUnitID: '\(adInfor.adUnitID)'")
-            
-            let parameters = VideoBaseAdUnit.Parameters()
-            parameters.mimes = ["video/mp4"]
-            parameters.protocols = [Signals.Protocols.VAST_2_0]
-            parameters.playbackMethod = [Signals.PlaybackMethod.AutoPlaySoundOff]
-            parameters.placement = Signals.Placement.InBanner
-            
-            let vAdUnit = VideoAdUnit(configId: adInfor.configId, size: self.curBannerSize.cgSize)
-            vAdUnit.parameters = parameters
-            
-            self.adUnit = vAdUnit
-        } else {
-            guard let infor = getAdInfor(isVideo: false) else {
-                PBMobileAds.shared.log("AdInfor is not exist")
-                return
-            }
-            adInfor = infor
-            
-            PBMobileAds.shared.setupPBS(host: adInfor.host)
-            PBMobileAds.shared.log("[Banner Simple] - configID: '\(adInfor.configId)' | adUnitID: '\(adInfor.adUnitID)'")
-            self.adUnit = BannerAdUnit(configId: adInfor.configId, size: self.curBannerSize.cgSize)
-        }
-        self.adUnit.setAutoRefreshMillis(time: self.timeAutoRefesh)
-        
-        self.amBanner = DFPBannerView(adSize: self.curBannerSize.gadSize)
-        self.amBanner.delegate = self
-        self.amBanner.adUnitID = adInfor.adUnitID
-        self.amBanner.rootViewController = self.adUIViewCtr
-        self.appBannerView.addSubview(self.amBanner)
-        
-        self.adUnit.fetchDemand(adObject: self.amRequest) { [weak self] (resultCode: ResultCode) in
-            PBMobileAds.shared.log("Prebid demand fetch for DFP \(resultCode.name()) | placement: \(String(describing: self?.placement))")
-            self?.handerResult(resultCode);
-        }
+        self.amBanner?.removeFromSuperview()
+        self.amBanner = nil
     }
     
-    public func destroy() {
-        if self.isLoaded() == true {
-            PBMobileAds.shared.log("Destroy Placement: \(String(describing: self.placement))")
-            self.stopAutoRefresh()
-            self.isLoadBannerSucc = false
-            self.amBanner?.removeFromSuperview()
-        }
-    }
-    
-    func handerResult(_ resultCode: ResultCode) {
+    func handlerResult(_ resultCode: ResultCode) {
         if resultCode == ResultCode.prebidDemandFetchSuccess {
-            //  self.isLoadBannerSucc = true
             self.amBanner.load(self.amRequest)
         } else {
             self.isLoadBannerSucc = false
-            self.stopAutoRefresh()
             
             if resultCode == ResultCode.prebidDemandNoBids {
                 self.deplayCallPreload()
@@ -216,8 +131,74 @@ public class ADBanner : NSObject, GADBannerViewDelegate, CloseListenerDelegate {
         }
     }
     
+    public func load() {
+        PBMobileAds.shared.log("ADBanner Placement '\(String(describing: self.placement))' - isLoaded: \(self.isLoaded()) |  isRecallingPreload: \(self.isRecallingPreload)")
+        if self.adUnitObj == nil || self.isLoaded() == true || self.isRecallingPreload == true { return }
+        self.resetAD();
+        
+        // Check Active
+        if !adUnitObj.isActive || self.adUnitObj.adInfor.count <= 0 {
+            PBMobileAds.shared.log("ADBanner Placement '\(String(describing: self.placement))' is not active or not exist");
+            return
+        }
+        
+        // Check and set default
+        self.adFormatDefault = ADFormat(rawValue: adUnitObj.defaultType)
+        if adUnitObj.adInfor.count < 2 {
+            // set adformat theo loại duy nhất có
+            self.adFormatDefault = adUnitObj.adInfor[0].isVideo ? .vast : .html
+        }
+        
+        // Set GDPR
+        if PBMobileAds.shared.gdprConfirm {
+            let consentStr = CMPConsentToolAPI().consentString
+            if consentStr != nil && consentStr != "" {
+                Targeting.shared.subjectToGDPR = true
+                Targeting.shared.gdprConsentString = consentStr
+            }
+        }
+        
+        // Get AdInfor
+        let isVideo = self.adFormatDefault == ADFormat.vast;
+        guard let adInfor = self.getAdInfor(isVideo: isVideo) else {
+            PBMobileAds.shared.log("AdInfor of ADBanner Placement '" + self.placement + "' is not exist");
+            return
+        }
+        
+        // Setup ad size
+        let bannerSize: BannerSize = self.getBannerType(w: self.adUnitObj.width!, h: self.adUnitObj.height!)
+        self.setAdSize(size: bannerSize)
+
+        PBMobileAds.shared.log("Load ADBanner Placement: \(String(describing: self.placement))")
+        PBMobileAds.shared.setupPBS(host: adInfor.host)
+        if isVideo {
+            PBMobileAds.shared.log("[ADBanner Video] - configID: '\(adInfor.configId)' | adUnitID: '\(adInfor.adUnitID)'")
+            self.adUnit = VideoAdUnit(configId: adInfor.configId, size: self.curBannerSize.cgSize)
+        } else {
+            PBMobileAds.shared.log("[ADBanner HTML] - configID: '\(adInfor.configId)' | adUnitID: '\(adInfor.adUnitID)'")
+            self.adUnit = BannerAdUnit(configId: adInfor.configId, size: self.curBannerSize.cgSize)
+        }
+        self.adUnit.setAutoRefreshMillis(time: self.timeAutoRefesh)
+        
+        self.amBanner = DFPBannerView(adSize: self.curBannerSize.gadSize)
+        self.amBanner.adUnitID = adInfor.adUnitID
+        self.amBanner.delegate = self
+        self.amBanner.rootViewController = self.adUIViewCtr
+        self.appBannerView.addSubview(self.amBanner)
+        
+        self.adUnit.fetchDemand(adObject: self.amRequest) { [weak self] (resultCode: ResultCode) in
+            PBMobileAds.shared.log("Prebid demand fetch ADBanner placement '\(String(describing: self?.placement))' for DFP: \(resultCode.name())")
+            self?.handlerResult(resultCode);
+        }
+    }
+    
+    public func destroy() {
+        PBMobileAds.shared.log("Destroy ADBanner Placement: '\(String(describing: self.placement))'")
+        self.resetAD()
+    }
+    
     // MARK: - Public FUNC
-    public func setAnchor(anchor: Anchor){
+    private func setAnchor(anchor: Anchor){
         self.defaultAnchor = anchor
     }
     
@@ -228,7 +209,7 @@ public class ADBanner : NSObject, GADBannerViewDelegate, CloseListenerDelegate {
     }
     
     public func getAdSize() -> CGSize? {
-        return self.curBannerSize?.cgSize
+        return self.amBanner?.adSize.size
     }
     
     public func setAutoRefreshMillis(timeMillis: Double){
@@ -236,46 +217,15 @@ public class ADBanner : NSObject, GADBannerViewDelegate, CloseListenerDelegate {
         self.adUnit?.setAutoRefreshMillis(time: timeMillis)
     }
     
-    public func stopAutoRefresh(){
-        // run stopAutoRefresh to stop .fetchDemand
-        self.adUnit?.stopAutoRefresh()
-    }
-    
     public func isLoaded() -> Bool {
         return self.isLoadBannerSucc
     }
     
-    func addFirstPartyData(adUnit: AdUnit) {
-        // Access Control List
-        // Targeting.shared.addBidderToAccessControlList(Prebid.bidderNameAppNexus)
-        
-        //global user data
-        // Targeting.shared.addUserData(key: "globalUserDataKey1", value: "globalUserDataValue1")
-        
-        //global context data
-        // Targeting.shared.addContextData(key: "globalContextDataKey1", value: "globalContextDataValue1")
-        
-        //adunit context data
-        // adUnit.addContextData(key: "adunitContextDataKey1", value: "adunitContextDataValue1")
-        
-        //global context keywords
-        // Targeting.shared.addContextKeyword("globalContextKeywordValue1")
-        // Targeting.shared.addContextKeyword("globalContextKeywordValue2")
-        
-        //global user keywords
-        // Targeting.shared.addUserKeyword("globalUserKeywordValue1")
-        // Targeting.shared.addUserKeyword("globalUserKeywordValue2")
-        
-        //adunit context keywords
-        // adUnit.addContextKeyword("adunitContextKeywordValue1")
-        // adUnit.addContextKeyword("adunitContextKeywordValue2")
+    public func setListener(_ adDelegate : ADBannerDelegate){
+        self.adDelegate = adDelegate
     }
     
     // MARK: - Private FUNC
-    func setRequestTimeoutMillis(time: Int) {
-        Prebid.shared.timeoutMillis = time
-    }
-    
     func getBannerSize(typeBanner: BannerSize) -> CGSize {
         switch typeBanner {
         case .Banner320x50:
@@ -288,6 +238,8 @@ public class ADBanner : NSObject, GADBannerViewDelegate, CloseListenerDelegate {
             return CGSize(width: 468, height: 60)
         case .Banner728x90:
             return CGSize(width: 728, height: 90)
+        case .SmartBanner:
+            return CGSize(width: 1, height: 1)
         }
     }
     
@@ -303,31 +255,37 @@ public class ADBanner : NSObject, GADBannerViewDelegate, CloseListenerDelegate {
             return kGADAdSizeFullBanner
         case .Banner728x90:
             return kGADAdSizeLeaderboard
+        case .SmartBanner:
+            if UIApplication.shared.statusBarOrientation.isPortrait {
+                return kGADAdSizeSmartBannerPortrait
+            } else {
+                return kGADAdSizeSmartBannerLandscape
+            }
         }
     }
     
-    func getBannerSize(w: String, h: String) -> BannerSize {
-        let typeBanner = "\(w)x\(h)"
+    func getBannerType(w: String, h: String) -> BannerSize {
+        let bannerType = "\(w)x\(h)"
         
-        if typeBanner == "320x50" {
+        switch bannerType {
+        case "320x50":
             return .Banner320x50
-        } else if typeBanner == "320x100" {
+        case "320x100":
             return .Banner320x100
-        } else if typeBanner ==  "300x250" {
+        case "300x250":
             return .Banner300x250
-        } else if typeBanner ==  "468x60"{
+        case "468x60":
             return .Banner468x60
-        } else if typeBanner ==  "728x90"{
+        case "728x90":
             return .Banner728x90
+        case "1x1":
+            return .SmartBanner
+        default:
+            return .SmartBanner
         }
-        
-        return .Banner320x50
     }
     
     func setupAnchor(_ view: GADBannerView){
-        //        view.layer.borderWidth = 5
-        //        view.layer.borderColor = UIColor.lightGray.cgColor
-        
         view.translatesAutoresizingMaskIntoConstraints = false
         if defaultAnchor == .TopLeft {
             view.topAnchor.constraint(equalTo: self.appBannerView.topAnchor, constant: 0).isActive = true
@@ -363,9 +321,6 @@ public class ADBanner : NSObject, GADBannerViewDelegate, CloseListenerDelegate {
     
     // MARK: - Delegate
     public func adViewDidReceiveAd(_ bannerView: GADBannerView) {
-        PBMobileAds.shared.log("AD Banner Received")
-        self.adDelegate?.bannerDidReceiveAd?(data: "AD Banner Received")
-        
         self.isLoadBannerSucc = true
         AdViewUtils.findPrebidCreativeSize(bannerView,
                                            success: { (size) in
@@ -374,45 +329,43 @@ public class ADBanner : NSObject, GADBannerViewDelegate, CloseListenerDelegate {
                                             }
                                             self.setupAnchor(bannerView)
                                             bannerView.resize(GADAdSizeFromCGSize(size))
+                                            
+                                            PBMobileAds.shared.log("bannerDidReceiveAd: ADBanner Placement '\(String(describing: self.placement))'");
+                                            self.adDelegate?.bannerDidReceiveAd?(data: "bannerDidReceiveAd: ADBanner Placement '\(String(describing: self.placement))'")
         },
                                            failure: { (error) in
-                                            PBMobileAds.shared.log("AD Banner Received But Fail: \(error.localizedDescription)")
-                                            self.adDelegate?.bannerLoadFail?(data: "AD Banner Received But Fail: \(error.localizedDescription)")
+                                            self.setupAnchor(bannerView)
+                                            
+                                            PBMobileAds.shared.log("bannerDidReceiveAd: ADBanner Placement '\(String(describing: self.placement))' - \(error.localizedDescription)")
+                                            self.adDelegate?.bannerDidReceiveAd?(data: "bannerDidReceiveAd: ADBanner Placement '\(String(describing: self.placement))' - \(error.localizedDescription)")
         })
     }
     
     public func adView(_ bannerView: GADBannerView, didFailToReceiveAdWithError error: GADRequestError) {
         self.isLoadBannerSucc = false
         
-        PBMobileAds.shared.log("Load Fail: \(error.localizedDescription)")
-        self.adDelegate?.bannerLoadFail?(data: "Load Fail: \(error.localizedDescription)")
-    }
-    
-    public func adView(_ bannerView: DFPBannerView, didFailToReceiveAdWithError error: GADRequestError) {
-        self.isLoadBannerSucc = false
-        
-        PBMobileAds.shared.log("Load Fail: \(error.localizedDescription)")
-        self.adDelegate?.bannerLoadFail?(data: "Load Fail: \(error.localizedDescription)")
+        PBMobileAds.shared.log("bannerLoadFail: ADBanner Placement '\(String(describing: self.placement))' with error: \(error.localizedDescription)");
+        self.adDelegate?.bannerLoadFail?(data: "bannerLoadFail: ADBanner Placement '\(String(describing: self.placement))' with error: \(error.localizedDescription)")
     }
     
     public func adViewWillPresentScreen(_ bannerView: GADBannerView) {
-        PBMobileAds.shared.log("Ad Banner Will Present")
-        self.adDelegate?.bannerWillPresentScreen?(data: "AD Banner Will Present")
+        PBMobileAds.shared.log("bannerWillPresentScreen: ADBanner Placement '\(String(describing: self.placement))'")
+        self.adDelegate?.bannerWillPresentScreen?(data: "bannerWillPresentScreen: ADBanner Placement '\(String(describing: self.placement))'")
     }
     
     public func adViewWillDismissScreen(_ bannerView: GADBannerView) {
-        PBMobileAds.shared.log("Ad Banner Will Dismiss")
-        self.adDelegate?.bannerWillDismissScreen?(data: "AD Banner Will Dismiss")
+        PBMobileAds.shared.log("bannerWillDismissScreen: ADBanner Placement '\(String(describing: self.placement))'")
+        self.adDelegate?.bannerWillDismissScreen?(data: "bannerWillDismissScreen: ADBanner Placement '\(String(describing: self.placement))'")
     }
     
     public func adViewDidDismissScreen(_ bannerView: GADBannerView) {
-        PBMobileAds.shared.log("Ad Banner Dismissed")
-        self.adDelegate?.bannerDidDismissScreen?(data: "Ad Banner Dismissed")
+        PBMobileAds.shared.log("bannerDidDismissScreen: ADBanner Placement '\(String(describing: self.placement))'")
+        self.adDelegate?.bannerDidDismissScreen?(data: "bannerDidDismissScreen: ADBanner Placement '\(String(describing: self.placement))'")
     }
     
     public func adViewWillLeaveApplication(_ bannerView: GADBannerView) {
-        PBMobileAds.shared.log("AD Banner Leave Application")
-        self.adDelegate?.bannerWillLeaveApplication?(data: "AD Banner Leave Application")
+        PBMobileAds.shared.log("bannerWillLeaveApplication: ADBanner Placement '\(String(describing: self.placement))'")
+        self.adDelegate?.bannerWillLeaveApplication?(data: "bannerWillLeaveApplication: ADBanner Placement '\(String(describing: self.placement))'")
     }
 }
 
@@ -447,6 +400,7 @@ public enum BannerSize {
     case Banner300x250
     case Banner468x60
     case Banner728x90
+    case SmartBanner
 }
 
 public enum Anchor {

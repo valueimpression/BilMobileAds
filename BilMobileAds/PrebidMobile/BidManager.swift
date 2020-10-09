@@ -46,7 +46,7 @@ class BidManager: NSObject {
                     if (!Prebid.shared.timeoutUpdated) {
                         let tmax = self.getTmaxRequest(data!)
                         if (tmax > 0) {
-                            Prebid.shared.timeoutMillisDynamic = min(Int(demandFetchEndTime - demandFetchStartTime) + tmax + 200, Prebid.shared.timeoutMillis)
+                            Prebid.shared.`timeoutMillisDynamic` = min(Int(demandFetchEndTime - demandFetchStartTime) + tmax + 200, Prebid.shared.timeoutMillis)
                             Prebid.shared.timeoutUpdated = true
                         }
                     }

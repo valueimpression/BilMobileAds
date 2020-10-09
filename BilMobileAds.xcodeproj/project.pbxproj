@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3485F02A7E5595FCD49894BC /* Pods_BilMobileAds.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F7CBA84A3131F42F5C6CACC3 /* Pods_BilMobileAds.framework */; };
+		10CE3E74F7057E8EC68B5243 /* Pods_BilMobileAds.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E5BE8CD1ED383C79244CEC8 /* Pods_BilMobileAds.framework */; };
 		F957B9F3249884C80022C6AC /* BilMobileAds.h in Headers */ = {isa = PBXBuildFile; fileRef = F957B9F1249884C80022C6AC /* BilMobileAds.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F957BA1A249887070022C6AC /* PBMobileAds.swift in Sources */ = {isa = PBXBuildFile; fileRef = F957BA19249887070022C6AC /* PBMobileAds.swift */; };
 		F957BA1C249887910022C6AC /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F957BA1B249887910022C6AC /* Helper.swift */; };
@@ -15,6 +15,8 @@
 		F957BA20249888100022C6AC /* ADBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = F957BA1F249888100022C6AC /* ADBanner.swift */; };
 		F957BA222498882E0022C6AC /* ADInterstitial.swift in Sources */ = {isa = PBXBuildFile; fileRef = F957BA212498882E0022C6AC /* ADInterstitial.swift */; };
 		F957BA242498884C0022C6AC /* ADRewarded.swift in Sources */ = {isa = PBXBuildFile; fileRef = F957BA232498884C0022C6AC /* ADRewarded.swift */; };
+		F95A32AB2511B10600F3EBD5 /* ADNativeCustom.swift in Sources */ = {isa = PBXBuildFile; fileRef = F95A32AA2511B10600F3EBD5 /* ADNativeCustom.swift */; };
+		F98492F424FD235400E8DC45 /* ADNativeStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = F98492F324FD235400E8DC45 /* ADNativeStyle.swift */; };
 		F9D467B424BF01DC002E4113 /* ShowCMP.m in Sources */ = {isa = PBXBuildFile; fileRef = F9D467B224BF01DC002E4113 /* ShowCMP.m */; };
 		F9D467B524BF01DC002E4113 /* ShowCMP.h in Headers */ = {isa = PBXBuildFile; fileRef = F9D467B324BF01DC002E4113 /* ShowCMP.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F9D467CF24BF03B7002E4113 /* CMPConsentTool.h in Headers */ = {isa = PBXBuildFile; fileRef = F9D467CD24BF03B7002E4113 /* CMPConsentTool.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -93,12 +95,15 @@
 		F9D46A6524C01539002E4113 /* NativeEventTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9D46A6224C01539002E4113 /* NativeEventTracker.swift */; };
 		F9D46A6824C01552002E4113 /* PbFindSizeError.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9D46A6624C01552002E4113 /* PbFindSizeError.swift */; };
 		F9D46A6924C01552002E4113 /* AdViewUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9D46A6724C01552002E4113 /* AdViewUtils.swift */; };
+		F9D8803E2519A2BC00F2AC73 /* ADNativeViewBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9D8803D2519A2BC00F2AC73 /* ADNativeViewBuilder.swift */; };
+		F9D88045251B479A00F2AC73 /* ADNativeViewCustom.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9D88044251B479A00F2AC73 /* ADNativeViewCustom.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6E5BE8CD1ED383C79244CEC8 /* Pods_BilMobileAds.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BilMobileAds.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BCE624E0D125CBFCCAF6B2D6 /* Pods-BilMobileAds.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BilMobileAds.release.xcconfig"; path = "Target Support Files/Pods-BilMobileAds/Pods-BilMobileAds.release.xcconfig"; sourceTree = "<group>"; };
 		D31F48C40F51675013AC0963 /* Pods-BilMobileAds.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BilMobileAds.debug.xcconfig"; path = "Target Support Files/Pods-BilMobileAds/Pods-BilMobileAds.debug.xcconfig"; sourceTree = "<group>"; };
-		F7CBA84A3131F42F5C6CACC3 /* Pods_BilMobileAds.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BilMobileAds.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F94F41AD250250900014E8C9 /* libxml2.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.2.dylib; path = ../../../../../../usr/lib/libxml2.2.dylib; sourceTree = "<group>"; };
 		F957B9EE249884C80022C6AC /* BilMobileAds.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BilMobileAds.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F957B9F1249884C80022C6AC /* BilMobileAds.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BilMobileAds.h; sourceTree = "<group>"; };
 		F957B9F2249884C80022C6AC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -108,6 +113,8 @@
 		F957BA1F249888100022C6AC /* ADBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ADBanner.swift; sourceTree = "<group>"; };
 		F957BA212498882E0022C6AC /* ADInterstitial.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ADInterstitial.swift; sourceTree = "<group>"; };
 		F957BA232498884C0022C6AC /* ADRewarded.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ADRewarded.swift; sourceTree = "<group>"; };
+		F95A32AA2511B10600F3EBD5 /* ADNativeCustom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ADNativeCustom.swift; sourceTree = "<group>"; };
+		F98492F324FD235400E8DC45 /* ADNativeStyle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ADNativeStyle.swift; sourceTree = "<group>"; };
 		F9D467B224BF01DC002E4113 /* ShowCMP.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShowCMP.m; sourceTree = "<group>"; };
 		F9D467B324BF01DC002E4113 /* ShowCMP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShowCMP.h; sourceTree = "<group>"; };
 		F9D467CD24BF03B7002E4113 /* CMPConsentTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPConsentTool.h; sourceTree = "<group>"; };
@@ -186,6 +193,8 @@
 		F9D46A6224C01539002E4113 /* NativeEventTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeEventTracker.swift; sourceTree = "<group>"; };
 		F9D46A6624C01552002E4113 /* PbFindSizeError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PbFindSizeError.swift; sourceTree = "<group>"; };
 		F9D46A6724C01552002E4113 /* AdViewUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdViewUtils.swift; sourceTree = "<group>"; };
+		F9D8803D2519A2BC00F2AC73 /* ADNativeViewBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ADNativeViewBuilder.swift; sourceTree = "<group>"; };
+		F9D88044251B479A00F2AC73 /* ADNativeViewCustom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ADNativeViewCustom.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -193,7 +202,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3485F02A7E5595FCD49894BC /* Pods_BilMobileAds.framework in Frameworks */,
+				10CE3E74F7057E8EC68B5243 /* Pods_BilMobileAds.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -212,7 +221,8 @@
 		6C8E522F3C6A16A89B26BA3B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				F7CBA84A3131F42F5C6CACC3 /* Pods_BilMobileAds.framework */,
+				F94F41AD250250900014E8C9 /* libxml2.2.dylib */,
+				6E5BE8CD1ED383C79244CEC8 /* Pods_BilMobileAds.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -248,6 +258,10 @@
 				F957BA1F249888100022C6AC /* ADBanner.swift */,
 				F957BA212498882E0022C6AC /* ADInterstitial.swift */,
 				F957BA232498884C0022C6AC /* ADRewarded.swift */,
+				F98492F324FD235400E8DC45 /* ADNativeStyle.swift */,
+				F95A32AA2511B10600F3EBD5 /* ADNativeCustom.swift */,
+				F9D8803D2519A2BC00F2AC73 /* ADNativeViewBuilder.swift */,
+				F9D88044251B479A00F2AC73 /* ADNativeViewCustom.swift */,
 				F9D467B324BF01DC002E4113 /* ShowCMP.h */,
 				F9D467B224BF01DC002E4113 /* ShowCMP.m */,
 			);
@@ -547,8 +561,10 @@
 				F9D46A6824C01552002E4113 /* PbFindSizeError.swift in Sources */,
 				F9D46A6924C01552002E4113 /* AdViewUtils.swift in Sources */,
 				F9D46A6324C01539002E4113 /* NativeRequest.swift in Sources */,
+				F9D8803E2519A2BC00F2AC73 /* ADNativeViewBuilder.swift in Sources */,
 				F9D46A6424C01539002E4113 /* NativeAsset.swift in Sources */,
 				F9D46A6524C01539002E4113 /* NativeEventTracker.swift in Sources */,
+				F9D88045251B479A00F2AC73 /* ADNativeViewCustom.swift in Sources */,
 				F9D46A5624C01528002E4113 /* VideoBaseAdUnit.swift in Sources */,
 				F9D46A5724C01528002E4113 /* VideoAdUnit.swift in Sources */,
 				F9D46A5824C01528002E4113 /* InterstitialAdUnit.swift in Sources */,
@@ -581,6 +597,7 @@
 				F9D4681424BF063B002E4113 /* CMPConfig.m in Sources */,
 				F9D467B424BF01DC002E4113 /* ShowCMP.m in Sources */,
 				F9D467DC24BF0444002E4113 /* CMPDataStoragePrivateUserDefaults.m in Sources */,
+				F98492F424FD235400E8DC45 /* ADNativeStyle.swift in Sources */,
 				F957BA20249888100022C6AC /* ADBanner.swift in Sources */,
 				F9D4682424BF069E002E4113 /* CMPConsentToolUtil.m in Sources */,
 				F957BA1A249887070022C6AC /* PBMobileAds.swift in Sources */,
@@ -597,6 +614,7 @@
 				F9D467FC24BF0561002E4113 /* CMPConsentV2Parser.m in Sources */,
 				F9D4681824BF0655002E4113 /* CMPSettings.m in Sources */,
 				F9D4681024BF0623002E4113 /* Reachability.m in Sources */,
+				F95A32AB2511B10600F3EBD5 /* ADNativeCustom.swift in Sources */,
 				F957BA1E249887C00022C6AC /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -639,8 +657,10 @@
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_BITCODE = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				EXCLUDED_ARCHS = "";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -655,7 +675,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -702,8 +722,10 @@
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_BITCODE = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				EXCLUDED_ARCHS = "";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -712,7 +734,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -735,6 +757,8 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_BITCODE = YES;
+				EXCLUDED_ARCHS = arm64;
 				INFOPLIST_FILE = BilMobileAds/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -742,6 +766,97 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-l\"c++\"",
+					"-l\"sqlite3\"",
+					"-l\"stdc++\"",
+					"-l\"xml2\"",
+					"-l\"z\"",
+					"-framework",
+					"\"AVFoundation\"",
+					"-framework",
+					"\"AudioToolbox\"",
+					"-framework",
+					"\"CFNetwork\"",
+					"-framework",
+					"\"CoreGraphics\"",
+					"-framework",
+					"\"CoreImage\"",
+					"-framework",
+					"\"CoreMedia\"",
+					"-framework",
+					"\"CoreTelephony\"",
+					"-framework",
+					"\"CoreVideo\"",
+					"-framework",
+					"\"FBLPromises\"",
+					"-framework",
+					"\"Foundation\"",
+					"-framework",
+					"\"GoogleAppMeasurement\"",
+					"-framework",
+					"\"GoogleMobileAds\"",
+					"-framework",
+					"\"GoogleUtilities\"",
+					"-framework",
+					"\"MediaPlayer\"",
+					"-framework",
+					"\"MessageUI\"",
+					"-framework",
+					"\"MobileCoreServices\"",
+					"-framework",
+					"\"QuartzCore\"",
+					"-framework",
+					"\"Security\"",
+					"-framework",
+					"\"StoreKit\"",
+					"-framework",
+					"\"SystemConfiguration\"",
+					"-framework",
+					"\"UIKit\"",
+					"-framework",
+					"\"nanopb\"",
+					"-weak_framework",
+					"\"Accelerate\"",
+					"-weak_framework",
+					"\"Accounts\"",
+					"-weak_framework",
+					"\"AdSupport\"",
+					"-weak_framework",
+					"\"AudioToolbox\"",
+					"-weak_framework",
+					"\"CFNetwork\"",
+					"-weak_framework",
+					"\"CoreGraphics\"",
+					"-weak_framework",
+					"\"CoreMotion\"",
+					"-weak_framework",
+					"\"CoreTelephony\"",
+					"-weak_framework",
+					"\"Foundation\"",
+					"-weak_framework",
+					"\"JavaScriptCore\"",
+					"-weak_framework",
+					"\"LocalAuthentication\"",
+					"-weak_framework",
+					"\"QuartzCore\"",
+					"-weak_framework",
+					"\"SafariServices\"",
+					"-weak_framework",
+					"\"Security\"",
+					"-weak_framework",
+					"\"Social\"",
+					"-weak_framework",
+					"\"SystemConfiguration\"",
+					"-weak_framework",
+					"\"UIKit\"",
+					"-weak_framework",
+					"\"VideoToolbox\"",
+					"-weak_framework",
+					"\"WebKit\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.bil.BilMobileAds;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
@@ -764,6 +879,8 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_BITCODE = YES;
+				EXCLUDED_ARCHS = arm64;
 				INFOPLIST_FILE = BilMobileAds/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -771,6 +888,97 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-l\"c++\"",
+					"-l\"sqlite3\"",
+					"-l\"stdc++\"",
+					"-l\"xml2\"",
+					"-l\"z\"",
+					"-framework",
+					"\"AVFoundation\"",
+					"-framework",
+					"\"AudioToolbox\"",
+					"-framework",
+					"\"CFNetwork\"",
+					"-framework",
+					"\"CoreGraphics\"",
+					"-framework",
+					"\"CoreImage\"",
+					"-framework",
+					"\"CoreMedia\"",
+					"-framework",
+					"\"CoreTelephony\"",
+					"-framework",
+					"\"CoreVideo\"",
+					"-framework",
+					"\"FBLPromises\"",
+					"-framework",
+					"\"Foundation\"",
+					"-framework",
+					"\"GoogleAppMeasurement\"",
+					"-framework",
+					"\"GoogleMobileAds\"",
+					"-framework",
+					"\"GoogleUtilities\"",
+					"-framework",
+					"\"MediaPlayer\"",
+					"-framework",
+					"\"MessageUI\"",
+					"-framework",
+					"\"MobileCoreServices\"",
+					"-framework",
+					"\"QuartzCore\"",
+					"-framework",
+					"\"Security\"",
+					"-framework",
+					"\"StoreKit\"",
+					"-framework",
+					"\"SystemConfiguration\"",
+					"-framework",
+					"\"UIKit\"",
+					"-framework",
+					"\"nanopb\"",
+					"-weak_framework",
+					"\"Accelerate\"",
+					"-weak_framework",
+					"\"Accounts\"",
+					"-weak_framework",
+					"\"AdSupport\"",
+					"-weak_framework",
+					"\"AudioToolbox\"",
+					"-weak_framework",
+					"\"CFNetwork\"",
+					"-weak_framework",
+					"\"CoreGraphics\"",
+					"-weak_framework",
+					"\"CoreMotion\"",
+					"-weak_framework",
+					"\"CoreTelephony\"",
+					"-weak_framework",
+					"\"Foundation\"",
+					"-weak_framework",
+					"\"JavaScriptCore\"",
+					"-weak_framework",
+					"\"LocalAuthentication\"",
+					"-weak_framework",
+					"\"QuartzCore\"",
+					"-weak_framework",
+					"\"SafariServices\"",
+					"-weak_framework",
+					"\"Security\"",
+					"-weak_framework",
+					"\"Social\"",
+					"-weak_framework",
+					"\"SystemConfiguration\"",
+					"-weak_framework",
+					"\"UIKit\"",
+					"-weak_framework",
+					"\"VideoToolbox\"",
+					"-weak_framework",
+					"\"WebKit\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.bil.BilMobileAds;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";

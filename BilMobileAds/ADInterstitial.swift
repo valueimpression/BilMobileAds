@@ -24,13 +24,14 @@ public class ADInterstitial: NSObject, GADInterstitialDelegate, CloseListenerDel
     
     // MARK: Properties
     private var adFormatDefault: ADFormat!;
-    private var isLoadAfterPreload: Bool = false // Check user gọi load() chưa có AD -> preload và show AD luôn
-    private var isFetchingAD: Bool = false // Check có phải đang lấy AD ko
-    private var isRecallingPreload: Bool = false // Check đang đợi gọi lại preload
+    private var isLoadAfterPreload: Bool = false
+    private var isFetchingAD: Bool = false
+    private var isRecallingPreload: Bool = false
     
     // MARK: - Init + DeInit
     public init(_ adView: UIViewController, placement: String) {
         super.init()
+        PBMobileAds.shared.log("ADInterstitial Init: \(placement)")
         
         self.adUIViewCtr = adView
         self.adDelegate = adView as? ADInterstitialDelegate
@@ -44,7 +45,7 @@ public class ADInterstitial: NSObject, GADInterstitialDelegate, CloseListenerDel
                 PBMobileAds.shared.getADConfig(adUnit: self.placement) { (res: Result<AdUnitObj, Error>) in
                     switch res{
                     case .success(let data):
-                        PBMobileAds.shared.log("getADConfig Fail placement: \(String(describing: self.placement))")
+                        PBMobileAds.shared.log("Get Config ADInterstitial placement: '\(String(describing: self.placement))' Success")
                         DispatchQueue.main.async{
                             self.adUnitObj = data
 
@@ -58,7 +59,7 @@ public class ADInterstitial: NSObject, GADInterstitialDelegate, CloseListenerDel
                         }
                         break
                     case .failure(let err):
-                        PBMobileAds.shared.log("getADConfig placement: \(String(describing: self.placement)) Fail \(err.localizedDescription)")
+                        PBMobileAds.shared.log("Get Config ADInterstitial placement: '\(String(describing: self.placement))' Fail with Error: \(err.localizedDescription)")
                         break
                     }
                 }
@@ -69,13 +70,13 @@ public class ADInterstitial: NSObject, GADInterstitialDelegate, CloseListenerDel
     }
     
     deinit {
-        PBMobileAds.shared.log("AD Interstitial Deinit")
+        PBMobileAds.shared.log("ADInterstitial Placement '\(String(describing: self.placement))' Deinit")
         self.destroy()
     }
     
     public func onWebViewClosed(_ consentStr: String) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            PBMobileAds.shared.log("ConsentStr: \(String(describing: consentStr))")
+            PBMobileAds.shared.log("ADInterstitial Placement '\(String(describing: self.placement))' with ConsentStr: \(String(describing: consentStr))")
             self.preLoad()
         }
     }
@@ -98,10 +99,25 @@ public class ADInterstitial: NSObject, GADInterstitialDelegate, CloseListenerDel
         return nil
     }
     
-    func handerResult(_ resultCode: ResultCode) {
+    func resetAD() {
+        if self.adUnit == nil || self.amInterstitial == nil { return }
+
+        self.isFetchingAD = false
+        self.isRecallingPreload = false
+        self.isLoadAfterPreload = false
+        
+        self.adUnit?.stopAutoRefresh()
+        self.adUnit = nil
+        
+        self.amInterstitial = nil
+    }
+    
+    func handlerResult(_ resultCode: ResultCode) {
         if resultCode == ResultCode.prebidDemandFetchSuccess {
             self.amInterstitial?.load(self.amRequest)
         } else {
+            self.isFetchingAD = false
+            
             if resultCode == ResultCode.prebidDemandNoBids {
                 self.adFormatDefault = self.adFormatDefault == .html ? .vast : .html
                 // Ko gọi lại preload nếu user gọi load() đầu tiên
@@ -113,76 +129,50 @@ public class ADInterstitial: NSObject, GADInterstitialDelegate, CloseListenerDel
                     self.deplayCallPreload()
                 }
             }
-            
-            self.isFetchingAD = false
         }
     }
     
     public func preLoad() {
-        PBMobileAds.shared.log(" | isReady: \(self.isReady()) |  isFetchingAD: \(self.isFetchingAD) | |  isRecallingPreload: \(self.isRecallingPreload)")
+        PBMobileAds.shared.log("ADInterstitial Placement '\(String(describing: self.placement))' - isReady: \(self.isReady()) |  isFetchingAD: \(self.isFetchingAD) |  isRecallingPreload: \(self.isRecallingPreload)")
         if self.adUnitObj == nil || self.isReady() == true || self.isFetchingAD == true || self.isRecallingPreload == true { return }
-        
-        PBMobileAds.shared.log("Preload Interstitial AD")
-        
-        // Get Data Config
-        if self.adUnitObj == nil {
-            guard let adUnitObj = PBMobileAds.shared.getAdUnitObj(placement: self.placement) else {
-                PBMobileAds.shared.log("Placement is not exist")
-                return
-            }
-            
-            self.adUnitObj = adUnitObj
-        }
+        self.resetAD();
         
         // Check Active
-        if !self.adUnitObj.isActive || self.adUnitObj.adInfor.count <= 0 {
-            PBMobileAds.shared.log("Ad is not actived")
+        if !adUnitObj.isActive || self.adUnitObj.adInfor.count <= 0 {
+            PBMobileAds.shared.log("ADInterstitial Placement '\(String(describing: self.placement))' is not active or not exist");
             return
         }
         
         // Check and set default
-        self.adFormatDefault = self.adFormatDefault == nil ? ADFormat(rawValue: self.adUnitObj.defaultType) : self.adFormatDefault
+        self.adFormatDefault = ADFormat(rawValue: adUnitObj.defaultType)
         // set adformat theo loại duy nhất có
-        if self.adUnitObj.adInfor.count < 2 {
-            self.adFormatDefault = self.adUnitObj.adInfor[0].isVideo ? .vast : .html
+        if adUnitObj.adInfor.count < 2 {
+            self.adFormatDefault = adUnitObj.adInfor[0].isVideo ? .vast : .html
         }
         
         // Set GDPR
         if PBMobileAds.shared.gdprConfirm {
-            Targeting.shared.subjectToGDPR = true
-            Targeting.shared.gdprConsentString = CMPConsentToolAPI().consentString
+            let consentStr = CMPConsentToolAPI().consentString
+            if consentStr != nil && consentStr != "" {
+                Targeting.shared.subjectToGDPR = true
+                Targeting.shared.gdprConsentString = consentStr
+            }
         }
         
-        let adInfor: AdInfor
+        // Get AdInfor
+        let isVideo = self.adFormatDefault == ADFormat.vast;
+        guard let adInfor = self.getAdInfor(isVideo: isVideo) else {
+            PBMobileAds.shared.log("AdInfor of ADInterstitial Placement '" + self.placement + "' is not exist");
+            return
+        }
+
+        PBMobileAds.shared.log("Load ADInterstitial Placement: '\(String(describing: self.placement))'")
+        PBMobileAds.shared.setupPBS(host: adInfor.host)
         if self.adFormatDefault == .vast {
-            guard let infor = self.getAdInfor(isVideo: true) else {
-                PBMobileAds.shared.log("AdInfor is not exist")
-                return
-            }
-            adInfor = infor
-            
-            PBMobileAds.shared.setupPBS(host: adInfor.host)
-            PBMobileAds.shared.log("[Full Video] - configId: '\(adInfor.configId)' | adUnitID: '\(adInfor.adUnitID)'")
-            
-            let parameters = VideoBaseAdUnit.Parameters()
-            parameters.mimes = ["video/mp4"]
-            parameters.protocols = [Signals.Protocols.VAST_2_0]
-            parameters.playbackMethod = [Signals.PlaybackMethod.AutoPlaySoundOn]
-            parameters.placement = Signals.Placement.Interstitial // Signals.Placement.InBanner
-            
-            let vAdUnit = VideoInterstitialAdUnit(configId: adInfor.configId)
-            vAdUnit.parameters = parameters
-            
-            self.adUnit = vAdUnit
+            PBMobileAds.shared.log("[ADInterstitial Video] - configId: '\(adInfor.configId)' | adUnitID: '\(adInfor.adUnitID)'")
+            self.adUnit = VideoInterstitialAdUnit(configId: adInfor.configId)
         } else {
-            guard let infor = self.getAdInfor(isVideo: false) else {
-                PBMobileAds.shared.log("AdInfor is not exist")
-                return
-            }
-            adInfor = infor
-            
-            PBMobileAds.shared.setupPBS(host: adInfor.host)
-            PBMobileAds.shared.log("[Full Simple] - configId: '\(adInfor.configId) | adUnitID: \(adInfor.adUnitID)'")
+            PBMobileAds.shared.log("[ADInterstitial HTML] - configId: '\(adInfor.configId) | adUnitID: \(adInfor.adUnitID)'")
             self.adUnit = InterstitialAdUnit(configId: adInfor.configId)
         }
         
@@ -191,8 +181,8 @@ public class ADInterstitial: NSObject, GADInterstitialDelegate, CloseListenerDel
         
         self.isFetchingAD = true
         self.adUnit?.fetchDemand(adObject: self.amRequest) { (resultCode: ResultCode) in
-            PBMobileAds.shared.log("Prebid demand fetch for DFP \(resultCode.name()) | placement: \(String(describing: self.placement))")
-            self.handerResult(resultCode)
+            PBMobileAds.shared.log("Prebid demand fetch ADInterstitial placement '\(String(describing: self.placement))' for DFP: \(resultCode.name())")
+            self.handlerResult(resultCode)
         }
     }
     
@@ -200,22 +190,23 @@ public class ADInterstitial: NSObject, GADInterstitialDelegate, CloseListenerDel
         if self.amInterstitial?.isReady == true {
             self.amInterstitial?.present(fromRootViewController: self.adUIViewCtr)
         } else {
-            PBMobileAds.shared.log("Don't have AD")
+            PBMobileAds.shared.log("ADInterstitial placement '\(String(describing: self.placement))' don't have AD")
             self.isLoadAfterPreload = true
             self.preLoad()
         }
     }
     
     public func destroy() {
-        // if self.isLoadBannerSucc {
-        PBMobileAds.shared.log("Destroy Placement: \(String(describing: self.placement))")
-        self.isLoadAfterPreload = false
-        self.adUnit?.stopAutoRefresh()
-        // }
+        PBMobileAds.shared.log("Destroy ADInterstitial Placement: \(String(describing: self.placement))")
+        self.resetAD()
     }
     
     public func isReady() -> Bool {
         return self.amInterstitial?.isReady == true ? true : false
+    }
+    
+    public func setListener(_ adDelegate : ADInterstitialDelegate){
+        self.adDelegate = adDelegate
     }
     
     // MARK: - Delegate
@@ -225,8 +216,8 @@ public class ADInterstitial: NSObject, GADInterstitialDelegate, CloseListenerDel
         // Gọi Load() trước nhưng fail
         self.isLoadAfterPreload = false
         
-        PBMobileAds.shared.log(error.localizedDescription)
-        self.adDelegate?.interstitialLoadFail?(data: error.localizedDescription)
+        PBMobileAds.shared.log("interstitialLoadFail: ADInterstitial Placement '\(String(describing: self.placement))' with error: \(error.localizedDescription)")
+        self.adDelegate?.interstitialLoadFail?(error: "interstitialLoadFail: ADInterstitial Placement '\(String(describing: self.placement))' with error: \(error.localizedDescription)")
     }
     
     public func interstitialDidReceiveAd(_ ad: GADInterstitial) {
@@ -234,8 +225,8 @@ public class ADInterstitial: NSObject, GADInterstitialDelegate, CloseListenerDel
         self.isFetchingAD = false
         
         if self.amInterstitial?.isReady == true {
-            PBMobileAds.shared.log("Ad Interstitial Ready with placement \(String(describing: self.placement))")
-            self.adDelegate?.interstitialDidReceiveAd?(data: self.placement)
+            PBMobileAds.shared.log("interstitialDidReceiveAd: ADInterstitial Placement '\(String(describing: self.placement))' Ready")
+            self.adDelegate?.interstitialDidReceiveAd?(data: "interstitialDidReceiveAd: ADInterstitial Placement '\(String(describing: self.placement))' Ready")
             
             if self.isLoadAfterPreload {
                 self.amInterstitial?.present(fromRootViewController: self.adUIViewCtr)
@@ -244,34 +235,34 @@ public class ADInterstitial: NSObject, GADInterstitialDelegate, CloseListenerDel
         } else {
             self.isLoadAfterPreload = false
             
-            PBMobileAds.shared.log("Ad Interstitial Not Ready")
-            self.adDelegate?.interstitialDidReceiveAd?(data: "Ad Interstitial Not Ready")
+            PBMobileAds.shared.log("interstitialDidReceiveAd: ADInterstitial Placement '\(String(describing: self.placement))' not Ready");
+            self.adDelegate?.interstitialDidReceiveAd?(data: "interstitialDidReceiveAd: ADInterstitial Placement '\(String(describing: self.placement))' not Ready")
         }
     }
     
     public func interstitialWillPresentScreen(_ ad: GADInterstitial) {
-        PBMobileAds.shared.log("Ad Interstitial Will Present")
-        self.adDelegate?.interstitialWillPresentScreen?(data: "AD Interstitial Will Present")
+        PBMobileAds.shared.log("interstitialWillPresentScreen: ADInterstitial Placement '\(String(describing: self.placement))'")
+        self.adDelegate?.interstitialWillPresentScreen?(data: "interstitialWillPresentScreen: ADInterstitial Placement '\(String(describing: self.placement))'")
     }
     
     public func interstitialDidFailToPresentScreen(toPresentScreen ad: GADInterstitial) {
-        PBMobileAds.shared.log("Ad Interstitial Show Fail")
-        self.adDelegate?.interstitialDidFailToPresentScreen?(data: "AD Interstitial Show Fail")
+        PBMobileAds.shared.log("interstitialDidFailToPresentScreen: ADInterstitial Placement '\(String(describing: self.placement))'")
+        self.adDelegate?.interstitialDidFailToPresentScreen?(data: "interstitialDidFailToPresentScreen: ADInterstitial Placement '\(String(describing: self.placement))'")
     }
     
     public func interstitialWillDismissScreen(toPresentScreen ad: GADInterstitial) {
-        PBMobileAds.shared.log("Ad Interstitial Will Dismiss")
-        self.adDelegate?.interstitialWillDismissScreen?(data: "AD Interstitial Will Dismiss")
+        PBMobileAds.shared.log("interstitialWillDismissScreen: ADInterstitial Placement '\(String(describing: self.placement))'")
+        self.adDelegate?.interstitialWillDismissScreen?(data: "interstitialWillDismissScreen: ADInterstitial Placement '\(String(describing: self.placement))'")
     }
     
     public func interstitialDidDismissScreen(_ ad: GADInterstitial) {
-        PBMobileAds.shared.log("Ad Interstitial Dismissed")
-        self.adDelegate?.interstitialDidDismissScreen?(data: "AD Interstitial Dismissed")
+        PBMobileAds.shared.log("interstitialDidDismissScreen: ADInterstitial Placement '\(String(describing: self.placement))'")
+        self.adDelegate?.interstitialDidDismissScreen?(data: "interstitialDidDismissScreen: ADInterstitial Placement '\(String(describing: self.placement))'")
     }
     
     public func interstitialWillLeaveApplication(_ ad: GADInterstitial) {
-        PBMobileAds.shared.log("Ad Interstitial Leave Application")
-        self.adDelegate?.interstitialWillLeaveApplication?(data: "AD Interstitial Leave Application")
+        PBMobileAds.shared.log("interstitialWillLeaveApplication: ADInterstitial Placement '\(String(describing: self.placement))'")
+        self.adDelegate?.interstitialWillDismissScreen?(data: "interstitialWillLeaveApplication: ADInterstitial Placement '\(String(describing: self.placement))'")
     }
 }
 
@@ -282,7 +273,7 @@ public class ADInterstitial: NSObject, GADInterstitialDelegate, CloseListenerDel
     @objc optional func interstitialDidReceiveAd(data: String)
     
     // Called when an interstitial ad request fail.
-    @objc optional func interstitialLoadFail(data: String)
+    @objc optional func interstitialLoadFail(error: String)
     
     // Called just before presenting an interstitial. After this method finishes the interstitial will
     // animate onto the screen. Use this opportunity to stop animations and save the state of your

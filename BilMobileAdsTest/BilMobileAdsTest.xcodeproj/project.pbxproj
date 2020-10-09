@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		11C02F06654C61FB7214FAF9 /* Pods_BilMobileAdsTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA3D4FC738ED6253D218F53D /* Pods_BilMobileAdsTest.framework */; };
 		F957BA06249885260022C6AC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F957BA05249885260022C6AC /* AppDelegate.swift */; };
 		F957BA08249885260022C6AC /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F957BA07249885260022C6AC /* SceneDelegate.swift */; };
 		F957BA0A249885260022C6AC /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F957BA09249885260022C6AC /* ViewController.swift */; };
@@ -16,6 +15,10 @@
 		F957BA122498852A0022C6AC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F957BA102498852A0022C6AC /* LaunchScreen.storyboard */; };
 		F957BA26249888F20022C6AC /* BilMobileAds.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F957BA25249888F20022C6AC /* BilMobileAds.framework */; };
 		F957BA27249888F20022C6AC /* BilMobileAds.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F957BA25249888F20022C6AC /* BilMobileAds.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		F9A0BF21252C2D14004A3DEC /* AdManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9A0BF20252C2D14004A3DEC /* AdManager.swift */; };
+		F9D88041251AF5C900F2AC73 /* ADNativeViewCustom.xib in Resources */ = {isa = PBXBuildFile; fileRef = F9D8803F251AF5C900F2AC73 /* ADNativeViewCustom.xib */; };
+		F9D909F6251DE9EC00C17A35 /* NativeAdViewCustom.xib in Resources */ = {isa = PBXBuildFile; fileRef = F9D909F5251DE9EC00C17A35 /* NativeAdViewCustom.xib */; };
+		FAE8A6F3BF4C7483ED9BCFAE /* Pods_BilMobileAdsTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B11ABFAA585DDFF726572D4C /* Pods_BilMobileAdsTest.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -34,7 +37,7 @@
 
 /* Begin PBXFileReference section */
 		542C2E72692D9BBE866D2C90 /* Pods-BilMobileAdsTest.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BilMobileAdsTest.release.xcconfig"; path = "Target Support Files/Pods-BilMobileAdsTest/Pods-BilMobileAdsTest.release.xcconfig"; sourceTree = "<group>"; };
-		AA3D4FC738ED6253D218F53D /* Pods_BilMobileAdsTest.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BilMobileAdsTest.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B11ABFAA585DDFF726572D4C /* Pods_BilMobileAdsTest.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BilMobileAdsTest.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EACD4934B28690C9664CF85E /* Pods-BilMobileAdsTest.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BilMobileAdsTest.debug.xcconfig"; path = "Target Support Files/Pods-BilMobileAdsTest/Pods-BilMobileAdsTest.debug.xcconfig"; sourceTree = "<group>"; };
 		F957BA02249885260022C6AC /* BilMobileAdsTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BilMobileAdsTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F957BA05249885260022C6AC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -45,6 +48,9 @@
 		F957BA112498852A0022C6AC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		F957BA132498852A0022C6AC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F957BA25249888F20022C6AC /* BilMobileAds.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = BilMobileAds.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F9A0BF20252C2D14004A3DEC /* AdManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdManager.swift; sourceTree = "<group>"; };
+		F9D88040251AF5C900F2AC73 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/ADNativeViewCustom.xib; sourceTree = "<group>"; };
+		F9D909F5251DE9EC00C17A35 /* NativeAdViewCustom.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NativeAdViewCustom.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,8 +58,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				11C02F06654C61FB7214FAF9 /* Pods_BilMobileAdsTest.framework in Frameworks */,
 				F957BA26249888F20022C6AC /* BilMobileAds.framework in Frameworks */,
+				FAE8A6F3BF4C7483ED9BCFAE /* Pods_BilMobileAdsTest.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -74,7 +80,7 @@
 			isa = PBXGroup;
 			children = (
 				F957BA25249888F20022C6AC /* BilMobileAds.framework */,
-				AA3D4FC738ED6253D218F53D /* Pods_BilMobileAdsTest.framework */,
+				B11ABFAA585DDFF726572D4C /* Pods_BilMobileAdsTest.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -103,7 +109,10 @@
 				F957BA05249885260022C6AC /* AppDelegate.swift */,
 				F957BA07249885260022C6AC /* SceneDelegate.swift */,
 				F957BA09249885260022C6AC /* ViewController.swift */,
+				F9A0BF20252C2D14004A3DEC /* AdManager.swift */,
 				F957BA0B249885260022C6AC /* Main.storyboard */,
+				F9D8803F251AF5C900F2AC73 /* ADNativeViewCustom.xib */,
+				F9D909F5251DE9EC00C17A35 /* NativeAdViewCustom.xib */,
 				F957BA0E2498852A0022C6AC /* Assets.xcassets */,
 				F957BA102498852A0022C6AC /* LaunchScreen.storyboard */,
 				F957BA132498852A0022C6AC /* Info.plist */,
@@ -122,8 +131,8 @@
 				F957B9FE249885260022C6AC /* Sources */,
 				F957B9FF249885260022C6AC /* Frameworks */,
 				F957BA00249885260022C6AC /* Resources */,
-				4C9A339478777CA94CC2BB35 /* [CP] Embed Pods Frameworks */,
 				F957BA28249888F20022C6AC /* Embed Frameworks */,
+				8B1C8EB42FED064880CD235A /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -141,7 +150,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1130;
-				LastUpgradeCheck = 1130;
+				LastUpgradeCheck = 1200;
 				ORGANIZATIONNAME = bil;
 				TargetAttributes = {
 					F957BA01249885260022C6AC = {
@@ -175,6 +184,8 @@
 				F957BA122498852A0022C6AC /* LaunchScreen.storyboard in Resources */,
 				F957BA0F2498852A0022C6AC /* Assets.xcassets in Resources */,
 				F957BA0D249885260022C6AC /* Main.storyboard in Resources */,
+				F9D909F6251DE9EC00C17A35 /* NativeAdViewCustom.xib in Resources */,
+				F9D88041251AF5C900F2AC73 /* ADNativeViewCustom.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -203,7 +214,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		4C9A339478777CA94CC2BB35 /* [CP] Embed Pods Frameworks */ = {
+		8B1C8EB42FED064880CD235A /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -227,6 +238,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F9A0BF21252C2D14004A3DEC /* AdManager.swift in Sources */,
 				F957BA0A249885260022C6AC /* ViewController.swift in Sources */,
 				F957BA06249885260022C6AC /* AppDelegate.swift in Sources */,
 				F957BA08249885260022C6AC /* SceneDelegate.swift in Sources */,
@@ -250,6 +262,14 @@
 				F957BA112498852A0022C6AC /* Base */,
 			);
 			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		F9D8803F251AF5C900F2AC73 /* ADNativeViewCustom.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F9D88040251AF5C900F2AC73 /* Base */,
+			);
+			name = ADNativeViewCustom.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -281,6 +301,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -289,8 +310,10 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_BITCODE = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				EXCLUDED_ARCHS = "";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -341,6 +364,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -349,6 +373,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_BITCODE = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -375,13 +400,106 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 4A3YX8MQBC;
+				DEVELOPMENT_TEAM = JZY66P79T2;
+				ENABLE_BITCODE = YES;
+				EXCLUDED_ARCHS = arm64;
 				INFOPLIST_FILE = BilMobileAdsTest/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.bil.BilMobileAdsTest;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-l\"c++\"",
+					"-l\"sqlite3\"",
+					"-l\"stdc++\"",
+					"-l\"xml2\"",
+					"-l\"z\"",
+					"-framework",
+					"\"AVFoundation\"",
+					"-framework",
+					"\"AudioToolbox\"",
+					"-framework",
+					"\"CFNetwork\"",
+					"-framework",
+					"\"CoreGraphics\"",
+					"-framework",
+					"\"CoreImage\"",
+					"-framework",
+					"\"CoreMedia\"",
+					"-framework",
+					"\"CoreTelephony\"",
+					"-framework",
+					"\"CoreVideo\"",
+					"-framework",
+					"\"FBLPromises\"",
+					"-framework",
+					"\"Foundation\"",
+					"-framework",
+					"\"GoogleAppMeasurement\"",
+					"-framework",
+					"\"GoogleMobileAds\"",
+					"-framework",
+					"\"GoogleUtilities\"",
+					"-framework",
+					"\"MediaPlayer\"",
+					"-framework",
+					"\"MessageUI\"",
+					"-framework",
+					"\"MobileCoreServices\"",
+					"-framework",
+					"\"QuartzCore\"",
+					"-framework",
+					"\"Security\"",
+					"-framework",
+					"\"StoreKit\"",
+					"-framework",
+					"\"SystemConfiguration\"",
+					"-framework",
+					"\"UIKit\"",
+					"-framework",
+					"\"nanopb\"",
+					"-weak_framework",
+					"\"Accelerate\"",
+					"-weak_framework",
+					"\"Accounts\"",
+					"-weak_framework",
+					"\"AdSupport\"",
+					"-weak_framework",
+					"\"AudioToolbox\"",
+					"-weak_framework",
+					"\"CFNetwork\"",
+					"-weak_framework",
+					"\"CoreGraphics\"",
+					"-weak_framework",
+					"\"CoreMotion\"",
+					"-weak_framework",
+					"\"CoreTelephony\"",
+					"-weak_framework",
+					"\"Foundation\"",
+					"-weak_framework",
+					"\"JavaScriptCore\"",
+					"-weak_framework",
+					"\"LocalAuthentication\"",
+					"-weak_framework",
+					"\"QuartzCore\"",
+					"-weak_framework",
+					"\"SafariServices\"",
+					"-weak_framework",
+					"\"Security\"",
+					"-weak_framework",
+					"\"Social\"",
+					"-weak_framework",
+					"\"SystemConfiguration\"",
+					"-weak_framework",
+					"\"UIKit\"",
+					"-weak_framework",
+					"\"VideoToolbox\"",
+					"-weak_framework",
+					"\"WebKit\"",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.hnl.nhaphang360;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -394,13 +512,106 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 4A3YX8MQBC;
+				DEVELOPMENT_TEAM = JZY66P79T2;
+				ENABLE_BITCODE = YES;
+				EXCLUDED_ARCHS = arm64;
 				INFOPLIST_FILE = BilMobileAdsTest/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.bil.BilMobileAdsTest;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-l\"c++\"",
+					"-l\"sqlite3\"",
+					"-l\"stdc++\"",
+					"-l\"xml2\"",
+					"-l\"z\"",
+					"-framework",
+					"\"AVFoundation\"",
+					"-framework",
+					"\"AudioToolbox\"",
+					"-framework",
+					"\"CFNetwork\"",
+					"-framework",
+					"\"CoreGraphics\"",
+					"-framework",
+					"\"CoreImage\"",
+					"-framework",
+					"\"CoreMedia\"",
+					"-framework",
+					"\"CoreTelephony\"",
+					"-framework",
+					"\"CoreVideo\"",
+					"-framework",
+					"\"FBLPromises\"",
+					"-framework",
+					"\"Foundation\"",
+					"-framework",
+					"\"GoogleAppMeasurement\"",
+					"-framework",
+					"\"GoogleMobileAds\"",
+					"-framework",
+					"\"GoogleUtilities\"",
+					"-framework",
+					"\"MediaPlayer\"",
+					"-framework",
+					"\"MessageUI\"",
+					"-framework",
+					"\"MobileCoreServices\"",
+					"-framework",
+					"\"QuartzCore\"",
+					"-framework",
+					"\"Security\"",
+					"-framework",
+					"\"StoreKit\"",
+					"-framework",
+					"\"SystemConfiguration\"",
+					"-framework",
+					"\"UIKit\"",
+					"-framework",
+					"\"nanopb\"",
+					"-weak_framework",
+					"\"Accelerate\"",
+					"-weak_framework",
+					"\"Accounts\"",
+					"-weak_framework",
+					"\"AdSupport\"",
+					"-weak_framework",
+					"\"AudioToolbox\"",
+					"-weak_framework",
+					"\"CFNetwork\"",
+					"-weak_framework",
+					"\"CoreGraphics\"",
+					"-weak_framework",
+					"\"CoreMotion\"",
+					"-weak_framework",
+					"\"CoreTelephony\"",
+					"-weak_framework",
+					"\"Foundation\"",
+					"-weak_framework",
+					"\"JavaScriptCore\"",
+					"-weak_framework",
+					"\"LocalAuthentication\"",
+					"-weak_framework",
+					"\"QuartzCore\"",
+					"-weak_framework",
+					"\"SafariServices\"",
+					"-weak_framework",
+					"\"Security\"",
+					"-weak_framework",
+					"\"Social\"",
+					"-weak_framework",
+					"\"SystemConfiguration\"",
+					"-weak_framework",
+					"\"UIKit\"",
+					"-weak_framework",
+					"\"VideoToolbox\"",
+					"-weak_framework",
+					"\"WebKit\"",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.hnl.nhaphang360;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
