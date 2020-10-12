@@ -1,7 +1,7 @@
 Pod::Spec.new do |spec|
 
   spec.name         = "BilMobileAds"
-  spec.version      = "1.0.4"
+  spec.version      = "1.0.5"
   spec.summary      = "Summary of BilMobileAds."
   spec.description  = "Description of BilMobileAds."
   spec.homepage     = "https://valueimpression.com"
@@ -15,7 +15,7 @@ Pod::Spec.new do |spec|
   spec.source_files  = "BilMobileAds/**/*"
   spec.exclude_files  = "BilMobileAds/*.plist"
 
-  spec.static_framework = true
+  spec.static_framework = false
   spec.dependency "Google-Mobile-Ads-SDK", '7.60'
 
 end
