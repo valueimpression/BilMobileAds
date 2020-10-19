@@ -1,4 +1,4 @@
-# BilMobileAdsIOS
+# BilMobileAds
 
 #### Step 1: Add to Podfile
 ```gradle
