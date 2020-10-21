@@ -5,7 +5,7 @@
   pod 'BilMobileAds', :git => 'https://github.com/valueimpression/BilMobileAds', :tag => '1.0.5'
 ```
 ##### Note:
-If you dont have Podfile. Run command below in terminal
+If you dont have Podfile. Run command below in terminal at your project folder
 ```gradle
   pod init
 ```
