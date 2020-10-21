@@ -4,6 +4,11 @@
 ```gradle
   pod 'BilMobileAds', :git => 'https://github.com/valueimpression/BilMobileAds', :tag => '1.0.5'
 ```
+##### Note:
+If you dont have Podfile. Run command below in terminal
+```gradle
+  pod init
+```
 #### Step 2: Run in terminal
 ```gradle
   pod update
