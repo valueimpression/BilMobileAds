@@ -2,7 +2,7 @@
 
 #### Step 1: Add to Podfile
 ```gradle
-  pod 'BilMobileAds', :git => 'https://github.com/valueimpression/BilMobileAds', :tag => '1.0.5'
+  pod 'BilMobileAds', :git => 'https://github.com/valueimpression/BilMobileAds', :tag => '1.0.7'
 ```
 ##### Note:
 If you dont have Podfile. Run command below in terminal at your project folder
