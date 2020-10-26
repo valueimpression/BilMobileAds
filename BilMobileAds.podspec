@@ -10,13 +10,11 @@ Pod::Spec.new do |spec|
   spec.author       = { "valueimpression" => "linhhn@bil.vn" }
   spec.platform     = :ios, "9.0"
   
-  spec.swift_version = '4.2'
+  spec.swift_version = '5.0'
   spec.source        = { :git => "https://github.com/valueimpression/BilMobileAds.git", :tag => "#{spec.version}" }
   spec.source_files  = "BilMobileAds/**/*.{h,m,swift}"
 
-  spec.pod_target_xcconfig = {
-    'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64'
-  }
+  spec.pod_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64'}
   spec.user_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
 
   spec.static_framework = true
