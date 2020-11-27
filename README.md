@@ -12,6 +12,8 @@ If you dont have Podfile. Run command below in terminal at your project folder
 #### Step 2: Run in terminal
 ```gradle
   pod update
+  
+  or pod install --repo-update
 ```
 
 #### Step 3: Add to Info.plist
