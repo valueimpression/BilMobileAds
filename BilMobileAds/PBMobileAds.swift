@@ -8,9 +8,9 @@
 
 import GoogleMobileAds
 
-public class PBMobileAds {
+public class PBMobileAds: NSObject {
     
-    public static let shared = PBMobileAds()
+    @objc public static let shared = PBMobileAds()
     
     // Log Status
     private var isLog: Bool = true
@@ -19,27 +19,29 @@ public class PBMobileAds {
     private var listAdUnitObj: [AdUnitObj] = []
     
     // MARK: api
-    var appName: String = "";
-    var gdprConfirm: Bool = false;
+    var appName: String = ""
+    var gdprConfirm: Bool = false
     private var pbServerEndPoint: String = ""
     
-    private init() {
-        log("PBMobileAds Init")
+    private override init() {
+        // log("PBMobileAds Init")
     }
     
-    public func initialize(testMode: Bool = false) {
+    @objc public func initialize(testMode: Bool = false) {
         if !isLog { Prebid.shared.logLevel = .error }
+        
+        self.log("PBMobileAds Init")
         
         self.appName = Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String ?? ""
         
         //Declare in init to the user agent could be passed in first call
-        Prebid.shared.shareGeoLocation = true;
+        Prebid.shared.shareGeoLocation = true
         
         // Setup Test Mode
         if testMode {
-            GADMobileAds.sharedInstance().requestConfiguration.testDeviceIdentifiers =  [ (kGADSimulatorID as! String), "cc7ca766f86b43ab6cdc92bed424069b"];
+            GADMobileAds.sharedInstance().requestConfiguration.testDeviceIdentifiers =  [ (kGADSimulatorID as! String), "cc7ca766f86b43ab6cdc92bed424069b"]
         }
-        GADMobileAds.sharedInstance().start();
+        GADMobileAds.sharedInstance().start()
     }
     
     // MARK: - Get Data Config
@@ -52,7 +54,16 @@ public class PBMobileAds {
         return nil
     }
     
-    // MARK: Setup PBS
+    func getAdInfor(isVideo: Bool, adUnitObj: AdUnitObj) -> AdInfor? {
+        for infor in adUnitObj.adInfor {
+            if infor.isVideo == isVideo {
+                return infor
+            }
+        }
+        return nil
+    }
+    
+    // MARK: - Setup PBServer
     func setupPBS(host: HostAD) {
         PBMobileAds.shared.log("Host: \(host.pbHost) | AccountId: \(host.pbAccountId) | storedAuctionResponse: \(host.storedAuctionResponse)")
         
@@ -70,10 +81,21 @@ public class PBMobileAds {
             }
         }
         
-        Prebid.shared.prebidServerAccountId = host.pbAccountId;
-        Prebid.shared.storedAuctionResponse = host.storedAuctionResponse;
+        Prebid.shared.prebidServerAccountId = host.pbAccountId
+        Prebid.shared.storedAuctionResponse = host.storedAuctionResponse
     }
-        
+    
+    // MARK: - Setup GDPR
+    func setGDPR() {
+        if PBMobileAds.shared.gdprConfirm {
+            let consentStr = CMPConsentToolAPI().consentString
+            if consentStr != nil && consentStr != "" {
+                Targeting.shared.subjectToGDPR = true
+                Targeting.shared.gdprConsentString = consentStr
+            }
+        }
+    }
+    
     // MARK: - Call API AD
     func getADConfig(adUnit: String, complete: @escaping (Result<AdUnitObj,Error>) -> Void) {
         self.log("Start Request Config adUnit: \(adUnit)")
@@ -81,19 +103,23 @@ public class PBMobileAds {
         Helper.shared.getAPI(api: Constants.GET_DATA_CONFIG + adUnit){ (res: Result<DataConfig, Error>) in
             switch res{
             case .success(let dataJSON):
-                self.log("Fetch Data Succ")
-                
-                DispatchQueue.main.async{
+                DispatchQueue.main.async {
                     self.gdprConfirm = dataJSON.gdprConfirm ?? false
                     self.pbServerEndPoint = dataJSON.pbServerEndPoint
                     
-                    self.listAdUnitObj.append(dataJSON.adunit)
-                    complete(.success(dataJSON.adunit))
+                    // Validate defaultType Bid type
+                    let adUnit: AdUnitObj = dataJSON.adunit
+                    if adUnit.adInfor.count < 2  {
+                        let bidType = adUnit.adInfor[0].isVideo ? "vast" : "html"
+                        adUnit.defaultType = adUnit.defaultType == bidType ? adUnit.defaultType : bidType
+                    }
+                    
+                    self.listAdUnitObj.append(adUnit)
+                    complete(.success(adUnit))
                 }
-
                 break
             case .failure(let err):
-                self.timerRecall(adUnit: adUnit, complete: complete)
+                //  self.timerRecall(adUnit: adUnit, complete: complete)
                 complete(.failure(err))
                 break
             }
@@ -103,13 +129,8 @@ public class PBMobileAds {
     func timerRecall(adUnit: String, complete: @escaping (Result<AdUnitObj,Error>) -> Void){
         self.log("Recall Request Config After: \(Constants.RECALL_CONFIGID_SERVER)")
         DispatchQueue.main.asyncAfter(deadline: .now() + Constants.RECALL_CONFIGID_SERVER, execute: {
-            self.getADConfig(adUnit: adUnit, complete: complete);
+            self.getADConfig(adUnit: adUnit, complete: complete)
         })
-    }
-    
-    public func log( _ object: Any, filename: String = #file, line: Int = #line, column: Int = #column, funcName: String = #function) {
-        if !isLog { return }
-        print("[PBMobileAds] \(Date().toString()) | [\(self.sourceFileName(filePath: filename))]:\(line) \(column) | \(funcName) -> \(object)")
     }
     
     func sourceFileName(filePath: String) -> String {
@@ -117,25 +138,29 @@ public class PBMobileAds {
         return components.isEmpty ? "" : components.last!
     }
     
-    public func enableCOPPA() {
+    @objc public func log( _ object: Any, filename: String = #file, line: Int = #line, column: Int = #column, funcName: String = #function) {
+        if !isLog { return }
+        print("[PBMobileAds] \(Date().toString()) | [\(self.sourceFileName(filePath: filename))]:\(line) \(column) | \(funcName) -> \(object)")
+    }
+    
+    @objc public func enableCOPPA() {
         Targeting.shared.subjectToCOPPA = true
     }
     
-    public func disableCOPPA() {
+    @objc public func disableCOPPA() {
         Targeting.shared.subjectToCOPPA = false
     }
-
-    public func setGender(gender: Gender) {
-        Targeting.shared.gender = gender;
+    
+    @objc public func setGender(gender: Gender) {
+        print("HNL: \(gender)")
+        Targeting.shared.gender = gender
     }
     
-    public func setYearOfBirth(yob: Int) throws {
-        try Targeting.shared.setYearOfBirth(yob: yob);
+    @objc public func setYearOfBirth(yob: Int) {
+        do {
+            try Targeting.shared.setYearOfBirth(yob: yob)
+        } catch {
+            log("Unexpected error: \(error).")
+        }
     }
 }
-
-//internal extension Date {
-//    func toString() -> String {
-//        return Helper.dateFormatter.string(from: self as Date)
-//    }
-//}

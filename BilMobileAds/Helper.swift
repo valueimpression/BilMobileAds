@@ -44,9 +44,10 @@ class AdUnitObj: Decodable {
     var placement: String
     var type: String
     var defaultType: String // Kieu hien thi mac dinh
-    var isActive: Bool // -> cho hien thi
+    var isActive: Bool // -> Cho hien thi
     var width: String?
     var height: String?
+    var refreshTime: Double?
     
     var adInfor: [AdInfor]
 }

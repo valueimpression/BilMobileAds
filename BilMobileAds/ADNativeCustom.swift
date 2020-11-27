@@ -25,9 +25,7 @@ public class ADNativeCustom : NSObject, GADUnifiedNativeAdLoaderDelegate, GADAdL
     // MARK: - Properties
     public let MAX_ADS: Int = 5
     private var curNumOfAds: Int = 0
-    private var adFormatDefault: ADFormat!
-    private var isRecallingPreload: Bool = false
-    private var isLoading: Bool = false
+    private var isFetchingAD: Bool = false
     
     // MARK: - Init + DeInit
     public init(_ adUIViewCtr: UIViewController, placement: String) {
@@ -40,31 +38,31 @@ public class ADNativeCustom : NSObject, GADUnifiedNativeAdLoaderDelegate, GADAdL
         self.placement = placement
         
         // Get AdUnit
+        self.adUnitObj = PBMobileAds.shared.getAdUnitObj(placement: self.placement)
         if (self.adUnitObj == nil) {
-            self.adUnitObj = PBMobileAds.shared.getAdUnitObj(placement: self.placement);
-            if (self.adUnitObj == nil) {
-                PBMobileAds.shared.getADConfig(adUnit: self.placement) { (res: Result<AdUnitObj, Error>) in
-                    switch res{
-                    case .success(let data):
-                        PBMobileAds.shared.log("Get Config ADNativeCustom placement: '\(String(describing: self.placement))' Success")
-                        DispatchQueue.main.async{
-                            self.adUnitObj = data
-                            
-                            if PBMobileAds.shared.gdprConfirm && CMPConsentTool().needShowCMP() {
-                                let cmp = ShowCMP()
-                                cmp.closeDelegate = self
-                                cmp.open(self.adUIViewCtr, appName: PBMobileAds.shared.appName)
-                            } else {
-                                self.load()
-                            }
+            PBMobileAds.shared.getADConfig(adUnit: self.placement) { (res: Result<AdUnitObj, Error>) in
+                switch res{
+                case .success(let data):
+                    PBMobileAds.shared.log("Get Config ADNativeCustom placement: '\(String(describing: self.placement))' Success")
+                    DispatchQueue.main.async{
+                        self.adUnitObj = data
+                        
+                        if PBMobileAds.shared.gdprConfirm && CMPConsentTool().needShowCMP() {
+                            let cmp = ShowCMP()
+                            cmp.closeDelegate = self
+                            cmp.open(self.adUIViewCtr, appName: PBMobileAds.shared.appName)
+                        } else {
+                            self.load()
                         }
-                        break
-                    case .failure(let err):
-                        PBMobileAds.shared.log("Get Config ADNativeCustom placement: '\(String(describing: self.placement))' Fail with Error: \(err.localizedDescription)")
-                        break
                     }
+                    break
+                case .failure(let err):
+                    PBMobileAds.shared.log("Get Config ADNativeCustom placement: '\(String(describing: self.placement))' Fail with Error: \(err.localizedDescription)")
+                    break
                 }
             }
+        } else {
+            self.load()
         }
     }
     
@@ -81,29 +79,11 @@ public class ADNativeCustom : NSObject, GADUnifiedNativeAdLoaderDelegate, GADAdL
     }
     
     // MARK: - Preload + Load
-    func deplayCallPreload() {
-        self.isRecallingPreload = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + Constants.BANNER_RECALL_DEFAULT) {
-            self.isRecallingPreload = false
-            self.load()
-        }
-    }
-    
-    func getAdInfor(isVideo: Bool) -> AdInfor? {
-        for infor in self.adUnitObj.adInfor {
-            if infor.isVideo == isVideo {
-                return infor
-            }
-        }
-        return nil
-    }
-    
     func resetAD() {
         if self.adUnit == nil || self.amNativeDFP == nil { return }
         
-        self.isLoading = false
-        self.isRecallingPreload = false
-
+        self.isFetchingAD = false
+        
         self.adUnit.stopAutoRefresh()
         self.adUnit = nil
         
@@ -112,59 +92,46 @@ public class ADNativeCustom : NSObject, GADUnifiedNativeAdLoaderDelegate, GADAdL
     
     func handlerResult(_ resultCode: ResultCode) {
         if resultCode == ResultCode.prebidDemandFetchSuccess {
-            self.amNativeDFP.load(self.amRequest)
+            self.amNativeDFP?.load(self.amRequest)
         } else {
-            self.isLoading = false
+            self.isFetchingAD = false
             
             if resultCode == ResultCode.prebidDemandNoBids {
-                self.deplayCallPreload()
+                PBMobileAds.shared.log("ADNativeCustom Placement '\(String(describing: self.placement))' No Bids.")
             } else if resultCode == ResultCode.prebidDemandTimedOut {
-                self.deplayCallPreload()
+                PBMobileAds.shared.log("ADNativeCustom Placement '\(String(describing: self.placement))' Timeout. Please check your internet connect.")
             }
         }
     }
     
     public func load() {
-        PBMobileAds.shared.log("ADNativeCustom Placement '\(String(describing: self.placement))' - isLoading: \(self.isLoading) | isRecallingPreload: \(self.isRecallingPreload)")
-        if self.adUnitObj == nil || self.isLoading || self.isRecallingPreload { return }
+        PBMobileAds.shared.log("ADNativeCustom Placement '\(String(describing: self.placement))' - isFetchingAD: \(self.isFetchingAD)")
+        if self.adUnitObj == nil || self.isFetchingAD { return }
+        self.resetAD()
         
+        // Check store max native ads
         if self.curNumOfAds == MAX_ADS {
             PBMobileAds.shared.log("ADNativeCustom Placement '\(String(describing: self.placement))' current store \(self.curNumOfAds) ads. (Store max \(MAX_ADS) ads)")
             return
         }
-        
-        self.resetAD()
+
         // Check Active
         if !adUnitObj.isActive || self.adUnitObj.adInfor.count <= 0 {
-            PBMobileAds.shared.log("ADNativeCustom Placement '\(String(describing: self.placement))' is not active or not exist");
+            PBMobileAds.shared.log("ADNativeCustom Placement '\(String(describing: self.placement))' is not active or not exist.")
             return
         }
         
-        // Check and set default
-        self.adFormatDefault = ADFormat(rawValue: adUnitObj.defaultType)
-        if adUnitObj.adInfor.count < 2 {
-            // set adformat theo loại duy nhất có
-            self.adFormatDefault = adUnitObj.adInfor[0].isVideo ? .vast : .html
-        }
-        
         // Set GDPR
-        if PBMobileAds.shared.gdprConfirm {
-            let consentStr = CMPConsentToolAPI().consentString
-            if consentStr != nil && consentStr != "" {
-                Targeting.shared.subjectToGDPR = true
-                Targeting.shared.gdprConsentString = consentStr
-            }
-        }
+        PBMobileAds.shared.setGDPR()
         
         // Get AdInfor
-        let isVideo = self.adFormatDefault == ADFormat.vast;
-        guard let adInfor = self.getAdInfor(isVideo: isVideo) else {
-            PBMobileAds.shared.log("AdInfor of ADNativeCustom Placement '" + self.placement + "' is not exist");
+        let isVideo = ADFormat(rawValue: self.adUnitObj.defaultType) == ADFormat.vast
+        guard let adInfor = PBMobileAds.shared.getAdInfor(isVideo: isVideo, adUnitObj: self.adUnitObj) else {
+            PBMobileAds.shared.log("AdInfor of ADNativeCustom Placement '" + self.placement + "' is not exist.")
             return
         }
         
         PBMobileAds.shared.log("Load ADNativeCustom Placement: \(String(describing: self.placement))")
-        // Setup PBS
         PBMobileAds.shared.setupPBS(host: adInfor.host)
         PBMobileAds.shared.log("[ADNativeCustom] - configID: '\(adInfor.configId)' | adUnitID: '\(adInfor.adUnitID)'")
         
@@ -191,10 +158,10 @@ public class ADNativeCustom : NSObject, GADUnifiedNativeAdLoaderDelegate, GADAdL
         self.amNativeDFP = GADAdLoader(adUnitID: adInfor.adUnitID, rootViewController: self.adUIViewCtr, adTypes: [ .unifiedNative ], options: [videoOptions])
         self.amNativeDFP.delegate = self
         
-        self.isLoading = true
+        self.isFetchingAD = true
         self.adUnit.fetchDemand(adObject: self.amRequest) { [weak self] (resultCode: ResultCode) in
             PBMobileAds.shared.log("Prebid demand fetch ADNativeCustom placement '\(String(describing: self?.placement))' for DFP: \(resultCode.name())")
-            self?.handlerResult(resultCode);
+            self?.handlerResult(resultCode)
         }
     }
     
@@ -213,40 +180,37 @@ public class ADNativeCustom : NSObject, GADUnifiedNativeAdLoaderDelegate, GADAdL
     }
     
     // MARK: - Delegate
-    // GADUnifiedNativeAdLoaderDelegate - AdLoaded View
     public func adLoader(_ adLoader: GADAdLoader, didReceive unifiedNativeAd: GADUnifiedNativeAd) {
-        self.isLoading = false
-        
         self.curNumOfAds += 1
+        self.isFetchingAD = false
         
         /// Set ourselves as the native ad delegate to be notified of native ad events.
         unifiedNativeAd.delegate = self
         
         /// Create ADNativeViewBuilder
-        let builder = ADNativeViewBuilder(placement: self.placement, unifiedNativeAd: unifiedNativeAd)
-
-        PBMobileAds.shared.log("nativeViewLoaded: ADNativeCustom Placement '\(String(describing: self.placement))'");
+        let builder: ADNativeViewBuilder = ADNativeViewBuilder(placement: self.placement, unifiedNativeAd: unifiedNativeAd)
+        
+        PBMobileAds.shared.log("ADNativeCustom Placement '\(String(describing: self.placement))'")
         self.adNativeDelegate?.nativeViewLoaded?(viewBuilder: builder)
     }
     
-    // GADAdLoaderDelegate - Error
     public func adLoader(_ adLoader: GADAdLoader, didFailToReceiveAdWithError error: GADRequestError) {
-        self.isLoading = false
+        self.isFetchingAD = false
         
-        PBMobileAds.shared.log("nativeFailedToLoad: ADNativeCustom Placement '\(String(describing: self.placement))' with error: \(error.localizedDescription)");
+        PBMobileAds.shared.log("ADNativeCustom Placement '\(String(describing: self.placement))' with error: \(error.localizedDescription)")
         self.adNativeDelegate?.nativeFailedToLoad?(error: "nativeFailedToLoad: ADNativeCustom Placement '\(String(describing: self.placement))' with error: \(error.localizedDescription)")
     }
     
-    // GADUnifiedNativeAdDelegate
     public func nativeAdDidRecordImpression(_ nativeAd: GADUnifiedNativeAd) {
         self.curNumOfAds -= 1
         
-        PBMobileAds.shared.log("nativeAdDidRecordImpression: ADNativeCustom Placement '\(String(describing: self.placement))'");
-        self.adNativeDelegate?.nativeAdDidRecordImpression?()
+        PBMobileAds.shared.log("ADNativeCustom Placement '\(String(describing: self.placement))'")
+        self.adNativeDelegate?.nativeAdDidRecordImpression?(data: "nativeAdDidRecordImpression: ADNativeCustom Placement '\(String(describing: self.placement))'")
     }
+    
     public func nativeAdDidRecordClick(_ nativeAd: GADUnifiedNativeAd) {
-        PBMobileAds.shared.log("nativeAdDidRecordClick: ADNativeCustom Placement '\(String(describing: self.placement))'");
-        self.adNativeDelegate?.nativeAdDidRecordClick?()
+        PBMobileAds.shared.log("ADNativeCustom Placement '\(String(describing: self.placement))'")
+        self.adNativeDelegate?.nativeAdDidRecordClick?(data: "nativeAdDidRecordClick: ADNativeCustom Placement '\(String(describing: self.placement))'")
     }
 }
 
@@ -266,12 +230,12 @@ public class ADNativeCustom : NSObject, GADUnifiedNativeAdLoaderDelegate, GADAdL
 extension Array where Element: Hashable {
     public func removingDuplicates() -> [Element] {
         var addedDict = [Element: Bool]()
-
+        
         return filter {
             addedDict.updateValue(true, forKey: $0) == nil
         }
     }
-
+    
     mutating func removeDuplicates() {
         self = self.removingDuplicates()
     }

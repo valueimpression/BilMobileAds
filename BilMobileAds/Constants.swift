@@ -35,7 +35,9 @@ struct Constants {
     static let RECALL_CONFIGID_SERVER: Double = 5 // Sec
     static let BANNER_AUTO_REFRESH_DEFAULT: Double = 30000 // MilliSec
     static let BANNER_RECALL_DEFAULT: Double = 10 // Sec
-    static let INTERSTITIAL_RECALL_DEFAULT: Double = 10 // Sec
+    static let INTERSTITIAL_RECALL_DEFAULT: Double = 1 // Sec
+    
+    static let ERROR_NO_FILL: Int = 1 // match kGADErrorNoFill
     
     // MARK: - URL Prefix
     static let URL_PREFIX = "https://app-services.vliplatform.com" // "http://localhost:8000"

@@ -1,7 +1,7 @@
 Pod::Spec.new do |spec|
 
   spec.name         = "BilMobileAds"
-  spec.version      = "1.0.7"
+  spec.version      = "1.1.0"
   spec.summary      = "ValueImpression is the trusted platform for premium publishers"
   spec.description  = "ValueImpression is the trusted platform for premium publishers. Our patented proprietary advertising optimization technology has helped hundreds of publishers increase their revenue from 40 to 300%."
   spec.homepage     = "https://valueimpression.com"
