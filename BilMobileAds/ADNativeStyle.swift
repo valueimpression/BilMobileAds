@@ -8,10 +8,10 @@
 
 import GoogleMobileAds
 
-public class ADNativeStyle : NSObject, GADBannerViewDelegate, GADAdSizeDelegate, CloseListenerDelegate {
+public class ADNativeStyle : NSObject, GADBannerViewDelegate, GADAdSizeDelegate {
     
     // MARK: - View OBJ
-    weak var appNativeView: UIView!
+    weak var adView: UIView!
     weak var adUIViewCtr: UIViewController!
     weak var adDelegate: ADNativeDelegate!
     
@@ -36,43 +36,52 @@ public class ADNativeStyle : NSObject, GADBannerViewDelegate, GADAdSizeDelegate,
     // MARK: - Init + DeInit
     public init(_ adUIViewCtr: UIViewController, view adView: UIView, placement: String) {
         super.init()
-        PBMobileAds.shared.log("ADNativeStyle Init: \(placement)")
+        PBMobileAds.shared.log(logType: .info, "ADNativeStyle Placement: \(placement) Init")
         
         self.defaultAnchor = .Center
         
         self.adUIViewCtr = adUIViewCtr
-        self.appNativeView = adView
+        self.adView = adView
         self.adDelegate = adUIViewCtr as? ADNativeDelegate
         
         self.placement = placement
         
-        // Setup Application Delegate
-        NotificationCenter.default.addObserver(self, selector: #selector(appDidBecomeActive),
-                                                    name: UIApplication.didBecomeActiveNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(appDidEnterBackground),
-                                                    name: UIApplication.didEnterBackgroundNotification, object: nil)
-        
-        // Get AdUnit
+        self.getConfigAD()
+    }
+    
+    deinit {
+        PBMobileAds.shared.log(logType: .info, "ADNativeStyle Placement '\(String(describing: self.placement))' Deinit")
+        self.destroy()
+    }
+    
+    // MARK: - Handler AD
+    func getConfigAD() {
         self.adUnitObj = PBMobileAds.shared.getAdUnitObj(placement: self.placement)
-        if (self.adUnitObj == nil) {
-            PBMobileAds.shared.getADConfig(adUnit: self.placement) { (res: Result<AdUnitObj, Error>) in
+        if self.adUnitObj == nil {
+            self.isFetchingAD = true
+            
+            // Setup Application Delegate
+            NotificationCenter.default.addObserver(self, selector: #selector(appDidBecomeActive),
+                                                   name: UIApplication.didBecomeActiveNotification, object: nil)
+            NotificationCenter.default.addObserver(self, selector: #selector(appDidEnterBackground),
+                                                   name: UIApplication.didEnterBackgroundNotification, object: nil)
+            
+            // Get AdUnit Info
+            PBMobileAds.shared.getADConfig(adUnit: self.placement) { [weak self] (res: Result<AdUnitObj, Error>) in
                 switch res{
                 case .success(let data):
-                    PBMobileAds.shared.log("Get Config ADNativeStyle placement: '\(String(describing: self.placement))' Success")
-                    DispatchQueue.main.async{
-                        self.adUnitObj = data
-                        
-                        if PBMobileAds.shared.gdprConfirm && CMPConsentTool().needShowCMP() {
-                            let cmp = ShowCMP()
-                            cmp.closeDelegate = self
-                            cmp.open(self.adUIViewCtr, appName: PBMobileAds.shared.appName)
-                        } else {
-                            self.load()
-                        }
+                    PBMobileAds.shared.log(logType: .info, "ADNativeStyle placement: \(String(describing: self?.placement)) Init Success")
+                    self?.isFetchingAD = false
+                    self?.adUnitObj = data
+                    
+                    PBMobileAds.shared.showCMP(adUIViewCtr: (self?.adUIViewCtr)!) { [weak self] (resultCode: WorkComplete) in
+                        self?.load()
                     }
                     break
                 case .failure(let err):
-                    PBMobileAds.shared.log("Get Config ADNativeStyle placement: '\(String(describing: self.placement))' Fail with Error: \(err.localizedDescription)")
+                    PBMobileAds.shared.log(logType: .info, "ADNativeStyle placement: \(String(describing: self?.placement)) Init Failed with Error: \(err.localizedDescription). Please check your internet connect")
+                    self?.isFetchingAD = false
+                    self?.destroy()
                     break
                 }
             }
@@ -81,19 +90,18 @@ public class ADNativeStyle : NSObject, GADBannerViewDelegate, GADAdSizeDelegate,
         }
     }
     
-    deinit {
-        PBMobileAds.shared.log("ADNativeStyle Placement '\(String(describing: self.placement))' Deinit")
-        self.destroy()
-    }
-    
-    public func onWebViewClosed(_ consentStr: String) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            PBMobileAds.shared.log("ADNativeStyle Placement '\(String(describing: self.placement))' with ConsentStr: \(String(describing: consentStr))")
+    func processNoBids() -> Bool {
+        if self.adUnitObj.adInfor.count >= 2 && self.adFormatDefault == ADFormat(rawValue: self.adUnitObj.defaultType)  {
+            self.setDefaultBidType = false
             self.load()
+            return true
+        } else {
+            // Both or .video, .html is no bids -> wait and preload.
+            PBMobileAds.shared.log(logType: .info, "ADInterstitial Placement '\(String(describing: self.placement))' No Bids.")
+            return false
         }
     }
     
-    // MARK: - Preload + Load
     func resetAD() {
         if self.adUnit == nil || self.amNative == nil { return }
         
@@ -117,20 +125,32 @@ public class ADNativeStyle : NSObject, GADBannerViewDelegate, GADAdSizeDelegate,
             if resultCode == ResultCode.prebidDemandNoBids {
                 let _ = self.processNoBids()
             } else if resultCode == ResultCode.prebidDemandTimedOut {
-                PBMobileAds.shared.log("ADNativeStyle Placement '\(String(describing: self.placement))' Timeout. Please check your internet connect.")
+                PBMobileAds.shared.log(logType: .info, "ADNativeStyle Placement '\(String(describing: self.placement))' Timeout. Please check your internet connect.")
             }
         }
     }
     
-    // MARK: - Public FUNC
+    // MARK: - Load AD
     @objc public func load() {
-        PBMobileAds.shared.log("ADNativeStyle Placement '\(String(describing: self.placement))' - isLoaded: \(self.isLoaded()) | isFetchingAD: \(self.isFetchingAD)")
-        if self.adUnitObj == nil || self.isLoaded() == true || self.isFetchingAD { return }
+        PBMobileAds.shared.log(logType: .debug, "ADNativeStyle Placement '\(String(describing: self.placement))' - isLoaded: \(self.isLoaded()) | isFetchingAD: \(self.isFetchingAD)")
+        if self.adView == nil {
+            PBMobileAds.shared.log(logType: .error, "ADNativeStyle placement: \(String(describing: self.placement)), AdView Placeholder is nil.");
+            return
+        }
+        
+        if self.adUnitObj == nil || self.isLoaded() || self.isFetchingAD {
+            if self.adUnitObj == nil && !self.isFetchingAD {
+                PBMobileAds.shared.log(logType: .info, "ADNativeStyle placement: \(String(describing: self.placement)) is not ready to load.");
+                self.getConfigAD();
+                return
+            }
+            return
+        }
         self.resetAD()
         
         // Check Active
         if !adUnitObj.isActive || self.adUnitObj.adInfor.count <= 0 {
-            PBMobileAds.shared.log("ADNativeStyle Placement '\(String(describing: self.placement))' is not active or not exist.")
+            PBMobileAds.shared.log(logType: .info, "ADNativeStyle Placement '\(String(describing: self.placement))' is not active or not exist.")
             return
         }
         
@@ -141,19 +161,16 @@ public class ADNativeStyle : NSObject, GADBannerViewDelegate, GADAdSizeDelegate,
             self.setDefaultBidType = true
         }
         
-        // Set GDPR
-        PBMobileAds.shared.setGDPR()
-        
         // Get AdInfor
         let isVideo = self.adFormatDefault == ADFormat.vast
         guard let adInfor = PBMobileAds.shared.getAdInfor(isVideo: isVideo, adUnitObj: self.adUnitObj) else {
-            PBMobileAds.shared.log("AdInfor of ADNativeStyle Placement '" + self.placement + "' is not exist.")
+            PBMobileAds.shared.log(logType: .info, "AdInfor of ADNativeStyle Placement '" + self.placement + "' is not exist.")
             return
         }
         
-        PBMobileAds.shared.log("Load ADNativeStyle Placement: \(String(describing: self.placement))")
+        PBMobileAds.shared.log(logType: .info, "Load ADNativeStyle Placement: \(String(describing: self.placement))")
         PBMobileAds.shared.setupPBS(host: adInfor.host)
-        PBMobileAds.shared.log("[ADNativeStyle] - configID: '\(adInfor.configId)' | adUnitID: '\(adInfor.adUnitID)'")
+        PBMobileAds.shared.log(logType: .debug, "[ADNativeStyle] - configID: '\(adInfor.configId)' | adUnitID: '\(adInfor.adUnitID)'")
         
         // Setup Native Asset
         let image = NativeAssetImage(minimumWidth: 200, minimumHeight: 200, required: true)
@@ -174,17 +191,17 @@ public class ADNativeStyle : NSObject, GADBannerViewDelegate, GADAdSizeDelegate,
         self.adUnit.eventtrackers = [eventTrackers]
         
         // Set auto refresh time | refreshTime is -> sec
-        self.setAutoRefreshMillis()
+        self.startFetchData()
         
         self.amNative = DFPBannerView(adSize: kGADAdSizeFluid)
         self.amNative.adUnitID = adInfor.adUnitID
         self.amNative.delegate = self
         self.amNative.adSizeDelegate = self
         self.amNative.rootViewController = self.adUIViewCtr
-        self.appNativeView.addSubview(self.amNative)
+        self.adView.addSubview(self.amNative)
         
         var frameRect = self.amNative.frame
-        frameRect.size.width = self.appNativeView.bounds.width
+        frameRect.size.width = self.adView.bounds.width
         self.amNative.frame = frameRect
         
         // Set a multisize fluid request.
@@ -192,18 +209,21 @@ public class ADNativeStyle : NSObject, GADBannerViewDelegate, GADAdSizeDelegate,
         
         self.isFetchingAD = true
         self.adUnit.fetchDemand(adObject: self.amRequest) { [weak self] (resultCode: ResultCode) in
-            PBMobileAds.shared.log("Prebid demand fetch ADNativeStyle placement '\(String(describing: self?.placement))' for DFP: \(resultCode.name())")
+            PBMobileAds.shared.log(logType: .debug, "Prebid demand fetch ADNativeStyle placement '\(String(describing: self?.placement))' for DFP: \(resultCode.name())")
             self?.handlerResult(resultCode)
         }
     }
     
     @objc public func destroy() {
-        PBMobileAds.shared.log("Destroy ADNativeStyle Placement: '\(String(describing: self.placement))'")
-        self.resetAD()
+        NotificationCenter.default.removeObserver(self, name: UIApplication.didBecomeActiveNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIApplication.didEnterBackgroundNotification, object: nil)
         
-        NotificationCenter.default.removeObserver(self)
+        if self.adUnit == nil { return }
+        PBMobileAds.shared.log(logType: .info, "Destroy ADNativeStyle Placement: '\(String(describing: self.placement))'")
+        self.resetAD()
     }
     
+    // MARK: - Public FUNC
     @objc public func setAnchor(anchor: Anchor){
         self.defaultAnchor = anchor
     }
@@ -230,13 +250,17 @@ public class ADNativeStyle : NSObject, GADBannerViewDelegate, GADAdSizeDelegate,
         return self.amNative.frame.standardized.height * UIScreen.main.scale
     }
     
-    // MARK: - Private FUNC
-    func setAutoRefreshMillis() {
+    @objc public func startFetchData() {
         if let refreshTime = self.adUnitObj?.refreshTime {
             self.adUnit.setAutoRefreshMillis(time: refreshTime * 1000 ) // convert sec to milisec
         }
     }
     
+    @objc public func stopFetchData() {
+        self.adUnit?.stopAutoRefresh()
+    }
+    
+    // MARK: - Private FUNC
     func getAdSize() -> CGSize? {
         return self.amNative?.adSize.size
     }
@@ -302,47 +326,34 @@ public class ADNativeStyle : NSObject, GADBannerViewDelegate, GADAdSizeDelegate,
         
         view.translatesAutoresizingMaskIntoConstraints = false
         if defaultAnchor == .TopLeft {
-            view.topAnchor.constraint(equalTo: self.appNativeView.topAnchor, constant: 0).isActive = true
-            view.leftAnchor.constraint(equalTo: self.appNativeView.leftAnchor, constant: 0).isActive = true
+            view.topAnchor.constraint(equalTo: self.adView.topAnchor, constant: 0).isActive = true
+            view.leftAnchor.constraint(equalTo: self.adView.leftAnchor, constant: 0).isActive = true
         } else if defaultAnchor == .TopCenter {
-            view.topAnchor.constraint(equalTo: self.appNativeView.topAnchor, constant: 0).isActive = true
-            view.centerXAnchor.constraint(equalTo: self.appNativeView.centerXAnchor).isActive = true
+            view.topAnchor.constraint(equalTo: self.adView.topAnchor, constant: 0).isActive = true
+            view.centerXAnchor.constraint(equalTo: self.adView.centerXAnchor).isActive = true
         } else if defaultAnchor == .TopRight {
-            view.topAnchor.constraint(equalTo: self.appNativeView.topAnchor, constant: 0).isActive = true
-            view.rightAnchor.constraint(equalTo: self.appNativeView.rightAnchor, constant: 0).isActive = true
+            view.topAnchor.constraint(equalTo: self.adView.topAnchor, constant: 0).isActive = true
+            view.rightAnchor.constraint(equalTo: self.adView.rightAnchor, constant: 0).isActive = true
             
         } else if defaultAnchor == .CenterLeft {
-            view.centerYAnchor.constraint(equalTo: self.appNativeView.centerYAnchor).isActive = true
-            view.leftAnchor.constraint(equalTo: self.appNativeView.leftAnchor, constant: 0).isActive = true
+            view.centerYAnchor.constraint(equalTo: self.adView.centerYAnchor).isActive = true
+            view.leftAnchor.constraint(equalTo: self.adView.leftAnchor, constant: 0).isActive = true
         } else if defaultAnchor == .Center {
-            view.centerYAnchor.constraint(equalTo: self.appNativeView.centerYAnchor).isActive = true
-            view.centerXAnchor.constraint(equalTo: self.appNativeView.centerXAnchor).isActive = true
+            view.centerYAnchor.constraint(equalTo: self.adView.centerYAnchor).isActive = true
+            view.centerXAnchor.constraint(equalTo: self.adView.centerXAnchor).isActive = true
         } else if defaultAnchor == .CenterRight {
-            view.centerYAnchor.constraint(equalTo: self.appNativeView.centerYAnchor).isActive = true
-            view.rightAnchor.constraint(equalTo: self.appNativeView.rightAnchor, constant: 0).isActive = true
+            view.centerYAnchor.constraint(equalTo: self.adView.centerYAnchor).isActive = true
+            view.rightAnchor.constraint(equalTo: self.adView.rightAnchor, constant: 0).isActive = true
             
         } else if defaultAnchor == .BottomLeft {
-            view.bottomAnchor.constraint(equalTo: self.appNativeView.bottomAnchor, constant: 0).isActive = true
-            view.leftAnchor.constraint(equalTo: self.appNativeView.leftAnchor, constant: 0).isActive = true
+            view.bottomAnchor.constraint(equalTo: self.adView.bottomAnchor, constant: 0).isActive = true
+            view.leftAnchor.constraint(equalTo: self.adView.leftAnchor, constant: 0).isActive = true
         } else if defaultAnchor == .BottomCenter {
-            view.bottomAnchor.constraint(equalTo: self.appNativeView.bottomAnchor, constant: 0).isActive = true
-            view.centerXAnchor.constraint(equalTo: self.appNativeView.centerXAnchor).isActive = true
+            view.bottomAnchor.constraint(equalTo: self.adView.bottomAnchor, constant: 0).isActive = true
+            view.centerXAnchor.constraint(equalTo: self.adView.centerXAnchor).isActive = true
         } else if defaultAnchor == .BottomRight {
-            view.bottomAnchor.constraint(equalTo: self.appNativeView.bottomAnchor, constant: 0).isActive = true
-            view.rightAnchor.constraint(equalTo: self.appNativeView.rightAnchor, constant: 0).isActive = true
-        }
-    }
-    
-    func processNoBids() -> Bool {
-        if self.adUnitObj.adInfor.count >= 2 && self.adFormatDefault == ADFormat(rawValue: self.adUnitObj.defaultType)  {
-            self.setDefaultBidType = false
-            self.load()
-            
-            return true
-        } else {
-            // Both or .video, .html is no bids -> wait and preload.
-            PBMobileAds.shared.log("ADInterstitial Placement '\(String(describing: self.placement))' No Bids.")
-            return false
+            view.bottomAnchor.constraint(equalTo: self.adView.bottomAnchor, constant: 0).isActive = true
+            view.rightAnchor.constraint(equalTo: self.adView.rightAnchor, constant: 0).isActive = true
         }
     }
     
@@ -358,17 +369,17 @@ public class ADNativeStyle : NSObject, GADBannerViewDelegate, GADAdSizeDelegate,
                                             self.setupAnchor(bannerView)
                                             bannerView.resize(GADAdSizeFromCGSize(size))
                                             
-                                            PBMobileAds.shared.log("ADNativeStyle Placement '\(String(describing: self.placement))'")
+                                            PBMobileAds.shared.log(logType: .info, "ADNativeStyle Placement '\(String(describing: self.placement))'")
                                             self.adDelegate?.nativeAdDidRecordImpression?(data: "nativeAdDidRecordImpression: ADNativeStyle Placement '\(String(describing: self.placement))'")
                                            },
                                            failure: { (error) in
-                                            PBMobileAds.shared.log("ADNativeStyle Placement '\(String(describing: self.placement))' - \(error.localizedDescription)")
+                                            PBMobileAds.shared.log(logType: .info, "ADNativeStyle Placement '\(String(describing: self.placement))' - \(error.localizedDescription)")
                                             self.adDelegate?.nativeAdDidRecordImpression?(data: "nativeAdDidRecordImpression: ADNativeStyle Placement '\(String(describing: self.placement))'")
                                            })
     }
     
     public func adViewWillLeaveApplication(_ bannerView: GADBannerView) {
-        PBMobileAds.shared.log("ADNativeStyle Placement '\(String(describing: self.placement))'")
+        PBMobileAds.shared.log(logType: .info, "ADNativeStyle Placement '\(String(describing: self.placement))'")
         self.adDelegate?.nativeAdDidRecordClick?(data: "nativeAdDidRecordClick: ADNativeStyle Placement '\(String(describing: self.placement))'")
     }
     
@@ -382,7 +393,7 @@ public class ADNativeStyle : NSObject, GADBannerViewDelegate, GADAdSizeDelegate,
             }
         } else {
             self.isFetchingAD = false
-            PBMobileAds.shared.log("ADNativeStyle Placement '\(String(describing: self.placement))' with error: \(error.localizedDescription)")
+            PBMobileAds.shared.log(logType: .info, "ADNativeStyle Placement '\(String(describing: self.placement))' with error: \(error.localizedDescription)")
             self.adDelegate?.nativeFailedToLoad?(error: "nativeFailedToLoad: ADNativeStyle Placement '\(String(describing: self.placement))' with error: \(error.localizedDescription)")
         }
     }
@@ -392,13 +403,13 @@ public class ADNativeStyle : NSObject, GADBannerViewDelegate, GADAdSizeDelegate,
     
     // MARK: - Application Delegate
     @objc func appDidBecomeActive(_ application: UIApplication) {
-        PBMobileAds.shared.log("ADNativeStyle Placement '\(String(describing: self.placement))'")
-        self.setAutoRefreshMillis()
+        PBMobileAds.shared.log(logType: .debug, "ADNativeStyle Placement '\(String(describing: self.placement))'")
+        self.startFetchData()
     }
     
     @objc func appDidEnterBackground(_ application: UIApplication) {
-        PBMobileAds.shared.log("ADNativeStyle Placement '\(String(describing: self.placement))'")
-        self.adUnit?.stopAutoRefresh()
+        PBMobileAds.shared.log(logType: .debug, "ADNativeStyle Placement '\(String(describing: self.placement))'")
+        self.stopFetchData()
     }
     
 }

@@ -110,27 +110,27 @@ import GoogleMobileAds
     // MARK: - Delegate
     /// Tells the delegate that the video controller has began or resumed playing a video.
     public func videoControllerDidPlayVideo(_ videoController: GADVideoController) {
-        PBMobileAds.shared.log("nativeAdDidRecordImpression: ADNativeCustom Placement '\(String(describing: self.placement))'")
+        PBMobileAds.shared.log(logType: .info, "nativeAdDidRecordImpression: ADNativeCustom Placement '\(String(describing: self.placement))'")
         self.videoDelegate?.onVideoPlay?(data: "nativeAdDidRecordImpression: ADNativeCustom Placement '\(String(describing: self.placement))'")
     }
     /// Tells the delegate that the video controller has paused video.
     public func videoControllerDidPauseVideo(_ videoController: GADVideoController) {
-        PBMobileAds.shared.log("nativeAdDidRecordImpression: ADNativeCustom Placement '\(String(describing: self.placement))'")
+        PBMobileAds.shared.log(logType: .info, "nativeAdDidRecordImpression: ADNativeCustom Placement '\(String(describing: self.placement))'")
         self.videoDelegate?.onVideoPause?(data: "nativeAdDidRecordImpression: ADNativeCustom Placement '\(String(describing: self.placement))'")
     }
     /// Tells the delegate that the video controller's video playback has ended.
     public func videoControllerDidEndVideoPlayback(_ videoController: GADVideoController) {
-        PBMobileAds.shared.log("onVideoEnd: ADNativeCustom Placement '\(String(describing: self.placement))'")
+        PBMobileAds.shared.log(logType: .info, "onVideoEnd: ADNativeCustom Placement '\(String(describing: self.placement))'")
         self.videoDelegate?.onVideoEnd?(data: "onVideoEnd: ADNativeCustom Placement '\(String(describing: self.placement))'")
     }
     /// Tells the delegate that the video controller has muted video.
     public func videoControllerDidMuteVideo(_ videoController: GADVideoController) {
-        PBMobileAds.shared.log("onVideoMute: ADNativeCustom Placement '\(String(describing: self.placement))'")
+        PBMobileAds.shared.log(logType: .info, "onVideoMute: ADNativeCustom Placement '\(String(describing: self.placement))'")
         self.videoDelegate?.onVideoMute?(data: "onVideoMute: ADNativeCustom Placement '\(String(describing: self.placement))'")
     }
     /// Tells the delegate that the video controller has unmuted video.
     public func videoControllerDidUnmuteVideo(_ videoController: GADVideoController) {
-        PBMobileAds.shared.log("onVideoUnMute: ADNativeCustom Placement '\(String(describing: self.placement))'")
+        PBMobileAds.shared.log(logType: .info, "onVideoUnMute: ADNativeCustom Placement '\(String(describing: self.placement))'")
         self.videoDelegate?.onVideoUnMute?(data: "onVideoUnMute: ADNativeCustom Placement '\(String(describing: self.placement))'")
     }
     

@@ -19,7 +19,7 @@ class AdManager: ADNativeDelegate {
     }
     
     func load(){
-        nativeCustom.load()
+        nativeCustom.preLoad()
     }
     
     func getNativeViewBuilder() -> ADNativeViewBuilder? {
@@ -32,9 +32,9 @@ class AdManager: ADNativeDelegate {
         listNativeAd.append(viewBuilder)
         
         // Preload native ads (Max 5 request)
-        PBMobileAds.shared.log("Total current Ads stored: \(nativeCustom.numOfAds())")
+        PBMobileAds.shared.log(logType: .info, "Total current Ads stored: \(nativeCustom.numOfAds())")
         if nativeCustom.numOfAds() < (nativeCustom.MAX_ADS - 3) {
-            nativeCustom.load()
+            nativeCustom.preLoad()
         }
     }
 }

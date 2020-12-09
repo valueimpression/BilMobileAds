@@ -17,6 +17,26 @@ public enum ADType: String {
     case Rewarded = "rewarded"
 }
 
+@objc public enum LogType: Int {
+    case debug
+    case verbose
+    case info
+    case warn
+    case error
+    case severe
+    
+    public func icon() -> String {
+        switch self {
+        case .debug: return "[💬]" // debug
+        case .verbose: return "[🔬]" // verbose
+        case .info: return "[ℹ️]" // info
+        case .warn: return "[⚠️]" // warning
+        case .error: return "[‼️]" // error
+        case .severe: return "[🔥]" // severe
+        }
+    }
+}
+
 struct Constants {
 
     // MARK: - BANNER + INTERSTITIAL

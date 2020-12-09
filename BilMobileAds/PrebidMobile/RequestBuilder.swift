@@ -58,7 +58,8 @@ class RequestBuilder: NSObject {
         request.addValue("application/json", forHTTPHeaderField: "Accept")
         
         let stringObject = String.init(data: requestBodyJSON, encoding: String.Encoding.utf8)
-        Log.info("Prebid Request post body \(stringObject ?? "nil")")
+        //  Log.info("Prebid Request post body \(stringObject ?? "nil")")
+        PBMobileAds.shared.log(logType: .debug, "Prebid Request post body \(stringObject ?? "nil")")
         
         return request
     }

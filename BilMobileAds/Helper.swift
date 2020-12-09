@@ -28,6 +28,10 @@ enum Result<T, U> where U: Error  {
     case failure(U)
 }
 
+enum WorkComplete {
+    case doWork
+}
+
 class HostAD: Decodable {
     var pbHost: String
     var url: String?

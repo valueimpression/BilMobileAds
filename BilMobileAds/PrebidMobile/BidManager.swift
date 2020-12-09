@@ -83,7 +83,8 @@ class BidManager: NSObject {
 
         do {
             let errorString: String = String.init(data: data, encoding: .utf8)!
-            Log.debug(String(format: "Response from server: %@", errorString))
+            //  Log.debug(String(format: "Response from server: %@", errorString))
+            PBMobileAds.shared.log(logType: .debug, String(format: "Response from server: %@", errorString))
             if (!errorString.contains("Invalid request")) {
                 let response: [String: AnyObject] = try JSONSerialization.jsonObject(with: data, options: []) as! [String: AnyObject]
 

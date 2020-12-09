@@ -27,7 +27,7 @@ NSString *const ConsentStringQueryParam = @"code64";
 @implementation CMPConsentToolViewController
 static bool error = FALSE;
 
-- (void)viewDidLoad {
+-(void)viewDidLoad {
     [super viewDidLoad];
     [self initWebView];
     if( ! error ){
@@ -46,6 +46,20 @@ static bool error = FALSE;
     }
     if( error ){
         [super dismissViewControllerAnimated:YES completion:nil];
+    }
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    NSString *consentS = [[CMPConsentToolAPI alloc] consentString];
+    if (consentS == nil || [consentS length] == 0) {
+        // My CMP: Reject -> set time: Aws 365d
+        NSDateFormatter *dateFormatter=[[NSDateFormatter alloc] init];
+        [dateFormatter setDateFormat:@"yyyy-MM-dd' 'HH:mm:ss.SSSZ"];
+        NSDate *add14Day = [[NSDate date] dateByAddingTimeInterval:31536000]; // sec | 24*60*60 * 14 = 1209600
+        [[CMPDataStoragePrivateUserDefaults alloc] setLastRequested:[dateFormatter stringFromDate:add14Day]];
+        
+        [self.closeListener onWebViewClosed];
+        [self.closeDelegate onWebViewClosed:consentS];
     }
 }
 
@@ -148,18 +162,9 @@ static bool error = FALSE;
         // My CMP
         NSDateFormatter *dateFormatter=[[NSDateFormatter alloc] init];
         [dateFormatter setDateFormat:@"yyyy-MM-dd' 'HH:mm:ss.SSSZ"];
-        // Reject
-        if([newConsentString hasPrefix:@"consentrejected"]){
-            newConsentString = @"";
-            
-            // Set Time Ask Again After Rejected
-            NSDate *add14Day = [[NSDate date] dateByAddingTimeInterval:1209600]; // sec | 24*60*60 * 14 = 1209600
-            [[CMPDataStoragePrivateUserDefaults alloc] setLastRequested:[dateFormatter stringFromDate:add14Day]];
-        } else { // Accepted
-            // Set Time Ask Again After Accepted
-            NSDate *add365Day = [[NSDate date] dateByAddingTimeInterval:31536000]; // sec | 24*60*60 * 365 = 31536000
-            [[CMPDataStoragePrivateUserDefaults alloc] setLastRequested:[dateFormatter stringFromDate:add365Day]];
-        }
+        // Accepte: -> set 365d
+        NSDate *add365Day = [[NSDate date] dateByAddingTimeInterval:31536000]; // sec | 24*60*60 * 365 = 31536000
+        [[CMPDataStoragePrivateUserDefaults alloc] setLastRequested:[dateFormatter stringFromDate:add365Day]];
         
         if ([self.delegate respondsToSelector:@selector(consentToolViewController:didReceiveConsentString:)]) {
             [self.delegate consentToolViewController:self didReceiveConsentString:newConsentString];
@@ -202,7 +207,7 @@ static bool error = FALSE;
         return consentString;
     }
     
-    return nil;
+    return @"";
 }
 
 -(NSURL *)base64URLEncodedWithURL:(NSURL *)URL queryValue:(NSString *)queryValue {

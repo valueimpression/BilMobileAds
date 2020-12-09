@@ -140,7 +140,7 @@ NSString *const RESPONSE_URL_KEY = @"url";
             @"message":@"",
             @"status": @1,
             @"regulation":@1,
-            @"url":@"https://static.vliplatform.com/plugins/appCMP/#cmpscreen",
+            @"url": @"https://static.vliplatform.com/plugins/appCMP/v2/" // @"https://static.vliplatform.com/plugins/appCMP/#cmpscreen",
         };
         // NSDictionary *responseDictionary = [self requestSynchronousJSONWithURLString:[CMPConfig getConsentToolURLString:consent]];
         

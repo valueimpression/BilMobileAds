@@ -222,8 +222,8 @@
     [self checkAndProceedConsentUpdate];
 }
 
+// My CMP
 -(void)checkAndProceedConsentUpdate{
-    // My CMP
     // if([self needsServerUpdate]){
     if([self needShowCMP]){
         cmpServerResponse = [self proceedServerRequest];

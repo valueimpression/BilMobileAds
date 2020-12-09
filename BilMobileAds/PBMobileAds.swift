@@ -8,38 +8,37 @@
 
 import GoogleMobileAds
 
-public class PBMobileAds: NSObject {
+public class PBMobileAds: NSObject, CloseListenerDelegate {
     
     @objc public static let shared = PBMobileAds()
     
-    // Log Status
-    private var isLog: Bool = true
-    
-    // MARK: List Config
+    // MARK: Config
     private var listAdUnitObj: [AdUnitObj] = []
     
-    // MARK: api
-    var appName: String = ""
+    // MARK: API
     var gdprConfirm: Bool = false
     private var pbServerEndPoint: String = ""
+    // MARK: CMP
+    var isShowCMP: Bool = false
+    private var closure: (WorkComplete) -> Void
+    // MARK: LOG
+    private final let DEBUG_MODE: Bool = false
     
     private override init() {
-        // log("PBMobileAds Init")
+        self.closure = {_ in return}
+        super.init()
     }
     
     @objc public func initialize(testMode: Bool = false) {
-        if !isLog { Prebid.shared.logLevel = .error }
+        self.log(logType: .info, "PBMobileAds Init")
         
-        self.log("PBMobileAds Init")
-        
-        self.appName = Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String ?? ""
-        
+        Prebid.shared.logLevel = .severe
         //Declare in init to the user agent could be passed in first call
         Prebid.shared.shareGeoLocation = true
         
         // Setup Test Mode
         if testMode {
-            GADMobileAds.sharedInstance().requestConfiguration.testDeviceIdentifiers =  [ (kGADSimulatorID as! String), "cc7ca766f86b43ab6cdc92bed424069b"]
+            GADMobileAds.sharedInstance().requestConfiguration.testDeviceIdentifiers = [(kGADSimulatorID as! String), "cc7ca766f86b43ab6cdc92bed424069b"]
         }
         GADMobileAds.sharedInstance().start()
     }
@@ -63,9 +62,9 @@ public class PBMobileAds: NSObject {
         return nil
     }
     
-    // MARK: - Setup PBServer
+    // MARK: - Setup PBS
     func setupPBS(host: HostAD) {
-        PBMobileAds.shared.log("Host: \(host.pbHost) | AccountId: \(host.pbAccountId) | storedAuctionResponse: \(host.storedAuctionResponse)")
+        PBMobileAds.shared.log(logType: .debug, "Host: \(host.pbHost) | AccountId: \(host.pbAccountId) | storedAuctionResponse: \(host.storedAuctionResponse)")
         
         if host.pbHost == "Appnexus" {
             Prebid.shared.prebidServerHost = PrebidHost.Appnexus
@@ -73,11 +72,11 @@ public class PBMobileAds: NSObject {
             Prebid.shared.prebidServerHost = PrebidHost.Rubicon
         } else if host.pbHost == "Custom" {
             do {
-                PBMobileAds.shared.log("Custom URL: \(String(describing: self.pbServerEndPoint))")
+                PBMobileAds.shared.log(logType: .debug, "Custom URL: \(String(describing: self.pbServerEndPoint))")
                 try Prebid.shared.setCustomPrebidServer(url: self.pbServerEndPoint)
                 Prebid.shared.prebidServerHost = PrebidHost.Custom
             } catch {
-                PBMobileAds.shared.log("URL server incorrect!")
+                PBMobileAds.shared.log(logType: .debug, "URL server incorrect!")
             }
         }
         
@@ -85,25 +84,59 @@ public class PBMobileAds: NSObject {
         Prebid.shared.storedAuctionResponse = host.storedAuctionResponse
     }
     
-    // MARK: - Setup GDPR
+    // MARK: - Show CMP + Setup GDPR
     func setGDPR() {
-        if PBMobileAds.shared.gdprConfirm {
-            let consentStr = CMPConsentToolAPI().consentString
-            if consentStr != nil && consentStr != "" {
-                Targeting.shared.subjectToGDPR = true
-                Targeting.shared.gdprConsentString = consentStr
-            }
+        if let consentStr = CMPConsentToolAPI().consentString {
+            Targeting.shared.subjectToGDPR = true
+            Targeting.shared.gdprConsentString = consentStr
         }
+    }
+    
+    func showCMP(adUIViewCtr: UIViewController, complete: @escaping (WorkComplete) -> Void) {
+        if self.isShowCMP {
+            complete(.doWork)
+            return
+        }
+        
+        if self.gdprConfirm {
+            if CMPConsentTool().needShowCMP() {
+                self.log(logType: .info, "ConsentString Init");
+                
+                self.isShowCMP = true
+                self.closure = complete
+                let appName = Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String ?? ""
+                let cmp = ShowCMP()
+                cmp.closeDelegate = self
+                cmp.open(adUIViewCtr, appName: appName)
+            } else {
+                self.setGDPR()
+                complete(.doWork)
+            }
+        } else {
+            complete(.doWork)
+        }
+    }
+
+    public func onWebViewClosed(_ consentStr: String) {
+        self.isShowCMP = false
+        self.setGDPR()
+        self.closure(.doWork)
     }
     
     // MARK: - Call API AD
     func getADConfig(adUnit: String, complete: @escaping (Result<AdUnitObj,Error>) -> Void) {
-        self.log("Start Request Config adUnit: \(adUnit)")
+        self.log(logType: .debug, "Start Request Config adUnit: \(adUnit)")
         
         Helper.shared.getAPI(api: Constants.GET_DATA_CONFIG + adUnit){ (res: Result<DataConfig, Error>) in
             switch res{
             case .success(let dataJSON):
                 DispatchQueue.main.async {
+                    // Check AdUnitObj Exist if init new Ad > 2
+                    if let adUnitCheck = self.getAdUnitObj(placement: adUnit) {
+                        complete(.success(adUnitCheck))
+                        return
+                    }
+                    
                     self.gdprConfirm = dataJSON.gdprConfirm ?? false
                     self.pbServerEndPoint = dataJSON.pbServerEndPoint
                     
@@ -127,7 +160,7 @@ public class PBMobileAds: NSObject {
     }
     
     func timerRecall(adUnit: String, complete: @escaping (Result<AdUnitObj,Error>) -> Void){
-        self.log("Recall Request Config After: \(Constants.RECALL_CONFIGID_SERVER)")
+        self.log(logType: .debug, "Recall Request Config After: \(Constants.RECALL_CONFIGID_SERVER)")
         DispatchQueue.main.asyncAfter(deadline: .now() + Constants.RECALL_CONFIGID_SERVER, execute: {
             self.getADConfig(adUnit: adUnit, complete: complete)
         })
@@ -138,9 +171,14 @@ public class PBMobileAds: NSObject {
         return components.isEmpty ? "" : components.last!
     }
     
-    @objc public func log( _ object: Any, filename: String = #file, line: Int = #line, column: Int = #column, funcName: String = #function) {
-        if !isLog { return }
-        print("[PBMobileAds] \(Date().toString()) | [\(self.sourceFileName(filePath: filename))]:\(line) \(column) | \(funcName) -> \(object)")
+    @objc public func log(logType: LogType, _ object: Any, filename: String = #file, line: Int = #line, column: Int = #column, funcName: String = #function) {
+
+        if logType == .debug {
+            if !DEBUG_MODE { return }
+            print("\(Date().toString()) \(logType.icon())[PBMobileAds]: [\(self.sourceFileName(filePath: filename))]:l-\(line) c-\(column) | \(funcName) -> \(object)")
+        } else {
+            print("\(Date().toString()) \(logType.icon())[PBMobileAds]: [\(self.sourceFileName(filePath: filename))]:l-\(line) c-\(column) | \(funcName) -> \(object)")
+        }
     }
     
     @objc public func enableCOPPA() {
@@ -160,7 +198,7 @@ public class PBMobileAds: NSObject {
         do {
             try Targeting.shared.setYearOfBirth(yob: yob)
         } catch {
-            log("Unexpected error: \(error).")
+            log(logType: .debug, "Unexpected error: \(error).")
         }
     }
 }
