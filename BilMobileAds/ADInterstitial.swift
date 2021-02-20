@@ -75,7 +75,7 @@ public class ADInterstitial: NSObject, GADInterstitialDelegate  {
     }
     
     func processNoBids() -> Bool {
-        if self.adUnitObj.adInfor.count >= 2 && self.adFormatDefault == ADFormat(rawValue: self.adUnitObj.defaultType)  {
+        if self.adUnitObj.adInfor.count >= 2 && self.adFormatDefault == ADFormat(rawValue: self.adUnitObj.defaultType) {
             self.setDefaultBidType = false
             self.preLoad()
             return true
@@ -188,13 +188,12 @@ public class ADInterstitial: NSObject, GADInterstitialDelegate  {
     
     // MARK: - Delegate
     public func interstitial(_ ad: GADInterstitial, didFailToReceiveAdWithError error: GADRequestError) {
+        self.isFetchingAD = false
         if error.code == Constants.ERROR_NO_FILL {
             if !self.processNoBids() {
-                self.isFetchingAD = false
                 self.adDelegate?.interstitialLoadFail?(error: "interstitialLoadFail: ADInterstitial Placement '\(String(describing: self.placement))' with error: \(error.localizedDescription)")
             }
         } else {
-            self.isFetchingAD = false
             PBMobileAds.shared.log(logType: .info, "ADInterstitial Placement '\(String(describing: self.placement))' with error: \(error.localizedDescription)")
             self.adDelegate?.interstitialLoadFail?(error: "interstitialLoadFail: ADInterstitial Placement '\(String(describing: self.placement))' with error: \(error.localizedDescription)")
         }
