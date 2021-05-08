@@ -28,16 +28,16 @@ class ViewController: UIViewController, ADBannerDelegate, ADInterstitialDelegate
         bannerView1.backgroundColor = .blue
         bannerView2.backgroundColor = .red
         
-//        banner = ADBanner(self, view: bannerView1, placement: "1001") // 13b7495e-1e87-414a-afcd-ef8a9034bd22
+//        banner = ADBanner(self, view: bannerView1, placement: "1001")
         
-//        interstitialAD = ADInterstitial(self,  placement: "1002") // 74000c5e-c0df-4c32-97c0-1cc6a7c40b33
+//        interstitialAD = ADInterstitial(self,  placement: "1002")
         
-//        rewardedAD = ADRewarded(self, placement: "1003") // 588e1a30-4ca6-4c26-a2bc-65e92e432e41
+//        rewardedAD = ADRewarded(self, placement: "1003")
         
 //        nativeStyle = ADNativeStyle(self, view: bannerView2, placement: "1004")
         
         adManager = AdManager()
-        nativeCustom = ADNativeCustom(self, placement: "b99a80a3-7a4d-4f32-bb70-0039fdb4fca3") // b99a80a3-7a4d-4f32-bb70-0039fdb4fca3
+        nativeCustom = ADNativeCustom(self, placement: "1004")
         nativeCustom.setListener(adManager)
         adManager.setNativeObj(nativeCus: nativeCustom)
     }
