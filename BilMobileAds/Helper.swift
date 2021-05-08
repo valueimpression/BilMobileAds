@@ -57,6 +57,7 @@ class AdUnitObj: Decodable {
 }
 class DataConfig: Decodable {
     var gdprConfirm: Bool?
+    var nativeTemplateId: String?
     var pbServerEndPoint: String
     var adunit: AdUnitObj
 }
@@ -75,7 +76,7 @@ class Helper: NSObject {
     static let shared = Helper()
     
     func getAPI<T: Decodable>(api: String, complete: @escaping (Result<T,Error>) -> Void) {
-        let urlPrefix = URL(string:Constants.URL_PREFIX + api)
+        let urlPrefix = URL(string: BilConstants.URL_PREFIX + api)
         var request = URLRequest(url: urlPrefix!)
         request.timeoutInterval = 60
         request.httpMethod = "GET"
@@ -104,7 +105,7 @@ class Helper: NSObject {
     
     func postAPI<T: Decodable>(api: String, paramMD: NSMutableDictionary?, complete: @escaping (Result<[T],Error>) -> Void) {
         
-        let newUrl = URL(string:Constants.URL_PREFIX + "/api/" + api)
+        let newUrl = URL(string: BilConstants.URL_PREFIX + "/api/" + api)
         var request = URLRequest(url: newUrl!)
         request.httpMethod = "POST"
         request.addValue("application/json", forHTTPHeaderField: "Accept")

@@ -18,7 +18,9 @@ import CoreTelephony
 import CoreLocation
 import WebKit
 import AdSupport
-
+#if canImport(AppTrackingTransparency)
+import AppTrackingTransparency
+#endif
 class RequestBuilder: NSObject {
     /**
      * The class is created as a singleton object & used
@@ -68,9 +70,7 @@ class RequestBuilder: NSObject {
         var requestDict: [AnyHashable: Any] = [:]
 
         requestDict["id"] = UUID().uuidString
-        if let aSource = openrtbSource() {
-            requestDict["source"] = aSource
-        }
+        requestDict["source"] = openrtbSource()
         requestDict["app"] = openrtbApp()
         requestDict["device"] = openrtbDevice(adUnit: adUnit)
         requestDict["regs"] = openrtbRegs()
@@ -110,6 +110,12 @@ class RequestBuilder: NSObject {
         let uuid = UUID().uuidString
         var sourceDict: [String: Any] = [:]
         sourceDict["tid"] = uuid
+        
+        var extDict: [String: Any] = [:]
+        extDict["omidpn"] = Targeting.shared.omidPartnerName
+        extDict["omidpv"] = Targeting.shared.omidPartnerVersion
+        
+        sourceDict["ext"] = extDict
 
         return sourceDict
     }
@@ -269,7 +275,7 @@ class RequestBuilder: NSObject {
             app["ver"] = version
             print(version)
         }
-        app["publisher"] = ["id": Prebid.shared.prebidServerAccountId] as NSDictionary
+        app["publisher"] = ["id": Prebid.shared.prebidServerAccountId ?? 0] as NSDictionary
 
         var requestAppExt: [AnyHashable: Any] = [:]
 
@@ -488,6 +494,12 @@ class RequestBuilder: NSObject {
 
         deviceExtPrebid["interstitial"] = deviceExtPrebidInstlDict
         deviceExt["prebid"] = deviceExtPrebid
+        
+        #if canImport(AppTrackingTransparency)
+        if #available(iOS 14, *) {
+            deviceExt["atts"] = ATTrackingManager.trackingAuthorizationStatus.rawValue
+        }
+        #endif
 
         return deviceExt
     }

@@ -9,12 +9,16 @@
 import Foundation
 import BilMobileAds
 
-class AdManager: ADNativeDelegate {
+class AdManager: NativeAdLoaderCustomDelegate {
     
     var listNativeAd: [ADNativeViewBuilder] = []
     var nativeCustom: ADNativeCustom!
     
-    init(nativeCus: ADNativeCustom) {
+    init() {
+        
+    }
+    
+    func setNativeObj(nativeCus: ADNativeCustom) {
         nativeCustom = nativeCus
     }
     
@@ -24,17 +28,20 @@ class AdManager: ADNativeDelegate {
     
     func getNativeViewBuilder() -> ADNativeViewBuilder? {
         if listNativeAd.isEmpty { return nil }
-        let viewBuilder = listNativeAd.removeFirst()
-        return viewBuilder
+        return listNativeAd.removeFirst()
     }
-    
-    func nativeViewLoaded(viewBuilder: ADNativeViewBuilder) {
+    func nativeAdViewLoaded(viewBuilder: ADNativeViewBuilder) {
         listNativeAd.append(viewBuilder)
         
-        // Preload native ads (Max 5 request)
-        PBMobileAds.shared.log(logType: .info, "Total current Ads stored: \(nativeCustom.numOfAds())")
-        if nativeCustom.numOfAds() < (nativeCustom.MAX_ADS - 3) {
-            nativeCustom.preLoad()
-        }
+//        // Preload native ads (Max 5 request)
+//        PBMobileAds.shared.log(logType: .info, "Total current Ads stored: \(nativeCustom.numOfAds())")
+//        if nativeCustom.numOfAds() < (nativeCustom.MAX_ADS - 3) {
+//            nativeCustom.preLoad()
+//        }
     }
+    func nativeAdFailedToLoad(error: String) {
+        print("Native Ad Custom Loaded Fail")
+    }
+    
+    
 }

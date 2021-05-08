@@ -23,8 +23,8 @@ import GoogleMobileAds
     @IBOutlet public weak var _storeView: UIView!
     /// Weak reference to your ad view's price asset view.
     @IBOutlet public weak var _priceView: UIView!
-    /// Weak reference to your ad view's image asset view.
-    @IBOutlet public weak var _imageView: UIView!
+    /// Weak reference to your ad view's image main asset view.
+    @IBOutlet public weak var _imageMainView: UIView!
     /// Weak reference to your ad view's star rating asset view.
     @IBOutlet public weak var _starRatingView: UIView!
     /// Weak reference to your ad view's advertiser asset view.
@@ -68,7 +68,7 @@ import GoogleMobileAds
         super.init(frame: CGRect.zero)
         
         translatesAutoresizingMaskIntoConstraints = false
-        isUserInteractionEnabled = false
+        //        isUserInteractionEnabled = false
         callToActionView = tappableOverlay
     }
     
@@ -77,7 +77,7 @@ import GoogleMobileAds
         super.init(coder: coder)
         
         translatesAutoresizingMaskIntoConstraints = false
-        isUserInteractionEnabled = false
+        //        isUserInteractionEnabled = false
         callToActionView = tappableOverlay
     }
     

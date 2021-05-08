@@ -9,7 +9,7 @@
 import UIKit
 import BilMobileAds
 
-class ViewController: UIViewController, ADBannerDelegate, ADInterstitialDelegate, ADRewardedDelegate, ADNativeDelegate, ADNativeVideoDelegate {
+class ViewController: UIViewController, ADBannerDelegate, ADInterstitialDelegate, ADRewardedDelegate, ADNativeStyleDelegate, NativeAdCustomDelegate, NativeAdVideoDelegate {
     
     @IBOutlet weak var bannerView1: UIView!
     @IBOutlet weak var bannerView2: UIView!
@@ -28,25 +28,26 @@ class ViewController: UIViewController, ADBannerDelegate, ADInterstitialDelegate
         bannerView1.backgroundColor = .blue
         bannerView2.backgroundColor = .red
         
-        // banner = ADBanner(self, view: bannerView1, placement: "1001")
+//        banner = ADBanner(self, view: bannerView1, placement: "1001") // 13b7495e-1e87-414a-afcd-ef8a9034bd22
         
-        // interstitialAD = ADInterstitial(self, placement: "1002")
+//        interstitialAD = ADInterstitial(self,  placement: "1002") // 74000c5e-c0df-4c32-97c0-1cc6a7c40b33
         
-        // rewardedAD = ADRewarded(self, placement: "1003");
+//        rewardedAD = ADRewarded(self, placement: "1003") // 588e1a30-4ca6-4c26-a2bc-65e92e432e41
         
-        // nativeStyle = ADNativeStyle(self, view: bannerView1, placement: "1004")
+//        nativeStyle = ADNativeStyle(self, view: bannerView2, placement: "1004")
         
-        nativeCustom = ADNativeCustom(self, placement: "1004")
-        adManager = AdManager(nativeCus: nativeCustom)
+        adManager = AdManager()
+        nativeCustom = ADNativeCustom(self, placement: "b99a80a3-7a4d-4f32-bb70-0039fdb4fca3") // b99a80a3-7a4d-4f32-bb70-0039fdb4fca3
         nativeCustom.setListener(adManager)
+        adManager.setNativeObj(nativeCus: nativeCustom)
     }
     
     override func viewDidDisappear(_ animated: Bool) {
-        banner?.destroy()
-        interstitialAD?.destroy()
-        rewardedAD?.destroy()
-        nativeStyle?.destroy()
-        nativeCustom?.destroy()
+        //        banner?.destroy()
+        //        interstitialAD?.destroy()
+        //        rewardedAD?.destroy()
+        //        nativeStyle?.destroy()
+        //        nativeCustom?.destroy()
     }
     
     @IBAction func preloadIntersititial(_ sender: Any) {
@@ -54,7 +55,7 @@ class ViewController: UIViewController, ADBannerDelegate, ADInterstitialDelegate
     }
     
     @IBAction func showIntersitial(_ sender: Any) {
-        interstitialAD?.load()
+        interstitialAD?.show()
     }
     
     @IBAction func preloadRewarded(_ sender: UIButton) {
@@ -62,11 +63,14 @@ class ViewController: UIViewController, ADBannerDelegate, ADInterstitialDelegate
     }
     
     @IBAction func showRewarded(_ sender: Any) {
-        rewardedAD?.load()
+        rewardedAD?.show()
     }
     
     @IBAction func showBannerSimple(_ sender: Any) {
-        banner?.load()
+        banner.load()
+//        bannerView1.isHidden
+//        let frm: CGRect = bannerView1.frame
+//        bannerView1.frame = CGRect( x: frm.origin.x + 50, y: frm.origin.y, width: bannerView1.frame.size.width, height: bannerView1.frame .size.height)
     }
     
     @IBAction func stopBanner(_ sender: Any) {
@@ -77,13 +81,15 @@ class ViewController: UIViewController, ADBannerDelegate, ADInterstitialDelegate
         adManager.load()
     }
     
+    // MARK: - Native Ads
     var nativeAdView: UIView?
+    var nativeViewBuilder: ADNativeViewBuilder?
     func setAdView(_ view: UIView) {
         /// Remove the previous ad view.
         nativeAdView?.removeFromSuperview()
         nativeAdView = view
-        bannerView2.addSubview(nativeAdView!)
         nativeAdView!.translatesAutoresizingMaskIntoConstraints = false
+        bannerView2.addSubview(nativeAdView!)
         
         /// Layout constraints for positioning the native ad view to stretch the entire width and height of the nativeAdPlaceholder.
         let viewDictionary = ["_nativeAdView": nativeAdView!]
@@ -99,38 +105,49 @@ class ViewController: UIViewController, ADBannerDelegate, ADInterstitialDelegate
         )
     }
     @IBAction func ShowNativeCus(_ sender: Any) {
-        // Get native asset
+        /// Get native asset
         guard let viewBuilder = adManager.getNativeViewBuilder() else {
             print("Native unavailable, load ad before show")
             return
         }
+        self.removePreviousAds()
         
+        self.nativeViewBuilder = viewBuilder
+
         /// Create and place ad in view hierarchy.
         let nibView = Bundle.main.loadNibNamed("ADNativeViewCustom", owner: nil, options: nil)?.first
-        guard let nativeAdView = nibView as? ADNativeViewCustom else {
+        guard let nativeAdViewCustom = nibView as? ADNativeViewCustom else {
             return
         }
-        setAdView(nativeAdView)
-        
-        viewBuilder.setVideoDelegate(videoDelegate: self)
-        viewBuilder.build(nativeView: nativeAdView)
-    }
-    
-    // MARK: - Native Delegate
-    func nativeViewLoaded(viewBuilder: ADNativeViewBuilder) {
-        print("nativeViewLoaded Placement: \(String(describing: viewBuilder.placement))")
-    }
-    
-    func nativeAdDidRecordImpression(data: String) {
-        print("nativeAdDidRecordImpression Placement: \(data)")
+        self.setAdView(nativeAdViewCustom)
 
+        viewBuilder.setVideoDelegate(videoDelegate: self)
+        viewBuilder.setNativeAdDelegate(delegate: self)
+        viewBuilder.build(nativeView: nativeAdViewCustom)
+    }
+    func removePreviousAds() {
+        if self.nativeViewBuilder != nil {
+            self.nativeViewBuilder?.destroy()
+            self.nativeViewBuilder = nil
+        }
+        nativeAdView = nil
     }
     
+    // MARK: - Native Custom Delegate
+    func nativeAdDidExpire(data: String) {
+        print("adDidExpire")
+    }
+    func nativeAdDidRecordImpression(data: String) {
+        print("adDidLogImpression")
+    }
     func nativeAdDidRecordClick(data: String) {
-        print("nativeAdDidRecordImpression Placement: \(data)")
+        print("adWasClicked")
     }
     
     // MARK: - Rewarded Delegate
+    func rewardedUserDidEarn(rewardedItem: ADRewardedItem) {
+        print("rewardedUserDidEarn Placement: \(rewardedItem.getAmount().doubleValue)")
+    }
     func rewardedDidReceiveAd(data: String) {
         print("rewardedDidReceiveAd Placement: \(data)")
     }
@@ -163,7 +180,7 @@ class ViewController: UIViewController, ADBannerDelegate, ADInterstitialDelegate
     
     // MARK: - Banner Delegate
     func bannerDidReceiveAd(data: String) {
-        print("Placement: \(data)")
+        print("Banner Placement: \(data) with Width:\(banner.getWidthInPixels()) | Height: \(banner.getHeightInPixels())")
     }
     func bannerWillLeaveApplication(data: String) {
         print("bannerWillLeaveApplication: \(data)")
@@ -172,4 +189,3 @@ class ViewController: UIViewController, ADBannerDelegate, ADInterstitialDelegate
         print("bannerWillDismissScreen: \(data)")
     }
 }
-

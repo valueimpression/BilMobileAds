@@ -115,21 +115,6 @@ public class ADBanner : NSObject, GADBannerViewDelegate {
         self.amBanner = nil
     }
     
-    func handlerResult(_ resultCode: ResultCode) {
-        if resultCode == ResultCode.prebidDemandFetchSuccess {
-            self.amBanner?.load(self.amRequest)
-        } else {
-            self.isFetchingAD = false
-            self.isLoadBannerSucc = false
-            
-            if resultCode == ResultCode.prebidDemandNoBids {
-                let _ = self.processNoBids()
-            } else if resultCode == ResultCode.prebidDemandTimedOut {
-                PBMobileAds.shared.log(logType: .info, "ADBanner Placement '\(String(describing: self.placement))' Timeout. Please check your internet connect.")
-            }
-        }
-    }
-    
     // MARK: - Load AD
     @objc public func load() {
         PBMobileAds.shared.log(logType: .debug, "ADBanner Placement '\(String(describing: self.placement))' - isLoaded: \(self.isLoaded()) | isFetchingAD: \(self.isFetchingAD)")
@@ -194,7 +179,19 @@ public class ADBanner : NSObject, GADBannerViewDelegate {
         self.isFetchingAD = true
         self.adUnit?.fetchDemand(adObject: self.amRequest) { [weak self] (resultCode: ResultCode) in
             PBMobileAds.shared.log(logType: .debug, "Prebid demand fetch ADBanner placement '\(String(describing: self?.placement))' for DFP: \(resultCode.name())")
-            self?.handlerResult(resultCode)
+            
+            if resultCode == ResultCode.prebidDemandFetchSuccess {
+                self?.amBanner?.load(self?.amRequest)
+            } else {
+                self?.isFetchingAD = false
+                self?.isLoadBannerSucc = false
+                
+                if resultCode == ResultCode.prebidDemandNoBids {
+                    let _ = self?.processNoBids()
+                } else if resultCode == ResultCode.prebidDemandTimedOut {
+                    PBMobileAds.shared.log(logType: .info, "ADBanner Placement '\(String(describing: self?.placement))' Timeout. Please check your internet connect.")
+                }
+            }
         }
     }
     
@@ -382,7 +379,7 @@ public class ADBanner : NSObject, GADBannerViewDelegate {
     public func adView(_ bannerView: GADBannerView, didFailToReceiveAdWithError error: GADRequestError) {
         self.isLoadBannerSucc = false
         
-        if error.code == Constants.ERROR_NO_FILL {
+        if error.code == BilConstants.ERROR_NO_FILL {
             if !self.processNoBids() {
                 self.isFetchingAD = false
                 self.adDelegate?.bannerLoadFail?(error: "bannerLoadFail: ADBanner Placement '\(String(describing: self.placement))' with error: \(error.localizedDescription)")

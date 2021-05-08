@@ -17,7 +17,6 @@
 		F957BA27249888F20022C6AC /* BilMobileAds.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F957BA25249888F20022C6AC /* BilMobileAds.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		F9A0BF21252C2D14004A3DEC /* AdManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9A0BF20252C2D14004A3DEC /* AdManager.swift */; };
 		F9D88041251AF5C900F2AC73 /* ADNativeViewCustom.xib in Resources */ = {isa = PBXBuildFile; fileRef = F9D8803F251AF5C900F2AC73 /* ADNativeViewCustom.xib */; };
-		F9D909F6251DE9EC00C17A35 /* NativeAdViewCustom.xib in Resources */ = {isa = PBXBuildFile; fileRef = F9D909F5251DE9EC00C17A35 /* NativeAdViewCustom.xib */; };
 		FAE8A6F3BF4C7483ED9BCFAE /* Pods_BilMobileAdsTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B11ABFAA585DDFF726572D4C /* Pods_BilMobileAdsTest.framework */; };
 /* End PBXBuildFile section */
 
@@ -50,7 +49,6 @@
 		F957BA25249888F20022C6AC /* BilMobileAds.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = BilMobileAds.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F9A0BF20252C2D14004A3DEC /* AdManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdManager.swift; sourceTree = "<group>"; };
 		F9D88040251AF5C900F2AC73 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/ADNativeViewCustom.xib; sourceTree = "<group>"; };
-		F9D909F5251DE9EC00C17A35 /* NativeAdViewCustom.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NativeAdViewCustom.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,7 +110,6 @@
 				F9A0BF20252C2D14004A3DEC /* AdManager.swift */,
 				F957BA0B249885260022C6AC /* Main.storyboard */,
 				F9D8803F251AF5C900F2AC73 /* ADNativeViewCustom.xib */,
-				F9D909F5251DE9EC00C17A35 /* NativeAdViewCustom.xib */,
 				F957BA0E2498852A0022C6AC /* Assets.xcassets */,
 				F957BA102498852A0022C6AC /* LaunchScreen.storyboard */,
 				F957BA132498852A0022C6AC /* Info.plist */,
@@ -184,7 +181,6 @@
 				F957BA122498852A0022C6AC /* LaunchScreen.storyboard in Resources */,
 				F957BA0F2498852A0022C6AC /* Assets.xcassets in Resources */,
 				F957BA0D249885260022C6AC /* Main.storyboard in Resources */,
-				F9D909F6251DE9EC00C17A35 /* NativeAdViewCustom.xib in Resources */,
 				F9D88041251AF5C900F2AC73 /* ADNativeViewCustom.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

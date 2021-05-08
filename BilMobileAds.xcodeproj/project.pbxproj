@@ -8,10 +8,19 @@
 
 /* Begin PBXBuildFile section */
 		10CE3E74F7057E8EC68B5243 /* Pods_BilMobileAds.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E5BE8CD1ED383C79244CEC8 /* Pods_BilMobileAds.framework */; };
+		F915DC5326317FE6008E6017 /* BilConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F915DC5226317FE6008E6017 /* BilConstants.swift */; };
+		F94C8EDB2625435500D4C4AA /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F94C8EDA2625435500D4C4AA /* Constants.swift */; };
+		F94C8EEF2625831A00D4C4AA /* IMAUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = F94C8EEE2625831A00D4C4AA /* IMAUtils.swift */; };
+		F94C8EF42625832900D4C4AA /* NativeAdEventDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F94C8EF12625832900D4C4AA /* NativeAdEventDelegate.swift */; };
+		F94C8EF52625832900D4C4AA /* NativeAdDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F94C8EF22625832900D4C4AA /* NativeAdDelegate.swift */; };
+		F94C8EF62625832900D4C4AA /* NativeAd.swift in Sources */ = {isa = PBXBuildFile; fileRef = F94C8EF32625832900D4C4AA /* NativeAd.swift */; };
+		F94C8EFD262583BB00D4C4AA /* CacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F94C8EFC262583BB00D4C4AA /* CacheManager.swift */; };
+		F94C8F02262583F900D4C4AA /* UIViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F94C8EFF262583F900D4C4AA /* UIViewExtension.swift */; };
+		F94C8F03262583F900D4C4AA /* TrackerInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = F94C8F00262583F900D4C4AA /* TrackerInfo.swift */; };
+		F94C8F04262583F900D4C4AA /* TrackerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F94C8F01262583F900D4C4AA /* TrackerManager.swift */; };
 		F957B9F3249884C80022C6AC /* BilMobileAds.h in Headers */ = {isa = PBXBuildFile; fileRef = F957B9F1249884C80022C6AC /* BilMobileAds.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F957BA1A249887070022C6AC /* PBMobileAds.swift in Sources */ = {isa = PBXBuildFile; fileRef = F957BA19249887070022C6AC /* PBMobileAds.swift */; };
 		F957BA1C249887910022C6AC /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F957BA1B249887910022C6AC /* Helper.swift */; };
-		F957BA1E249887C00022C6AC /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F957BA1D249887C00022C6AC /* Constants.swift */; };
 		F957BA20249888100022C6AC /* ADBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = F957BA1F249888100022C6AC /* ADBanner.swift */; };
 		F957BA222498882E0022C6AC /* ADInterstitial.swift in Sources */ = {isa = PBXBuildFile; fileRef = F957BA212498882E0022C6AC /* ADInterstitial.swift */; };
 		F957BA242498884C0022C6AC /* ADRewarded.swift in Sources */ = {isa = PBXBuildFile; fileRef = F957BA232498884C0022C6AC /* ADRewarded.swift */; };
@@ -65,7 +74,6 @@
 		F9D4682424BF069E002E4113 /* CMPConsentToolUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = F9D4682224BF069E002E4113 /* CMPConsentToolUtil.m */; };
 		F9D4682624BF06B6002E4113 /* CMPTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = F9D4682524BF06B6002E4113 /* CMPTypes.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F9D46A3C24C01500002E4113 /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9D46A2C24C014FF002E4113 /* Reachability.swift */; };
-		F9D46A3D24C01500002E4113 /* ConstantsOld.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9D46A2D24C014FF002E4113 /* ConstantsOld.swift */; };
 		F9D46A3E24C01500002E4113 /* StorageUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9D46A2E24C014FF002E4113 /* StorageUtils.swift */; };
 		F9D46A3F24C01500002E4113 /* RequestBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9D46A2F24C014FF002E4113 /* RequestBuilder.swift */; };
 		F9D46A4024C01500002E4113 /* PrebidMobile.h in Sources */ = {isa = PBXBuildFile; fileRef = F9D46A3024C014FF002E4113 /* PrebidMobile.h */; };
@@ -103,13 +111,22 @@
 		6E5BE8CD1ED383C79244CEC8 /* Pods_BilMobileAds.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BilMobileAds.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BCE624E0D125CBFCCAF6B2D6 /* Pods-BilMobileAds.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BilMobileAds.release.xcconfig"; path = "Target Support Files/Pods-BilMobileAds/Pods-BilMobileAds.release.xcconfig"; sourceTree = "<group>"; };
 		D31F48C40F51675013AC0963 /* Pods-BilMobileAds.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BilMobileAds.debug.xcconfig"; path = "Target Support Files/Pods-BilMobileAds/Pods-BilMobileAds.debug.xcconfig"; sourceTree = "<group>"; };
+		F915DC5226317FE6008E6017 /* BilConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BilConstants.swift; sourceTree = "<group>"; };
+		F94C8EDA2625435500D4C4AA /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		F94C8EEE2625831A00D4C4AA /* IMAUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IMAUtils.swift; sourceTree = "<group>"; };
+		F94C8EF12625832900D4C4AA /* NativeAdEventDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NativeAdEventDelegate.swift; sourceTree = "<group>"; };
+		F94C8EF22625832900D4C4AA /* NativeAdDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NativeAdDelegate.swift; sourceTree = "<group>"; };
+		F94C8EF32625832900D4C4AA /* NativeAd.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NativeAd.swift; sourceTree = "<group>"; };
+		F94C8EFC262583BB00D4C4AA /* CacheManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CacheManager.swift; sourceTree = "<group>"; };
+		F94C8EFF262583F900D4C4AA /* UIViewExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIViewExtension.swift; sourceTree = "<group>"; };
+		F94C8F00262583F900D4C4AA /* TrackerInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackerInfo.swift; sourceTree = "<group>"; };
+		F94C8F01262583F900D4C4AA /* TrackerManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackerManager.swift; sourceTree = "<group>"; };
 		F94F41AD250250900014E8C9 /* libxml2.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.2.dylib; path = ../../../../../../usr/lib/libxml2.2.dylib; sourceTree = "<group>"; };
 		F957B9EE249884C80022C6AC /* BilMobileAds.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BilMobileAds.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F957B9F1249884C80022C6AC /* BilMobileAds.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BilMobileAds.h; sourceTree = "<group>"; };
 		F957B9F2249884C80022C6AC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F957BA19249887070022C6AC /* PBMobileAds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PBMobileAds.swift; sourceTree = "<group>"; };
 		F957BA1B249887910022C6AC /* Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
-		F957BA1D249887C00022C6AC /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		F957BA1F249888100022C6AC /* ADBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ADBanner.swift; sourceTree = "<group>"; };
 		F957BA212498882E0022C6AC /* ADInterstitial.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ADInterstitial.swift; sourceTree = "<group>"; };
 		F957BA232498884C0022C6AC /* ADRewarded.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ADRewarded.swift; sourceTree = "<group>"; };
@@ -163,7 +180,6 @@
 		F9D4682224BF069E002E4113 /* CMPConsentToolUtil.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CMPConsentToolUtil.m; sourceTree = "<group>"; };
 		F9D4682524BF06B6002E4113 /* CMPTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMPTypes.h; sourceTree = "<group>"; };
 		F9D46A2C24C014FF002E4113 /* Reachability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
-		F9D46A2D24C014FF002E4113 /* ConstantsOld.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConstantsOld.swift; sourceTree = "<group>"; };
 		F9D46A2E24C014FF002E4113 /* StorageUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageUtils.swift; sourceTree = "<group>"; };
 		F9D46A2F24C014FF002E4113 /* RequestBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestBuilder.swift; sourceTree = "<group>"; };
 		F9D46A3024C014FF002E4113 /* PrebidMobile.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrebidMobile.h; sourceTree = "<group>"; };
@@ -252,7 +268,7 @@
 				F9D467C724BF035D002E4113 /* ConsentManager */,
 				F957B9F1249884C80022C6AC /* BilMobileAds.h */,
 				F957B9F2249884C80022C6AC /* Info.plist */,
-				F957BA1D249887C00022C6AC /* Constants.swift */,
+				F915DC5226317FE6008E6017 /* BilConstants.swift */,
 				F957BA1B249887910022C6AC /* Helper.swift */,
 				F957BA19249887070022C6AC /* PBMobileAds.swift */,
 				F957BA1F249888100022C6AC /* ADBanner.swift */,
@@ -365,22 +381,26 @@
 			children = (
 				F9D46A2B24C014EE002E4113 /* Addendum */,
 				F9D46A2924C014DB002E4113 /* AdUnits */,
+				F9D46A3024C014FF002E4113 /* PrebidMobile.h */,
 				F9D46A3824C01500002E4113 /* BidManager.swift */,
 				F9D46A3724C01500002E4113 /* BidResponse.swift */,
+				F94C8EFC262583BB00D4C4AA /* CacheManager.swift */,
 				F9D46A3B24C01500002E4113 /* CollectionExtension.swift */,
-				F9D46A2D24C014FF002E4113 /* ConstantsOld.swift */,
+				F94C8EDA2625435500D4C4AA /* Constants.swift */,
 				F9D46A3624C01500002E4113 /* Dispatcher.swift */,
 				F9D46A3924C01500002E4113 /* Global.swift */,
 				F9D46A3224C014FF002E4113 /* Host.swift */,
 				F9D46A3A24C01500002E4113 /* Location.swift */,
 				F9D46A3124C014FF002E4113 /* Logging.swift */,
 				F9D46A3524C01500002E4113 /* Prebid.swift */,
-				F9D46A3024C014FF002E4113 /* PrebidMobile.h */,
 				F9D46A2C24C014FF002E4113 /* Reachability.swift */,
 				F9D46A2F24C014FF002E4113 /* RequestBuilder.swift */,
 				F9D46A3424C01500002E4113 /* ResultCode.swift */,
 				F9D46A2E24C014FF002E4113 /* StorageUtils.swift */,
 				F9D46A3324C01500002E4113 /* Targeting.swift */,
+				F94C8F00262583F900D4C4AA /* TrackerInfo.swift */,
+				F94C8F01262583F900D4C4AA /* TrackerManager.swift */,
+				F94C8EFF262583F900D4C4AA /* UIViewExtension.swift */,
 			);
 			path = PrebidMobile;
 			sourceTree = "<group>";
@@ -406,6 +426,9 @@
 		F9D46A2A24C014E5002E4113 /* Native */ = {
 			isa = PBXGroup;
 			children = (
+				F94C8EF32625832900D4C4AA /* NativeAd.swift */,
+				F94C8EF22625832900D4C4AA /* NativeAdDelegate.swift */,
+				F94C8EF12625832900D4C4AA /* NativeAdEventDelegate.swift */,
 				F9D46A6124C01539002E4113 /* NativeAsset.swift */,
 				F9D46A6224C01539002E4113 /* NativeEventTracker.swift */,
 				F9D46A6024C01539002E4113 /* NativeRequest.swift */,
@@ -417,6 +440,7 @@
 			isa = PBXGroup;
 			children = (
 				F9D46A6724C01552002E4113 /* AdViewUtils.swift */,
+				F94C8EEE2625831A00D4C4AA /* IMAUtils.swift */,
 				F9D46A6624C01552002E4113 /* PbFindSizeError.swift */,
 			);
 			path = Addendum;
@@ -560,23 +584,27 @@
 			files = (
 				F9D46A6824C01552002E4113 /* PbFindSizeError.swift in Sources */,
 				F9D46A6924C01552002E4113 /* AdViewUtils.swift in Sources */,
+				F94C8F04262583F900D4C4AA /* TrackerManager.swift in Sources */,
 				F9D46A6324C01539002E4113 /* NativeRequest.swift in Sources */,
 				F9D8803E2519A2BC00F2AC73 /* ADNativeViewBuilder.swift in Sources */,
 				F9D46A6424C01539002E4113 /* NativeAsset.swift in Sources */,
+				F94C8EEF2625831A00D4C4AA /* IMAUtils.swift in Sources */,
 				F9D46A6524C01539002E4113 /* NativeEventTracker.swift in Sources */,
+				F94C8EF42625832900D4C4AA /* NativeAdEventDelegate.swift in Sources */,
 				F9D88045251B479A00F2AC73 /* ADNativeViewCustom.swift in Sources */,
 				F9D46A5624C01528002E4113 /* VideoBaseAdUnit.swift in Sources */,
 				F9D46A5724C01528002E4113 /* VideoAdUnit.swift in Sources */,
+				F94C8EF62625832900D4C4AA /* NativeAd.swift in Sources */,
 				F9D46A5824C01528002E4113 /* InterstitialAdUnit.swift in Sources */,
 				F9D46A5924C01528002E4113 /* AdUnit.swift in Sources */,
 				F9D46A5A24C01528002E4113 /* BannerBaseAdUnit.swift in Sources */,
+				F94C8EF52625832900D4C4AA /* NativeAdDelegate.swift in Sources */,
 				F9D46A5B24C01528002E4113 /* Utils.swift in Sources */,
 				F9D46A5C24C01528002E4113 /* Signals.swift in Sources */,
 				F9D46A5D24C01528002E4113 /* RewardedVideoAdUnit.swift in Sources */,
 				F9D46A5E24C01528002E4113 /* VideoInterstitialAdUnit.swift in Sources */,
 				F9D46A5F24C01528002E4113 /* BannerAdUnit.swift in Sources */,
 				F9D46A3C24C01500002E4113 /* Reachability.swift in Sources */,
-				F9D46A3D24C01500002E4113 /* ConstantsOld.swift in Sources */,
 				F9D46A3E24C01500002E4113 /* StorageUtils.swift in Sources */,
 				F9D46A3F24C01500002E4113 /* RequestBuilder.swift in Sources */,
 				F9D46A4024C01500002E4113 /* PrebidMobile.h in Sources */,
@@ -593,6 +621,7 @@
 				F9D46A4B24C01500002E4113 /* CollectionExtension.swift in Sources */,
 				F9D4680024BF057D002E4113 /* PublisherRestriction.m in Sources */,
 				F9D467F624BF0534002E4113 /* CMPConsentV1Parser.m in Sources */,
+				F94C8F02262583F900D4C4AA /* UIViewExtension.swift in Sources */,
 				F9D467E224BF0470002E4113 /* CMPDataStorageV1UserDefaults.m in Sources */,
 				F9D4681424BF063B002E4113 /* CMPConfig.m in Sources */,
 				F9D467B424BF01DC002E4113 /* ShowCMP.m in Sources */,
@@ -600,6 +629,7 @@
 				F98492F424FD235400E8DC45 /* ADNativeStyle.swift in Sources */,
 				F957BA20249888100022C6AC /* ADBanner.swift in Sources */,
 				F9D4682424BF069E002E4113 /* CMPConsentToolUtil.m in Sources */,
+				F915DC5326317FE6008E6017 /* BilConstants.swift in Sources */,
 				F957BA1A249887070022C6AC /* PBMobileAds.swift in Sources */,
 				F9D467D024BF03B7002E4113 /* CMPConsentTool.m in Sources */,
 				F9D467D624BF0411002E4113 /* CMPDataStorageConsentManagerUserDefaults.m in Sources */,
@@ -610,12 +640,14 @@
 				F957BA222498882E0022C6AC /* ADInterstitial.swift in Sources */,
 				F9D467EC24BF04DE002E4113 /* CMPActivityIndicatorView.m in Sources */,
 				F9D4681C24BF0670002E4113 /* CMPServerResponse.m in Sources */,
+				F94C8EFD262583BB00D4C4AA /* CacheManager.swift in Sources */,
 				F957BA242498884C0022C6AC /* ADRewarded.swift in Sources */,
 				F9D467FC24BF0561002E4113 /* CMPConsentV2Parser.m in Sources */,
 				F9D4681824BF0655002E4113 /* CMPSettings.m in Sources */,
 				F9D4681024BF0623002E4113 /* Reachability.m in Sources */,
+				F94C8F03262583F900D4C4AA /* TrackerInfo.swift in Sources */,
+				F94C8EDB2625435500D4C4AA /* Constants.swift in Sources */,
 				F95A32AB2511B10600F3EBD5 /* ADNativeCustom.swift in Sources */,
-				F957BA1E249887C00022C6AC /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -761,7 +793,7 @@
 				EXCLUDED_ARCHS = "arm64 armv7";
 				INFOPLIST_FILE = BilMobileAds/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -883,7 +915,7 @@
 				EXCLUDED_ARCHS = "arm64 armv7";
 				INFOPLIST_FILE = BilMobileAds/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

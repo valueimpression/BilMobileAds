@@ -68,6 +68,10 @@ import CoreLocation
      */
     public var locationPrecision: Int?
     
+    public var omidPartnerName: String?
+    
+    public var omidPartnerVersion: String?
+    
     //Objective-C Api
     @available(swift, obsoleted: 1.0)
     public func setLocationPrecision(_ newValue: NSNumber?) {
@@ -167,10 +171,10 @@ import CoreLocation
         get {
             var savedConsent: String?
             
-            if let pbString = StorageUtils.pbGdprConsent() {
-                savedConsent = pbString
-            } else if let iabString = StorageUtils.iabGdprConsent() {
+            if let iabString = StorageUtils.iabGdprConsent() {
                 savedConsent = iabString
+            } else if let pbString = StorageUtils.pbGdprConsent() {
+                savedConsent = pbString
             }
             
             return savedConsent
@@ -187,10 +191,10 @@ import CoreLocation
         get {
             var savedPurposeConsents: String?
 
-            if let pbString = StorageUtils.pbPurposeConsents() {
-                savedPurposeConsents = pbString
-            } else if let iabString = StorageUtils.iabPurposeConsents() {
+            if let iabString = StorageUtils.iabPurposeConsents() {
                 savedPurposeConsents = iabString
+            } else if let pbString = StorageUtils.pbPurposeConsents() {
+                savedPurposeConsents = pbString
             }
 
             return savedPurposeConsents
@@ -217,7 +221,6 @@ import CoreLocation
 
         var purposeConsent: Bool? = nil
         if let savedPurposeConsents = purposeConsents {
-            if savedPurposeConsents == "" { return purposeConsent }
             let char = savedPurposeConsents[savedPurposeConsents.index(savedPurposeConsents.startIndex, offsetBy: index)]
 
             if char == "1" {

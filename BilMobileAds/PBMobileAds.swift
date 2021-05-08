@@ -17,6 +17,7 @@ public class PBMobileAds: NSObject, CloseListenerDelegate {
     
     // MARK: API
     var gdprConfirm: Bool = false
+    var nativeTemplateId: String = ""
     private var pbServerEndPoint: String = ""
     // MARK: CMP
     var isShowCMP: Bool = false
@@ -127,7 +128,7 @@ public class PBMobileAds: NSObject, CloseListenerDelegate {
     func getADConfig(adUnit: String, complete: @escaping (Result<AdUnitObj,Error>) -> Void) {
         self.log(logType: .debug, "Start Request Config adUnit: \(adUnit)")
         
-        Helper.shared.getAPI(api: Constants.GET_DATA_CONFIG + adUnit){ (res: Result<DataConfig, Error>) in
+        Helper.shared.getAPI(api: BilConstants.GET_DATA_CONFIG + adUnit){ (res: Result<DataConfig, Error>) in
             switch res{
             case .success(let dataJSON):
                 DispatchQueue.main.async {
@@ -138,6 +139,7 @@ public class PBMobileAds: NSObject, CloseListenerDelegate {
                     }
                     
                     self.gdprConfirm = dataJSON.gdprConfirm ?? false
+                    self.nativeTemplateId = dataJSON.nativeTemplateId ?? ""
                     self.pbServerEndPoint = dataJSON.pbServerEndPoint
                     
                     // Validate defaultType Bid type
@@ -160,8 +162,8 @@ public class PBMobileAds: NSObject, CloseListenerDelegate {
     }
     
     func timerRecall(adUnit: String, complete: @escaping (Result<AdUnitObj,Error>) -> Void){
-        self.log(logType: .debug, "Recall Request Config After: \(Constants.RECALL_CONFIGID_SERVER)")
-        DispatchQueue.main.asyncAfter(deadline: .now() + Constants.RECALL_CONFIGID_SERVER, execute: {
+        self.log(logType: .debug, "Recall Request Config After: \(BilConstants.RECALL_CONFIGID_SERVER)")
+        DispatchQueue.main.asyncAfter(deadline: .now() + BilConstants.RECALL_CONFIGID_SERVER, execute: {
             self.getADConfig(adUnit: adUnit, complete: complete)
         })
     }
@@ -190,7 +192,6 @@ public class PBMobileAds: NSObject, CloseListenerDelegate {
     }
     
     @objc public func setGender(gender: Gender) {
-        print("HNL: \(gender)")
         Targeting.shared.gender = gender
     }
     

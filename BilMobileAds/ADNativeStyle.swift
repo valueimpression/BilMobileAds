@@ -13,7 +13,7 @@ public class ADNativeStyle : NSObject, GADBannerViewDelegate, GADAdSizeDelegate 
     // MARK: - View OBJ
     weak var adView: UIView!
     weak var adUIViewCtr: UIViewController!
-    weak var adDelegate: ADNativeDelegate!
+    weak var adDelegate: ADNativeStyleDelegate!
     
     // MARK: - AD OBJ
     private let amRequest = DFPRequest()
@@ -42,7 +42,7 @@ public class ADNativeStyle : NSObject, GADBannerViewDelegate, GADAdSizeDelegate 
         
         self.adUIViewCtr = adUIViewCtr
         self.adView = adView
-        self.adDelegate = adUIViewCtr as? ADNativeDelegate
+        self.adDelegate = adUIViewCtr as? ADNativeStyleDelegate
         
         self.placement = placement
         
@@ -113,21 +113,6 @@ public class ADNativeStyle : NSObject, GADBannerViewDelegate, GADAdSizeDelegate 
         
         self.amNative?.removeFromSuperview()
         self.amNative = nil
-    }
-    
-    func handlerResult(_ resultCode: ResultCode) {
-        if resultCode == ResultCode.prebidDemandFetchSuccess {
-            self.amNative?.load(self.amRequest)
-        } else {
-            self.isFetchingAD = false
-            self.isLoadNativeSucc = false
-            
-            if resultCode == ResultCode.prebidDemandNoBids {
-                let _ = self.processNoBids()
-            } else if resultCode == ResultCode.prebidDemandTimedOut {
-                PBMobileAds.shared.log(logType: .info, "ADNativeStyle Placement '\(String(describing: self.placement))' Timeout. Please check your internet connect.")
-            }
-        }
     }
     
     // MARK: - Load AD
@@ -210,7 +195,19 @@ public class ADNativeStyle : NSObject, GADBannerViewDelegate, GADAdSizeDelegate 
         self.isFetchingAD = true
         self.adUnit.fetchDemand(adObject: self.amRequest) { [weak self] (resultCode: ResultCode) in
             PBMobileAds.shared.log(logType: .debug, "Prebid demand fetch ADNativeStyle placement '\(String(describing: self?.placement))' for DFP: \(resultCode.name())")
-            self?.handlerResult(resultCode)
+            
+            if resultCode == ResultCode.prebidDemandFetchSuccess {
+                self?.amNative?.load(self?.amRequest)
+            } else {
+                self?.isFetchingAD = false
+                self?.isLoadNativeSucc = false
+                 
+                if resultCode == ResultCode.prebidDemandNoBids {
+                    let _ = self?.processNoBids()
+                } else if resultCode == ResultCode.prebidDemandTimedOut {
+                    PBMobileAds.shared.log(logType: .info, "ADNativeStyle Placement '\(String(describing: self?.placement))' Timeout. Please check your internet connect.")
+                }
+            }
         }
     }
     
@@ -232,7 +229,7 @@ public class ADNativeStyle : NSObject, GADBannerViewDelegate, GADAdSizeDelegate 
         return self.isLoadNativeSucc
     }
     
-    @objc public func setListener(_ adDelegate : ADNativeDelegate){
+    @objc public func setListener(_ adDelegate : ADNativeStyleDelegate){
         self.adDelegate = adDelegate
     }
     
@@ -252,7 +249,7 @@ public class ADNativeStyle : NSObject, GADBannerViewDelegate, GADAdSizeDelegate 
     
     @objc public func startFetchData() {
         if let refreshTime = self.adUnitObj?.refreshTime {
-            self.adUnit.setAutoRefreshMillis(time: refreshTime * 1000 ) // convert sec to milisec
+            self.adUnit.setAutoRefreshMillis(time: refreshTime * 1000) // convert sec to milisec
         }
     }
     
@@ -263,62 +260,6 @@ public class ADNativeStyle : NSObject, GADBannerViewDelegate, GADAdSizeDelegate 
     // MARK: - Private FUNC
     func getAdSize() -> CGSize? {
         return self.amNative?.adSize.size
-    }
-    
-    func getBannerSize(typeBanner: BannerSize) -> CGSize {
-        switch typeBanner {
-        case .Banner320x50:
-            return CGSize(width: 320, height: 50)
-        case .Banner320x100:
-            return CGSize(width: 320, height: 100)
-        case .Banner300x250:
-            return CGSize(width: 300, height: 250)
-        case .Banner468x60:
-            return CGSize(width: 468, height: 60)
-        case .Banner728x90:
-            return CGSize(width: 728, height: 90)
-        case .SmartBanner:
-            return CGSize(width: 1, height: 1)
-        }
-    }
-    
-    func getGADBannerSize(typeBanner: BannerSize) -> GADAdSize {
-        switch typeBanner {
-        case .Banner320x50:
-            return kGADAdSizeBanner
-        case .Banner320x100:
-            return kGADAdSizeLargeBanner
-        case .Banner300x250:
-            return kGADAdSizeMediumRectangle
-        case .Banner468x60:
-            return kGADAdSizeFullBanner
-        case .Banner728x90:
-            return kGADAdSizeLeaderboard
-        case .SmartBanner:
-            if UIApplication.shared.statusBarOrientation.isPortrait {
-                return kGADAdSizeSmartBannerPortrait
-            } else {
-                return kGADAdSizeSmartBannerLandscape
-            }
-        }
-    }
-    
-    func getBannerSize(w: String, h: String) -> BannerSize {
-        let typeBanner = "\(w)x\(h)"
-        
-        if typeBanner == "320x50" {
-            return .Banner320x50
-        } else if typeBanner == "320x100" {
-            return .Banner320x100
-        } else if typeBanner ==  "300x250" {
-            return .Banner300x250
-        } else if typeBanner ==  "468x60"{
-            return .Banner468x60
-        } else if typeBanner ==  "728x90"{
-            return .Banner728x90
-        }
-        
-        return .Banner320x50
     }
     
     func setupAnchor(_ view: GADBannerView){
@@ -370,35 +311,50 @@ public class ADNativeStyle : NSObject, GADBannerViewDelegate, GADAdSizeDelegate 
                                             bannerView.resize(GADAdSizeFromCGSize(size))
                                             
                                             PBMobileAds.shared.log(logType: .info, "ADNativeStyle Placement '\(String(describing: self.placement))'")
-                                            self.adDelegate?.nativeAdDidRecordImpression?(data: "nativeAdDidRecordImpression: ADNativeStyle Placement '\(String(describing: self.placement))'")
+                                            self.adDelegate?.nativeStyleDidReceiveAd?()
                                            },
                                            failure: { (error) in
                                             PBMobileAds.shared.log(logType: .info, "ADNativeStyle Placement '\(String(describing: self.placement))' - \(error.localizedDescription)")
-                                            self.adDelegate?.nativeAdDidRecordImpression?(data: "nativeAdDidRecordImpression: ADNativeStyle Placement '\(String(describing: self.placement))'")
+                                            self.adDelegate?.nativeStyleDidReceiveAd?()
                                            })
     }
     
     public func adViewWillLeaveApplication(_ bannerView: GADBannerView) {
         PBMobileAds.shared.log(logType: .info, "ADNativeStyle Placement '\(String(describing: self.placement))'")
-        self.adDelegate?.nativeAdDidRecordClick?(data: "nativeAdDidRecordClick: ADNativeStyle Placement '\(String(describing: self.placement))'")
+        self.adDelegate?.nativeStyleWillLeaveApplication?()
     }
     
     public func adView(_ bannerView: GADBannerView, didFailToReceiveAdWithError error: GADRequestError) {
         self.isLoadNativeSucc = false
         
-        if error.code == Constants.ERROR_NO_FILL {
+        if error.code == BilConstants.ERROR_NO_FILL {
             if !self.processNoBids() {
                 self.isFetchingAD = false
-                self.adDelegate?.nativeFailedToLoad?(error: "nativeFailedToLoad: ADNativeStyle Placement '\(String(describing: self.placement))' with error: \(error.localizedDescription)")
+                self.adDelegate?.nativeStyleFailedToLoad?(error: "nativeFailedToLoad: ADNativeStyle Placement '\(String(describing: self.placement))' with error: \(error.localizedDescription)")
             }
         } else {
             self.isFetchingAD = false
             PBMobileAds.shared.log(logType: .info, "ADNativeStyle Placement '\(String(describing: self.placement))' with error: \(error.localizedDescription)")
-            self.adDelegate?.nativeFailedToLoad?(error: "nativeFailedToLoad: ADNativeStyle Placement '\(String(describing: self.placement))' with error: \(error.localizedDescription)")
+            self.adDelegate?.nativeStyleFailedToLoad?(error: "nativeFailedToLoad: ADNativeStyle Placement '\(String(describing: self.placement))' with error: \(error.localizedDescription)")
         }
     }
     
-    // GADAdSizeDelegate
+    public func adViewWillPresentScreen(_ bannerView: GADBannerView) {
+        PBMobileAds.shared.log(logType: .info, "ADBanner Placement '\(String(describing: self.placement))'")
+        self.adDelegate?.nativeStyleWillPresentScreen?()
+    }
+    
+    public func adViewWillDismissScreen(_ bannerView: GADBannerView) {
+        PBMobileAds.shared.log(logType: .info, "ADBanner Placement '\(String(describing: self.placement))'")
+        self.adDelegate?.nativeStyleWillDismissScreen?()
+    }
+    
+    public func adViewDidDismissScreen(_ bannerView: GADBannerView) {
+        PBMobileAds.shared.log(logType: .info, "ADBanner Placement '\(String(describing: self.placement))'")
+        self.adDelegate?.nativeStyleDidDismissScreen?()
+    }
+    
+    /// GADAdSizeDelegate
     public func adView(_ bannerView: GADBannerView, willChangeAdSizeTo size: GADAdSize) {}
     
     // MARK: - Application Delegate
@@ -414,27 +370,27 @@ public class ADNativeStyle : NSObject, GADBannerViewDelegate, GADAdSizeDelegate 
     
 }
 
-@objc public protocol ADNativeDelegate {
+@objc public protocol ADNativeStyleDelegate {
+
+    // Called when an ad request loaded an ad.
+    @objc optional func nativeStyleDidReceiveAd()
     
-    /*
-     * Called when an ad native custom view loaded. (Only work with ADNativeCustom)
-     * */
-    @objc optional func nativeViewLoaded(viewBuilder: ADNativeViewBuilder)
+    // Called when an ad request failed.
+    @objc optional func nativeStyleFailedToLoad(error: String)
     
-    /*
-     * Called when an ad native request loaded complete an ad.
-     * */
-    @objc optional func nativeAdDidRecordImpression(data: String)
+    // Called just before presenting the user a full screen view, such as a browser, in response to
+    // clicking on an ad.
+    @objc optional func nativeStyleWillPresentScreen()
+    
+    // Called just before dismissing a full screen view.
+    @objc optional func nativeStyleWillDismissScreen()
     
     // Called just before the application will background or terminate because the user clicked on an
-    // ad that will launch another application (such as the App Store). The normal
-    // UIApplicationDelegate methods, like applicationDidEnterBackground:, will be called immediately
-    // before this.
-    @objc optional func nativeAdDidRecordClick(data: String)
+    // ad that will launch another application (such as the App Store).
+    @objc optional func nativeStyleDidDismissScreen()
     
-    /*
-     * Called when an ad request loaded fail.
-     * */
-    @objc optional func nativeFailedToLoad(error: String)
+    // Called just before the application will background or terminate because the user clicked on an
+    // ad that will launch another application (such as the App Store).
+    @objc optional func nativeStyleWillLeaveApplication()
     
 }

@@ -46,7 +46,7 @@ class BidManager: NSObject {
                     if (!Prebid.shared.timeoutUpdated) {
                         let tmax = self.getTmaxRequest(data!)
                         if (tmax > 0) {
-                            Prebid.shared.`timeoutMillisDynamic` = min(Int(demandFetchEndTime - demandFetchStartTime) + tmax + 200, Prebid.shared.timeoutMillis)
+                            Prebid.shared.timeoutMillisDynamic = min(Int(demandFetchEndTime - demandFetchStartTime) + tmax + 200, Prebid.shared.timeoutMillis)
                             Prebid.shared.timeoutUpdated = true
                         }
                     }
@@ -83,14 +83,11 @@ class BidManager: NSObject {
 
         do {
             let errorString: String = String.init(data: data, encoding: .utf8)!
-            //  Log.debug(String(format: "Response from server: %@", errorString))
             PBMobileAds.shared.log(logType: .debug, String(format: "Response from server: %@", errorString))
-            if (!errorString.contains("Invalid request")) {
+            if (!errorString.contains("Invalidrequest" )) {
                 let response: [String: AnyObject] = try JSONSerialization.jsonObject(with: data, options: []) as! [String: AnyObject]
-
                 var bidDict: [String: AnyObject] = [:]
                 var containTopBid = false
-
                 guard response.count > 0, response["seatbid"] != nil else { return ([:], ResultCode.prebidDemandNoBids)}
                 let seatbids = response["seatbid"] as! [AnyObject]
                 for seatbid in seatbids {
@@ -109,7 +106,7 @@ class BidManager: NSObject {
                         for key in adServerTargeting!.keys {
                             if (key == "hb_cache_id") {
                                 containTopBid = true
-                             }
+                            }
                             if (key.starts(with: "hb_cache_id")) {
                                 containBid = true
                             }
@@ -118,8 +115,14 @@ class BidManager: NSObject {
                         for (key, value) in adServerTargeting! {
                             bidDict[key] = value
                         }
+                        // Caching the response only for Native
+                        if let adType = prebidDict["type"] as? String, adType == "native", containTopBid == true {
+                            if let bid = bid as? [String : AnyObject], let bidTxt = Utils.shared.getStringFromDictionary(bid),  let cacheId = CacheManager.shared.save(content: bidTxt, expireInterval: bid["exp"] as? TimeInterval ?? CacheManager.cacheManagerExpireInterval), !cacheId.isEmpty{
+                                bidDict["hb_cache_id_local"] = cacheId as AnyObject
+                            }
+                        }
                     }
-              }
+                }
                 if (containTopBid && bidDict.count > 0) {
                     return (bidDict, ResultCode.prebidDemandFetchSuccess)
                 } else {
@@ -144,7 +147,7 @@ class BidManager: NSObject {
         }
 
     }
-
+    
     func getCurrentMillis() -> Int64 {
         return Int64(Date().timeIntervalSince1970 * 1000)
     }

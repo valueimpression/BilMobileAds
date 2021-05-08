@@ -1,12 +1,12 @@
 # Uncomment the next line to define a global platform for your project
-platform :ios, '9.0'
+platform :ios, '10.0'
 
 workspace 'BilMobileAds.xcworkspace'
 
 def pbm_pods
   use_frameworks!
 
-  pod 'Google-Mobile-Ads-SDK', '7.60'
+  pod 'Google-Mobile-Ads-SDK', '7.68.0'
 end
 
 

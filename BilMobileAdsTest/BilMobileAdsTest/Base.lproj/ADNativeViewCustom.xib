@@ -85,6 +85,10 @@
                         <constraint firstAttribute="width" constant="250" id="e3T-fD-di4"/>
                     </constraints>
                 </view>
+                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Xfs-wY-ujh">
+                    <rect key="frame" x="68" y="113" width="240" height="128"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                </imageView>
             </subviews>
             <color key="backgroundColor" red="1" green="0.98303861469999998" blue="0.92887652860000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
@@ -121,6 +125,7 @@
                 <outlet property="_callToActionView" destination="E5w-YA-UY8" id="n2h-CK-3Aa"/>
                 <outlet property="_headlineView" destination="beR-eV-DX1" id="Ldy-dD-Pxj"/>
                 <outlet property="_iconView" destination="iNa-bH-h1m" id="M8W-79-yqy"/>
+                <outlet property="_imageMainView" destination="Xfs-wY-ujh" id="i0M-0X-FSg"/>
                 <outlet property="_mediaView" destination="fNp-yu-K4i" id="hRL-Wp-tDK"/>
                 <outlet property="_priceView" destination="Ysb-of-cat" id="2ZQ-nO-dsO"/>
                 <outlet property="_starRatingView" destination="2Of-AP-0h9" id="4Xb-XU-aFP"/>

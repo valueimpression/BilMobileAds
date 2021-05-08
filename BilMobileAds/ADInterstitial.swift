@@ -97,20 +97,6 @@ public class ADInterstitial: NSObject, GADInterstitialDelegate  {
         self.amInterstitial = nil
     }
     
-    func handlerResult(_ resultCode: ResultCode) {
-        if resultCode == ResultCode.prebidDemandFetchSuccess {
-            self.amInterstitial?.load(self.amRequest)
-        } else {
-            self.isFetchingAD = false
-            
-            if resultCode == ResultCode.prebidDemandNoBids {
-                let _ = self.processNoBids()
-            } else if resultCode == ResultCode.prebidDemandTimedOut {
-                PBMobileAds.shared.log(logType: .info, "ADInterstitial Placement '\(String(describing: self.placement))' Timeout. Please check your internet connect.")
-            }
-        }
-    }
-    
     // MARK: - Preload AD
     @objc public func preLoad() {
         PBMobileAds.shared.log(logType: .debug, "ADInterstitial Placement '\(String(describing: self.placement))' - isReady: \(self.isReady()) | isFetchingAD: \(self.isFetchingAD)")
@@ -158,9 +144,19 @@ public class ADInterstitial: NSObject, GADInterstitialDelegate  {
         self.amInterstitial.delegate = self
         
         self.isFetchingAD = true
-        self.adUnit?.fetchDemand(adObject: self.amRequest) { (resultCode: ResultCode) in
-            PBMobileAds.shared.log(logType: .debug, "Prebid demand fetch ADInterstitial placement '\(String(describing: self.placement))' for DFP: \(resultCode.name())")
-            self.handlerResult(resultCode)
+        self.adUnit?.fetchDemand(adObject: self.amRequest) { [weak self] (resultCode: ResultCode) in
+            PBMobileAds.shared.log(logType: .debug, "Prebid demand fetch ADInterstitial placement '\(String(describing: self?.placement))' for DFP: \(resultCode.name())")
+            if resultCode == ResultCode.prebidDemandFetchSuccess {
+                self?.amInterstitial?.load(self?.amRequest)
+            } else {
+                self?.isFetchingAD = false
+                
+                if resultCode == ResultCode.prebidDemandNoBids {
+                    let _ = self?.processNoBids()
+                } else if resultCode == ResultCode.prebidDemandTimedOut {
+                    PBMobileAds.shared.log(logType: .info, "ADInterstitial Placement '\(String(describing: self?.placement))' Timeout. Please check your internet connect.")
+                }
+            }
         }
     }
     
@@ -189,7 +185,7 @@ public class ADInterstitial: NSObject, GADInterstitialDelegate  {
     // MARK: - Delegate
     public func interstitial(_ ad: GADInterstitial, didFailToReceiveAdWithError error: GADRequestError) {
         self.isFetchingAD = false
-        if error.code == Constants.ERROR_NO_FILL {
+        if error.code == BilConstants.ERROR_NO_FILL {
             if !self.processNoBids() {
                 self.adDelegate?.interstitialLoadFail?(error: "interstitialLoadFail: ADInterstitial Placement '\(String(describing: self.placement))' with error: \(error.localizedDescription)")
             }

@@ -1,0 +1,72 @@
+### Xcode ###
+# Xcode
+#
+# gitignore contributors: remember to update Global/Xcode.gitignore, Objective-C.gitignore & Swift.gitignore
+
+## User settings
+xcuserdata/
+
+## compatibility with Xcode 8 and earlier (ignoring not required starting Xcode 9)
+*.xcscmblueprint
+*.xccheckout
+
+## compatibility with Xcode 3 and earlier (ignoring not required starting Xcode 4)
+build/
+DerivedData/
+*.moved-aside
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+
+## Gcc Patch
+/*.gcno
+
+### Xcode Patch ###
+!*.xcworkspace/contents.xcworkspacedata
+**/xcshareddata/WorkspaceSettings.xcsettings
+
+# Cocoapods
+Pods
+Pods/GoogleUtilities/README.md
+Pods/Manifest.lock
+Pods/nanopb/pb.h
+Pods/nanopb/pb_decode.c
+Pods/nanopb/pb_encode.h
+Pods/Pods.xcodeproj/project.pbxproj
+Pods/Pods.xcodeproj/xcuserdata/hanhatlinh.xcuserdatad/xcschemes/Google-Mobile-Ads-SDK.xcscheme
+Pods/Pods.xcodeproj/xcuserdata/hanhatlinh.xcuserdatad/xcschemes/GoogleAppMeasurement.xcscheme
+Pods/Pods.xcodeproj/xcuserdata/hanhatlinh.xcuserdatad/xcschemes/GoogleUtilities.xcscheme
+Pods/Pods.xcodeproj/xcuserdata/hanhatlinh.xcuserdatad/xcschemes/nanopb.xcscheme
+Pods/Pods.xcodeproj/xcuserdata/hanhatlinh.xcuserdatad/xcschemes/Pods-BilMobileAds.xcscheme
+Pods/Pods.xcodeproj/xcuserdata/hanhatlinh.xcuserdatad/xcschemes/Pods-BilMobileAdsTest.xcscheme
+Pods/Pods.xcodeproj/xcuserdata/hanhatlinh.xcuserdatad/xcschemes/PromisesObjC.xcscheme
+Pods/Pods.xcodeproj/xcuserdata/hanhatlinh.xcuserdatad/xcschemes/xcschememanagement.plist
+Pods/PromisesObjC/Sources/FBLPromises/FBLPromise+Wrap.m
+Pods/Target Support Files/Google-Mobile-Ads-SDK/Google-Mobile-Ads-SDK.debug.xcconfig
+Pods/Target Support Files/Google-Mobile-Ads-SDK/Google-Mobile-Ads-SDK.release.xcconfig
+Pods/Target Support Files/GoogleAppMeasurement/GoogleAppMeasurement.debug.xcconfig
+Pods/Target Support Files/GoogleAppMeasurement/GoogleAppMeasurement.release.xcconfig
+Pods/Target Support Files/GoogleUtilities/GoogleUtilities-Info.plist
+Pods/Target Support Files/GoogleUtilities/GoogleUtilities-umbrella.h
+Pods/Target Support Files/GoogleUtilities/GoogleUtilities.debug.xcconfig
+Pods/Target Support Files/GoogleUtilities/GoogleUtilities.release.xcconfig
+Pods/Target Support Files/nanopb/nanopb-Info.plist
+Pods/Target Support Files/nanopb/nanopb.debug.xcconfig
+Pods/Target Support Files/nanopb/nanopb.release.xcconfig
+Pods/Target Support Files/Pods-BilMobileAds/Pods-BilMobileAds-acknowledgements.markdown
+Pods/Target Support Files/Pods-BilMobileAds/Pods-BilMobileAds-acknowledgements.plist
+Pods/Target Support Files/Pods-BilMobileAds/Pods-BilMobileAds.debug.xcconfig
+Pods/Target Support Files/Pods-BilMobileAds/Pods-BilMobileAds.release.xcconfig
+Pods/Target Support Files/Pods-BilMobileAdsTest/Pods-BilMobileAdsTest-acknowledgements.markdown
+Pods/Target Support Files/Pods-BilMobileAdsTest/Pods-BilMobileAdsTest-acknowledgements.plist
+Pods/Target Support Files/Pods-BilMobileAdsTest/Pods-BilMobileAdsTest-frameworks.sh
+Pods/Target Support Files/Pods-BilMobileAdsTest/Pods-BilMobileAdsTest.debug.xcconfig
+Pods/Target Support Files/Pods-BilMobileAdsTest/Pods-BilMobileAdsTest.release.xcconfig
+Pods/Target Support Files/PromisesObjC/PromisesObjC-Info.plist
+Pods/Target Support Files/PromisesObjC/PromisesObjC.debug.xcconfig
+Pods/Target Support Files/PromisesObjC/PromisesObjC.release.xcconfig
