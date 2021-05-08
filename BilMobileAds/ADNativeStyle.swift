@@ -382,11 +382,8 @@ public class ADNativeStyle : NSObject, GADBannerViewDelegate, GADAdSizeDelegate 
     // clicking on an ad.
     @objc optional func nativeStyleWillPresentScreen()
     
-    // Called just before dismissing a full screen view.
     @objc optional func nativeStyleWillDismissScreen()
     
-    // Called just before the application will background or terminate because the user clicked on an
-    // ad that will launch another application (such as the App Store).
     @objc optional func nativeStyleDidDismissScreen()
     
     // Called just before the application will background or terminate because the user clicked on an
