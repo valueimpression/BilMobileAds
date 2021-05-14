@@ -14,8 +14,11 @@ Pod::Spec.new do |spec|
   spec.source        = { :git => "https://github.com/valueimpression/BilMobileAds.git", :tag => "#{spec.version}" }
   spec.source_files  = "BilMobileAds/**/*.{h,m,swift}"
 
-  spec.pod_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64 i386 x86_64'}
-  spec.user_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64 i386 x86_64' }
+  spec.pod_target_xcconfig = { 
+    'VALID_ARCHS' => 'arm64 armv7 x86_64',
+    'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64'
+  }
+  spec.user_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
 
   spec.static_framework = true
   spec.dependency "Google-Mobile-Ads-SDK", '7.68.0'
