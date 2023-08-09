@@ -3,31 +3,30 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 50;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8A2B33BA2A8345B4001350C0 /* BilMobileAds.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A2B33B92A8345B4001350C0 /* BilMobileAds.framework */; };
+		8A2B33BB2A8345B4001350C0 /* BilMobileAds.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8A2B33B92A8345B4001350C0 /* BilMobileAds.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		F957BA06249885260022C6AC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F957BA05249885260022C6AC /* AppDelegate.swift */; };
 		F957BA08249885260022C6AC /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F957BA07249885260022C6AC /* SceneDelegate.swift */; };
 		F957BA0A249885260022C6AC /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F957BA09249885260022C6AC /* ViewController.swift */; };
 		F957BA0D249885260022C6AC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F957BA0B249885260022C6AC /* Main.storyboard */; };
 		F957BA0F2498852A0022C6AC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F957BA0E2498852A0022C6AC /* Assets.xcassets */; };
 		F957BA122498852A0022C6AC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F957BA102498852A0022C6AC /* LaunchScreen.storyboard */; };
-		F957BA26249888F20022C6AC /* BilMobileAds.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F957BA25249888F20022C6AC /* BilMobileAds.framework */; };
-		F957BA27249888F20022C6AC /* BilMobileAds.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F957BA25249888F20022C6AC /* BilMobileAds.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		F9A0BF21252C2D14004A3DEC /* AdManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9A0BF20252C2D14004A3DEC /* AdManager.swift */; };
 		F9D88041251AF5C900F2AC73 /* ADNativeViewCustom.xib in Resources */ = {isa = PBXBuildFile; fileRef = F9D8803F251AF5C900F2AC73 /* ADNativeViewCustom.xib */; };
-		FAE8A6F3BF4C7483ED9BCFAE /* Pods_BilMobileAdsTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B11ABFAA585DDFF726572D4C /* Pods_BilMobileAdsTest.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		F957BA28249888F20022C6AC /* Embed Frameworks */ = {
+		8A2B33BC2A8345B4001350C0 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				F957BA27249888F20022C6AC /* BilMobileAds.framework in Embed Frameworks */,
+				8A2B33BB2A8345B4001350C0 /* BilMobileAds.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -35,9 +34,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		542C2E72692D9BBE866D2C90 /* Pods-BilMobileAdsTest.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BilMobileAdsTest.release.xcconfig"; path = "Target Support Files/Pods-BilMobileAdsTest/Pods-BilMobileAdsTest.release.xcconfig"; sourceTree = "<group>"; };
-		B11ABFAA585DDFF726572D4C /* Pods_BilMobileAdsTest.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BilMobileAdsTest.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		EACD4934B28690C9664CF85E /* Pods-BilMobileAdsTest.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BilMobileAdsTest.debug.xcconfig"; path = "Target Support Files/Pods-BilMobileAdsTest/Pods-BilMobileAdsTest.debug.xcconfig"; sourceTree = "<group>"; };
+		1BFF5512218F9A7D3EEA40A8 /* Pods-BilMobileAdsTest.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BilMobileAdsTest.release.xcconfig"; path = "Target Support Files/Pods-BilMobileAdsTest/Pods-BilMobileAdsTest.release.xcconfig"; sourceTree = "<group>"; };
+		8A2B33B92A8345B4001350C0 /* BilMobileAds.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = BilMobileAds.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C1F3A897E51C668DF7453757 /* Pods-BilMobileAdsTest.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BilMobileAdsTest.debug.xcconfig"; path = "Target Support Files/Pods-BilMobileAdsTest/Pods-BilMobileAdsTest.debug.xcconfig"; sourceTree = "<group>"; };
 		F957BA02249885260022C6AC /* BilMobileAdsTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BilMobileAdsTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F957BA05249885260022C6AC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F957BA07249885260022C6AC /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -46,7 +45,6 @@
 		F957BA0E2498852A0022C6AC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F957BA112498852A0022C6AC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		F957BA132498852A0022C6AC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		F957BA25249888F20022C6AC /* BilMobileAds.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = BilMobileAds.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F9A0BF20252C2D14004A3DEC /* AdManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdManager.swift; sourceTree = "<group>"; };
 		F9D88040251AF5C900F2AC73 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/ADNativeViewCustom.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -56,8 +54,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F957BA26249888F20022C6AC /* BilMobileAds.framework in Frameworks */,
-				FAE8A6F3BF4C7483ED9BCFAE /* Pods_BilMobileAdsTest.framework in Frameworks */,
+				8A2B33BA2A8345B4001350C0 /* BilMobileAds.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -67,8 +64,8 @@
 		565402AFA4946DFB81D24DBB /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				EACD4934B28690C9664CF85E /* Pods-BilMobileAdsTest.debug.xcconfig */,
-				542C2E72692D9BBE866D2C90 /* Pods-BilMobileAdsTest.release.xcconfig */,
+				C1F3A897E51C668DF7453757 /* Pods-BilMobileAdsTest.debug.xcconfig */,
+				1BFF5512218F9A7D3EEA40A8 /* Pods-BilMobileAdsTest.release.xcconfig */,
 			);
 			name = Pods;
 			path = ../Pods;
@@ -77,8 +74,7 @@
 		699D819F760AAB46DC3B4DAD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				F957BA25249888F20022C6AC /* BilMobileAds.framework */,
-				B11ABFAA585DDFF726572D4C /* Pods_BilMobileAdsTest.framework */,
+				8A2B33B92A8345B4001350C0 /* BilMobileAds.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -128,8 +124,7 @@
 				F957B9FE249885260022C6AC /* Sources */,
 				F957B9FF249885260022C6AC /* Frameworks */,
 				F957BA00249885260022C6AC /* Resources */,
-				F957BA28249888F20022C6AC /* Embed Frameworks */,
-				8B1C8EB42FED064880CD235A /* [CP] Embed Pods Frameworks */,
+				8A2B33BC2A8345B4001350C0 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -208,23 +203,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		8B1C8EB42FED064880CD235A /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-BilMobileAdsTest/Pods-BilMobileAdsTest-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-BilMobileAdsTest/Pods-BilMobileAdsTest-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BilMobileAdsTest/Pods-BilMobileAdsTest-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -392,7 +370,7 @@
 		};
 		F957BA172498852A0022C6AC /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = EACD4934B28690C9664CF85E /* Pods-BilMobileAdsTest.debug.xcconfig */;
+			baseConfigurationReference = C1F3A897E51C668DF7453757 /* Pods-BilMobileAdsTest.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -505,7 +483,7 @@
 		};
 		F957BA182498852A0022C6AC /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 542C2E72692D9BBE866D2C90 /* Pods-BilMobileAdsTest.release.xcconfig */;
+			baseConfigurationReference = 1BFF5512218F9A7D3EEA40A8 /* Pods-BilMobileAdsTest.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;

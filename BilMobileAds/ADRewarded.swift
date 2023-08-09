@@ -6,17 +6,18 @@
 //  Copyright © 2020 bil. All rights reserved.
 //
 
+import PrebidMobile
 import GoogleMobileAds
 
-public class ADRewarded: NSObject, GADRewardedAdDelegate {
+public class ADRewarded: NSObject, GADFullScreenContentDelegate {
     
     // MARK: AD View
     weak var adUIViewCtr: UIViewController!
     weak var adDelegate: ADRewardedDelegate!
     
     // MARK: AD OBJ
-    private let amRequest = DFPRequest()
-    private var adUnit: AdUnit!
+    private let amRequest = GAMRequest()
+    private var adUnit: RewardedVideoAdUnit!
     private var amRewardedAd: GADRewardedAd!
     
     var placement: String!
@@ -48,7 +49,7 @@ public class ADRewarded: NSObject, GADRewardedAdDelegate {
         self.adUnitObj = PBMobileAds.shared.getAdUnitObj(placement: self.placement)
         if self.adUnitObj == nil {
             self.isFetchingAD = true
-
+            
             // Get AdUnit Info
             PBMobileAds.shared.getADConfig(adUnit: self.placement) { [weak self] (res: Result<AdUnitObj, Error>) in
                 switch res{
@@ -83,30 +84,6 @@ public class ADRewarded: NSObject, GADRewardedAdDelegate {
         self.amRewardedAd = nil
     }
     
-    func handlerResult(_ resultCode: ResultCode) {
-        if resultCode == ResultCode.prebidDemandFetchSuccess {
-            self.amRewardedAd?.load(self.amRequest){ error in
-                self.isFetchingAD = false
-
-                if let error = error {
-                    PBMobileAds.shared.log(logType: .info, "ADRewarded Placement '\(String(describing: self.placement))' Loaded Fail with Error: \(error.localizedDescription)")
-                    self.adDelegate?.rewardedFailedToLoad?(error: "rewardedFailedToLoad: ADRewarded Placement '\(String(describing: self.placement))' Loaded Fail with Error: \(error.localizedDescription)")
-                } else {
-                    PBMobileAds.shared.log(logType: .info, "ADRewarded Placement '\(String(describing: self.placement))' Loaded Success")
-                    self.adDelegate?.rewardedDidReceiveAd?()
-                }
-            }
-        } else {
-            self.isFetchingAD = false
-            
-            if resultCode == ResultCode.prebidDemandNoBids {
-                PBMobileAds.shared.log(logType: .info, "ADRewarded Placement '\(String(describing: self.placement))' No Bids.")
-            } else if resultCode == ResultCode.prebidDemandTimedOut {
-                PBMobileAds.shared.log(logType: .info, "ADRewarded Placement '\(String(describing: self.placement))' Timeout. Please check your internet connect.")
-            }
-        }
-    }
-    
     // MARK: - Preload AD
     @objc public func preLoad() {
         PBMobileAds.shared.log(logType: .debug, "ADRewarded Placement '\(String(describing: self.placement))' - isReady: \(self.isReady()) |  isFetchingAD: \(self.isFetchingAD)")
@@ -137,18 +114,52 @@ public class ADRewarded: NSObject, GADRewardedAdDelegate {
         PBMobileAds.shared.log(logType: .debug, "[ADRewarded] - configId: '\(adInfor.configId)' | adUnitID: '\(adInfor.adUnitID)'")
         
         self.adUnit = RewardedVideoAdUnit(configId: adInfor.configId)
-        self.amRewardedAd = GADRewardedAd(adUnitID: adInfor.adUnitID)
+        
+        //        let parameters = VideoParameters(mimes: ["video/x-flv", "video/mp4"])
+        //        parameters.protocols = [Signals.Protocols.VAST_2_0]
+        //        parameters.playbackMethod = [Signals.PlaybackMethod.AutoPlaySoundOff]
+        //        self.adUnit.videoParameters = parameters
         
         self.isFetchingAD = true
         self.adUnit.fetchDemand(adObject: self.amRequest) { (resultCode: ResultCode) in
             PBMobileAds.shared.log(logType: .debug, "Prebid demand fetch ADRewarded placement '\(String(describing: self.placement))' for DFP: \(resultCode.name())")
-            self.handlerResult(resultCode)
+            
+            if resultCode == .prebidDemandFetchSuccess {
+                GADRewardedAd.load(withAdUnitID: adInfor.adUnitID, request: self.amRequest) { [weak self] ad, error in
+                    self?.isFetchingAD = false
+                    
+                    guard let self = self else { return }
+                    
+                    if let error = error {
+                        PBMobileAds.shared.log(logType: .debug, "Failed to load rewarded ad with error: \(error.localizedDescription)")
+                        self.adDelegate?.rewardedFailedToLoad?(error: "ADRewarded Placement '\(String(describing: self.placement))' Loaded Fail with Error: \(error.localizedDescription)")
+                    } else {
+                        self.amRewardedAd = ad
+                        self.amRewardedAd.fullScreenContentDelegate = self
+                        
+                        self.adDelegate?.rewardedDidReceiveAd?()
+                        PBMobileAds.shared.log(logType: .info, "ADRewarded Placement '\(String(describing: self.placement))' Loaded Success")
+                    }
+                }
+            } else {
+                self.isFetchingAD = false
+                
+                if resultCode == .prebidDemandNoBids {
+                    PBMobileAds.shared.log(logType: .info, "ADRewarded Placement '\(String(describing: self.placement))' No Bids.")
+                } else if resultCode == .prebidDemandTimedOut {
+                    PBMobileAds.shared.log(logType: .info, "ADRewarded Placement '\(String(describing: self.placement))' Timeout. Please check your internet connect.")
+                }
+            }
         }
     }
     
     @objc public func show(){
-        if self.amRewardedAd?.isReady == true {
-            self.amRewardedAd?.present(fromRootViewController: self.adUIViewCtr, delegate: self)
+        if self.amRewardedAd != nil {
+            self.amRewardedAd.present(fromRootViewController: self.adUIViewCtr) {
+                let reward = self.amRewardedAd.adReward;
+                let adRewardedItem = ADRewardedItem(type: reward.type, amount: reward.amount)
+                self.adDelegate?.rewardedUserDidEarn?(rewardedItem: adRewardedItem)
+            }
         } else {
             PBMobileAds.shared.log(logType: .info, "ADRewarded Placement '\(String(describing: self.placement))' is not ready to be shown, please call preload() first.")
         }
@@ -160,7 +171,7 @@ public class ADRewarded: NSObject, GADRewardedAdDelegate {
     }
     
     @objc public func isReady() -> Bool {
-        return self.amRewardedAd?.isReady == true ? true : false
+        return self.amRewardedAd != nil ? true : false
     }
     
     @objc public func setListener(_ adDelegate : ADRewardedDelegate){
@@ -168,25 +179,25 @@ public class ADRewarded: NSObject, GADRewardedAdDelegate {
     }
     
     // MARK: - Delegate
-    public func rewardedAd(_ rewardedAd: GADRewardedAd, userDidEarn reward: GADAdReward) {
-        PBMobileAds.shared.log(logType: .info, "ADRewarded received with type: \(reward.type), amount \(reward.amount).")
-        PBMobileAds.shared.log(logType: .info, "ADRewarded Placement '\(String(describing: self.placement))'")
-        
-        let adRewardedItem = ADRewardedItem(type: reward.type, amount: reward.amount)
-        self.adDelegate?.rewardedUserDidEarn?(rewardedItem: adRewardedItem)
+    public func adDidRecordClick(_ ad: GADFullScreenPresentingAd) {
+        PBMobileAds.shared.log(logType: .info, "ADRewarded Placement '\(String(describing: self.placement))' adDidRecordClick")
+        self.adDelegate?.rewardedDidRecordClick?()
     }
     
-    public func rewardedAdDidPresent(_ rewardedAd: GADRewardedAd) {
-        PBMobileAds.shared.log(logType: .info, "ADRewarded Placement '\(String(describing: self.placement))'")
-        self.adDelegate?.rewardedDidPresent?()
+    public func adDidRecordImpression(_ ad: GADFullScreenPresentingAd) {
+        PBMobileAds.shared.log(logType: .info, "ADRewarded Placement '\(String(describing: self.placement))' adDidRecordImpression")
+        self.adDelegate?.rewardedDidRecordImpression?()
+        self.amRewardedAd = nil
     }
     
-    public func rewardedAdDidDismiss(_ rewardedAd: GADRewardedAd) {
-        PBMobileAds.shared.log(logType: .info, "ADRewarded Placement '\(String(describing: self.placement))'")
+    public func adDidDismissFullScreenContent(_ ad: GADFullScreenPresentingAd) {
+        PBMobileAds.shared.log(logType: .info, "ADRewarded Placement '\(String(describing: self.placement))' adDidDismissFullScreenContent")
         self.adDelegate?.rewardedDidDismiss?()
     }
     
-    public func rewardedAd(_ rewardedAd: GADRewardedAd, didFailToPresentWithError error: Error) {
+    public func ad(_ ad: GADFullScreenPresentingAd, didFailToPresentFullScreenContentWithError error: Error) {
+        self.isFetchingAD = false
+        
         PBMobileAds.shared.log(logType: .info, "ADRewarded Placement '\(String(describing: self.placement))' Fail To Present with error: \(error.localizedDescription)");
         self.adDelegate?.rewardedFailedToPresent?(error: "rewardedFailToPresent: ADRewarded Placement '\(String(describing: self.placement))' error: \(error.localizedDescription)")
     }
@@ -196,21 +207,24 @@ public class ADRewarded: NSObject, GADRewardedAdDelegate {
     
     /// Tells the delegate that the user earned a reward. show completed
     @objc optional func rewardedDidReceiveAd()
+
+    /// Called when an rewarded ad request fail.
+    @objc optional func rewardedFailedToLoad(error: String)
     
     /// Tells the delegate that the user earned a reward. show completed
     @objc optional func rewardedUserDidEarn(rewardedItem: ADRewardedItem)
     
-    /// Called when an rewarded ad request fail.
-    @objc optional func rewardedFailedToLoad(error: String)
-    
-    /// Tells the delegate that the rewarded ad failed to present.
-    @objc optional func rewardedFailedToPresent(error: String)
+    /// Tells the delegate that the rewarded ad was clicked.
+    @objc optional func rewardedDidRecordClick()
     
     /// Tells the delegate that the rewarded ad was presented.
-    @objc optional func rewardedDidPresent()
+    @objc optional func rewardedDidRecordImpression()
     
     /// Tells the delegate that the rewarded ad was dismissed.
     @objc optional func rewardedDidDismiss()
+    
+    /// Tells the delegate that the rewarded ad failed to present.
+    @objc optional func rewardedFailedToPresent(error: String)
     
 }
 

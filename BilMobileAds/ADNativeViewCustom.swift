@@ -9,7 +9,7 @@
 import UIKit
 import GoogleMobileAds
 
-@objc public class ADNativeViewCustom: GADUnifiedNativeAdView {
+@objc public class ADNativeViewCustom: GADNativeAdView {
     
     /// Weak reference to your ad view's headline asset view.
     @IBOutlet public weak var _headlineView: UIView!
@@ -34,10 +34,10 @@ import GoogleMobileAds
     @IBOutlet public weak var _mediaView: ADMediaView!
     
     /// This property must point to the unified native ad object rendered by this ad view.
-    override public var nativeAd: GADUnifiedNativeAd! {
+    override public var nativeAd: GADNativeAd! {
         didSet {
             if let nativeContentAd = nativeAd, let callToActionView = callToActionView {
-                nativeContentAd.register(self, clickableAssetViews: [GADUnifiedNativeAssetIdentifier.callToActionAsset: callToActionView], nonclickableAssetViews: [:])
+                nativeContentAd.register(self, clickableAssetViews: [GADNativeAssetIdentifier.callToActionAsset: callToActionView], nonclickableAssetViews: [:])
             }
         }
     }

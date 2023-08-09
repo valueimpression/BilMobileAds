@@ -28,18 +28,18 @@ class ViewController: UIViewController, ADBannerDelegate, ADInterstitialDelegate
         bannerView1.backgroundColor = .blue
         bannerView2.backgroundColor = .red
         
-//        banner = ADBanner(self, view: bannerView1, placement: "1001")
+//        banner = ADBanner(self, view: bannerView1, placement: "eea66d76-c12c-446b-a9b0-bdb2f39e0dac")
         
-//        interstitialAD = ADInterstitial(self,  placement: "1002")
+        interstitialAD = ADInterstitial(self,  placement: "6e02e904-0306-4efe-90eb-3538ae4b4fc0")
         
 //        rewardedAD = ADRewarded(self, placement: "1003")
         
 //        nativeStyle = ADNativeStyle(self, view: bannerView2, placement: "1004")
         
-        adManager = AdManager()
-        nativeCustom = ADNativeCustom(self, placement: "1004")
-        nativeCustom.setListener(adManager)
-        adManager.setNativeObj(nativeCus: nativeCustom)
+//        adManager = AdManager()
+//        nativeCustom = ADNativeCustom(self, placement: "1004")
+//        nativeCustom.setListener(adManager)
+//        adManager.setNativeObj(nativeCus: nativeCustom)
     }
     
     override func viewDidDisappear(_ animated: Bool) {

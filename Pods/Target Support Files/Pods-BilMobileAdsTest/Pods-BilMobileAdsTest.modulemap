@@ -1,6 +1,0 @@
-framework module Pods_BilMobileAdsTest {
-  umbrella header "Pods-BilMobileAdsTest-umbrella.h"
-
-  export *
-  module * { export * }
-}

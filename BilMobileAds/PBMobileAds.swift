@@ -6,6 +6,7 @@
 //  Copyright © 2020 bil. All rights reserved.
 //
 
+import PrebidMobile
 import GoogleMobileAds
 
 public class PBMobileAds: NSObject, CloseListenerDelegate {
@@ -23,7 +24,7 @@ public class PBMobileAds: NSObject, CloseListenerDelegate {
     var isShowCMP: Bool = false
     private var closure: (WorkComplete) -> Void
     // MARK: LOG
-    private final let DEBUG_MODE: Bool = false
+    private final let DEBUG_MODE: Bool = true
     
     private override init() {
         self.closure = {_ in return}
@@ -38,9 +39,9 @@ public class PBMobileAds: NSObject, CloseListenerDelegate {
         Prebid.shared.shareGeoLocation = true
         
         // Setup Test Mode
-        if testMode {
-            GADMobileAds.sharedInstance().requestConfiguration.testDeviceIdentifiers = [(kGADSimulatorID as! String), "cc7ca766f86b43ab6cdc92bed424069b"]
-        }
+//        if testMode {
+//            GADMobileAds.sharedInstance().requestConfiguration.testDeviceIdentifiers = [(kGADSimulatorID as! String), "cc7ca766f86b43ab6cdc92bed424069b"]
+//        }
         GADMobileAds.sharedInstance().start()
     }
     
@@ -175,11 +176,19 @@ public class PBMobileAds: NSObject, CloseListenerDelegate {
     
     @objc public func log(logType: LogType, _ object: Any, filename: String = #file, line: Int = #line, column: Int = #column, funcName: String = #function) {
 
+        // Create Date
+        let date = Date()
+        // Create Date Formatter
+        let dateFormatter = DateFormatter()
+        
+        // Convert Date to String
+        let dateStr = dateFormatter.string(from: date)
+        
         if logType == .debug {
             if !DEBUG_MODE { return }
-            print("\(Date().toString()) \(logType.icon())[PBMobileAds]: [\(self.sourceFileName(filePath: filename))]:l-\(line) c-\(column) | \(funcName) -> \(object)")
+            print("\(dateStr) \(logType.icon())[PBMobileAds]: [\(self.sourceFileName(filePath: filename))]:l-\(line) c-\(column) | \(funcName) -> \(object)")
         } else {
-            print("\(Date().toString()) \(logType.icon())[PBMobileAds]: [\(self.sourceFileName(filePath: filename))]:l-\(line) c-\(column) | \(funcName) -> \(object)")
+            print("\(dateStr) \(logType.icon())[PBMobileAds]: [\(self.sourceFileName(filePath: filename))]:l-\(line) c-\(column) | \(funcName) -> \(object)")
         }
     }
     
@@ -192,14 +201,15 @@ public class PBMobileAds: NSObject, CloseListenerDelegate {
     }
     
     @objc public func setGender(gender: Gender) {
-        Targeting.shared.gender = gender
+        Targeting.shared.userGender = gender
     }
     
     @objc public func setYearOfBirth(yob: Int) {
-        do {
-            try Targeting.shared.setYearOfBirth(yob: yob)
-        } catch {
-            log(logType: .debug, "Unexpected error: \(error).")
-        }
+        Targeting.shared.setYearOfBirth(yob: yob)
+//        do {
+//            try Targeting.shared.setYearOfBirth(yob: yob)
+//        } catch {
+//            log(logType: .debug, "Unexpected error: \(error).")
+//        }
     }
 }

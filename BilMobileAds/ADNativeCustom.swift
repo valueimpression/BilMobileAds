@@ -6,18 +6,23 @@
 //  Copyright © 2020 bil. All rights reserved.
 //
 
+import PrebidMobile
 import GoogleMobileAds
 
 public class ADNativeCustom : NSObject,
-                              GADUnifiedNativeAdLoaderDelegate, GADAdLoaderDelegate,
-                              GADNativeCustomTemplateAdLoaderDelegate, NativeAdDelegate {
+                              GADNativeAdDelegate, GADAdLoaderDelegate,
+                              GADCustomNativeAdLoaderDelegate, NativeAdDelegate {
+    public func customNativeAdFormatIDs(for adLoader: GADAdLoader) -> [String] {
+        return ["12009691"]
+    }
+    
     
     // MARK: - View OBJ
     weak var adUIViewCtr: UIViewController!
     weak var adNativeDelegate: NativeAdLoaderCustomDelegate!
     
     // MARK: - AD OBJ
-    private let amRequest = DFPRequest()
+    private let amRequest = GAMRequest()
     private var adUnit: NativeRequest!
     private var amNativeDFP: GADAdLoader!
     
@@ -44,13 +49,13 @@ public class ADNativeCustom : NSObject,
         PBMobileAds.shared.log(logType: .info, "ADNativeCustom Placement '\(String(describing: self.placement))' Deinit")
         self.destroy()
     }
-        
+    
     // MARK: - Handler AD
     func getConfigAD() {
         self.adUnitObj = PBMobileAds.shared.getAdUnitObj(placement: self.placement)
         if self.adUnitObj == nil {
             self.isFetchingAD = true
-
+            
             // Get AdUnit Info
             PBMobileAds.shared.getADConfig(adUnit: self.placement) { [weak self] (res: Result<AdUnitObj, Error>) in
                 switch res{
@@ -97,7 +102,7 @@ public class ADNativeCustom : NSObject,
             return
         }
         self.resetAD()
-
+        
         // Check Active
         if !adUnitObj.isActive || self.adUnitObj.adInfor.count <= 0 {
             PBMobileAds.shared.log(logType: .info, "ADNativeCustom Placement '\(String(describing: self.placement))' is not active or not exist.")
@@ -135,13 +140,13 @@ public class ADNativeCustom : NSObject,
         
         let videoOptions = GADVideoOptions()
         videoOptions.startMuted = true
-        self.amNativeDFP = GADAdLoader(adUnitID: adInfor.adUnitID, rootViewController: self.adUIViewCtr, adTypes: [ .unifiedNative, .nativeCustomTemplate ], options: [videoOptions])
+        self.amNativeDFP = GADAdLoader(adUnitID: adInfor.adUnitID, rootViewController: self.adUIViewCtr, adTypes: [ .native, .customNative, .gamBanner], options: [videoOptions])
         self.amNativeDFP.delegate = self
         
         self.isFetchingAD = true
         self.adUnit.fetchDemand(adObject: self.amRequest) { [weak self] (resultCode: ResultCode) in
             PBMobileAds.shared.log(logType: .debug, "Prebid demand fetch ADNativeCustom placement '\(String(describing: self?.placement))' for DFP: \(resultCode.name())")
-
+            
             if resultCode == ResultCode.prebidDemandFetchSuccess {
                 self?.amNativeDFP?.load(self?.amRequest)
             } else {
@@ -172,7 +177,7 @@ public class ADNativeCustom : NSObject,
     public func nativeCustomTemplateIDs(for adLoader: GADAdLoader) -> [String] {
         return [PBMobileAds.shared.nativeTemplateId]
     }
-    public func adLoader(_ adLoader: GADAdLoader, didReceive nativeCustomTemplateAd: GADNativeCustomTemplateAd) {
+    public func adLoader(_ adLoader: GADAdLoader, didReceive nativeCustomTemplateAd: GADCustomNativeAd) {
         Utils.shared.delegate = self
         Utils.shared.findNative(adObject: nativeCustomTemplateAd)
     }
@@ -193,18 +198,18 @@ public class ADNativeCustom : NSObject,
         PBMobileAds.shared.log(logType: .info, "ADNativeCustom Template Placement '\(String(describing: self.placement))' Not Valid")
     }
     /// GADUnifiedNative
-    public func adLoader(_ adLoader: GADAdLoader, didReceive unifiedNativeAd: GADUnifiedNativeAd) {
+    public func adLoader(_ adLoader: GADAdLoader, didReceive nativeAd: GADNativeAd) {
         self.isFetchingAD = false
         
         /// Create ADNativeViewBuilder
-        let builder: ADNativeViewBuilder = ADNativeViewBuilder(placement: self.placement, unifiedNativeAd: unifiedNativeAd)
+        let builder: ADNativeViewBuilder = ADNativeViewBuilder(placement: self.placement, unifiedNativeAd: nativeAd)
         self.adNativeDelegate?.nativeAdViewLoaded?(viewBuilder: builder)
         
         PBMobileAds.shared.log(logType: .info, "ADNativeCustom unifiedNativeAd Placement '\(String(describing: self.placement))' loaded")
     }
-    public func adLoader(_ adLoader: GADAdLoader, didFailToReceiveAdWithError error: GADRequestError) {
+    public func adLoader(_ adLoader: GADAdLoader, didFailToReceiveAdWithError error: Error) {
         self.isFetchingAD = false
-         
+        
         PBMobileAds.shared.log(logType: .info, "ADNativeCustom Placement '\(String(describing: self.placement))' with error: \(error.localizedDescription)")
         self.adNativeDelegate?.nativeAdFailedToLoad?(error: "nativeFailedToLoad: ADNativeCustom Placement '\(String(describing: self.placement))' with error: \(error.localizedDescription)")
     }
@@ -228,7 +233,7 @@ public class ADNativeCustom : NSObject,
      * Called when an ad native did record Impression.
      * */
     @objc optional func nativeAdDidRecordImpression(data: String)
-
+    
     /*
      * Called just before the application will background or terminate because the user clicked on an
      * ad that will launch another application (such as the App Store).

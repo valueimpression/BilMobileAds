@@ -6,18 +6,19 @@
 //  Copyright © 2020 bil. All rights reserved.
 //
 
+import PrebidMobile
 import GoogleMobileAds
 
-@objc public class ADNativeViewBuilder: NSObject, GADUnifiedNativeAdDelegate, NativeAdEventDelegate, GADVideoControllerDelegate {
+@objc public class ADNativeViewBuilder: NSObject, GADNativeAdDelegate, NativeAdEventDelegate, GADVideoControllerDelegate {
     
     let placement: String!
     var nativeAd: NativeAd!
-    var gadNativeAd: GADUnifiedNativeAd!
+    var gadNativeAd: GADNativeAd!
     
     var videoDelegate: NativeAdVideoDelegate!
     var nativeAdDelegate: NativeAdCustomDelegate!
     
-    init(placement: String, unifiedNativeAd: GADUnifiedNativeAd) {
+    init(placement: String, unifiedNativeAd: GADNativeAd) {
         self.placement = placement
         self.gadNativeAd = unifiedNativeAd
     }
@@ -201,11 +202,11 @@ import GoogleMobileAds
     }
     
     // MARK: - UnifiedNativeAd Delegate
-    public func nativeAdDidRecordClick(_ nativeAd: GADUnifiedNativeAd) {
+    public func nativeAdDidRecordClick(_ nativeAd: GADNativeAd) {
         PBMobileAds.shared.log(logType: .info, "ADNativeCustom Placement '\(String(describing: self.placement))' did record Click")
         self.nativeAdDelegate?.nativeAdDidRecordClick?(data: "ADNativeCustom Placement '\(String(describing: self.placement))' did record Click")
     }
-    public func nativeAdDidRecordImpression(_ nativeAd: GADUnifiedNativeAd) {
+    public func nativeAdDidRecordImpression(_ nativeAd: GADNativeAd) {
         PBMobileAds.shared.log(logType: .info, "ADNativeCustom Placement '\(String(describing: self.placement))' did record Impression")
         self.nativeAdDelegate?.nativeAdDidRecordImpression?(data: "ADNativeCustom Placement '\(String(describing: self.placement))' did record Impression")
     }
