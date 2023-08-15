@@ -104,14 +104,15 @@ public class ADNativeCustom : NSObject,
         self.resetAD()
         
         // Check Active
-        if !adUnitObj.isActive || self.adUnitObj.adInfor.count <= 0 {
+        if !adUnitObj.isActive || self.adUnitObj.adInfor.count == 0 {
             PBMobileAds.shared.log(logType: .info, "ADNativeCustom Placement '\(String(describing: self.placement))' is not active or not exist.")
             return
         }
         
         // Get AdInfor
-        let isVideo = ADFormat(rawValue: self.adUnitObj.defaultType) == ADFormat.vast
-        guard let adInfor = PBMobileAds.shared.getAdInfor(isVideo: isVideo, adUnitObj: self.adUnitObj) else {
+//        let isVideo = ADFormat(rawValue: self.adUnitObj.defaultType) == ADFormat.vast
+//        guard let adInfor = PBMobileAds.shared.getAdInfor(isVideo: isVideo, adUnitObj: self.adUnitObj) else {
+        guard let adInfor = self.adUnitObj.adInfor.first else {
             PBMobileAds.shared.log(logType: .info, "AdInfor of ADNativeCustom Placement '" + self.placement + "' is not exist.")
             return
         }
@@ -147,17 +148,18 @@ public class ADNativeCustom : NSObject,
         self.adUnit.fetchDemand(adObject: self.amRequest) { [weak self] (resultCode: ResultCode) in
             PBMobileAds.shared.log(logType: .debug, "Prebid demand fetch ADNativeCustom placement '\(String(describing: self?.placement))' for DFP: \(resultCode.name())")
             
-            if resultCode == ResultCode.prebidDemandFetchSuccess {
-                self?.amNativeDFP?.load(self?.amRequest)
-            } else {
-                self?.isFetchingAD = false
-                
-                if resultCode == ResultCode.prebidDemandNoBids {
-                    PBMobileAds.shared.log(logType: .info, "ADNativeCustom Placement '\(String(describing: self?.placement))' No Bids.")
-                } else if resultCode == ResultCode.prebidDemandTimedOut {
-                    PBMobileAds.shared.log(logType: .info, "ADNativeCustom Placement '\(String(describing: self?.placement))' Timeout. Please check your internet connect.")
-                }
-            }
+            self?.amNativeDFP?.load(self?.amRequest)
+//            if resultCode == ResultCode.prebidDemandFetchSuccess {
+//                self?.amNativeDFP?.load(self?.amRequest)
+//            } else {
+//                self?.isFetchingAD = false
+//
+//                if resultCode == ResultCode.prebidDemandNoBids {
+//                    PBMobileAds.shared.log(logType: .info, "ADNativeCustom Placement '\(String(describing: self?.placement))' No Bids.")
+//                } else if resultCode == ResultCode.prebidDemandTimedOut {
+//                    PBMobileAds.shared.log(logType: .info, "ADNativeCustom Placement '\(String(describing: self?.placement))' Timeout. Please check your internet connect.")
+//                }
+//            }
         }
     }
     

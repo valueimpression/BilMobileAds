@@ -28,9 +28,9 @@ class ViewController: UIViewController, ADBannerDelegate, ADInterstitialDelegate
         bannerView1.backgroundColor = .blue
         bannerView2.backgroundColor = .red
         
-//        banner = ADBanner(self, view: bannerView1, placement: "eea66d76-c12c-446b-a9b0-bdb2f39e0dac")
+//        banner = ADBanner(self, view: bannerView1, placement: "1001")
         
-        interstitialAD = ADInterstitial(self,  placement: "6e02e904-0306-4efe-90eb-3538ae4b4fc0")
+//        interstitialAD = ADInterstitial(self,  placement: "1002")
         
 //        rewardedAD = ADRewarded(self, placement: "1003")
         

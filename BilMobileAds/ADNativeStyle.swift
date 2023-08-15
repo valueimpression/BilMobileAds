@@ -135,21 +135,22 @@ public class ADNativeStyle : NSObject, GADBannerViewDelegate, GADAdSizeDelegate 
         self.resetAD()
         
         // Check Active
-        if !adUnitObj.isActive || self.adUnitObj.adInfor.count <= 0 {
+        if !adUnitObj.isActive || self.adUnitObj.adInfor.count == 0 {
             PBMobileAds.shared.log(logType: .info, "ADNativeStyle Placement '\(String(describing: self.placement))' is not active or not exist.")
             return
         }
         
-        // Check and Set Default
-        self.adFormatDefault = ADFormat(rawValue: self.adUnitObj.defaultType)
-        if !self.setDefaultBidType && self.adUnitObj.adInfor.count >= 2 {
-            self.adFormatDefault = self.adFormatDefault == .vast ? .html : .vast
-            self.setDefaultBidType = true
-        }
+//        // Check and Set Default
+//        self.adFormatDefault = ADFormat(rawValue: self.adUnitObj.defaultType)
+//        if !self.setDefaultBidType && self.adUnitObj.adInfor.count >= 2 {
+//            self.adFormatDefault = self.adFormatDefault == .vast ? .html : .vast
+//            self.setDefaultBidType = true
+//        }
         
         // Get AdInfor
-        let isVideo = self.adFormatDefault == ADFormat.vast
-        guard let adInfor = PBMobileAds.shared.getAdInfor(isVideo: isVideo, adUnitObj: self.adUnitObj) else {
+//        let isVideo = self.adFormatDefault == ADFormat.vast
+//        guard let adInfor = PBMobileAds.shared.getAdInfor(isVideo: isVideo, adUnitObj: self.adUnitObj) else {
+        guard let adInfor = self.adUnitObj.adInfor.first else {
             PBMobileAds.shared.log(logType: .info, "AdInfor of ADNativeStyle Placement '" + self.placement + "' is not exist.")
             return
         }
@@ -197,18 +198,19 @@ public class ADNativeStyle : NSObject, GADBannerViewDelegate, GADAdSizeDelegate 
         self.adUnit.fetchDemand(adObject: self.amRequest) { [weak self] (resultCode: ResultCode) in
             PBMobileAds.shared.log(logType: .debug, "Prebid demand fetch ADNativeStyle placement '\(String(describing: self?.placement))' for DFP: \(resultCode.name())")
             
-            if resultCode == .prebidDemandFetchSuccess {
-                self?.amNative?.load(self?.amRequest)
-            } else {
-                self?.isFetchingAD = false
-                self?.isLoadNativeSucc = false
-                
-                if resultCode == .prebidDemandNoBids {
-                    let _ = self?.processNoBids()
-                } else if resultCode == .prebidDemandTimedOut {
-                    PBMobileAds.shared.log(logType: .info, "ADNativeStyle Placement '\(String(describing: self?.placement))' Timeout. Please check your internet connect.")
-                }
-            }
+            self?.amNative?.load(self?.amRequest)
+//            if resultCode == .prebidDemandFetchSuccess {
+//                self?.amNative?.load(self?.amRequest)
+//            } else {
+//                self?.isFetchingAD = false
+//                self?.isLoadNativeSucc = false
+//
+//                if resultCode == .prebidDemandNoBids {
+//                    let _ = self?.processNoBids()
+//                } else if resultCode == .prebidDemandTimedOut {
+//                    PBMobileAds.shared.log(logType: .info, "ADNativeStyle Placement '\(String(describing: self?.placement))' Timeout. Please check your internet connect.")
+//                }
+//            }
         }
     }
     

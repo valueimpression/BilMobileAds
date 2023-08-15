@@ -98,14 +98,15 @@ public class ADRewarded: NSObject, GADFullScreenContentDelegate {
         self.resetAD()
         
         // Check Active
-        if !adUnitObj.isActive || self.adUnitObj.adInfor.count <= 0 {
+        if !adUnitObj.isActive || self.adUnitObj.adInfor.count == 0 {
             PBMobileAds.shared.log(logType: .info, "ADRewarded Placement '\(String(describing: self.placement))' is not active or not exist.");
             return
         }
         
         // Get AdInfor
-        let isVideo = ADFormat(rawValue: self.adUnitObj.defaultType) == ADFormat.vast;
-        guard let adInfor = PBMobileAds.shared.getAdInfor(isVideo: isVideo, adUnitObj: self.adUnitObj) else {
+//        let isVideo = ADFormat(rawValue: self.adUnitObj.defaultType) == ADFormat.vast;
+//        guard let adInfor = PBMobileAds.shared.getAdInfor(isVideo: isVideo, adUnitObj: self.adUnitObj) else {
+        guard let adInfor = self.adUnitObj.adInfor.first else {
             PBMobileAds.shared.log(logType: .info, "AdInfor of ADRewarded Placement '" + self.placement + "' is not exist.");
             return
         }
@@ -124,32 +125,34 @@ public class ADRewarded: NSObject, GADFullScreenContentDelegate {
         self.adUnit.fetchDemand(adObject: self.amRequest) { (resultCode: ResultCode) in
             PBMobileAds.shared.log(logType: .debug, "Prebid demand fetch ADRewarded placement '\(String(describing: self.placement))' for DFP: \(resultCode.name())")
             
-            if resultCode == .prebidDemandFetchSuccess {
-                GADRewardedAd.load(withAdUnitID: adInfor.adUnitID, request: self.amRequest) { [weak self] ad, error in
-                    self?.isFetchingAD = false
-                    
-                    guard let self = self else { return }
-                    
-                    if let error = error {
-                        PBMobileAds.shared.log(logType: .debug, "Failed to load rewarded ad with error: \(error.localizedDescription)")
-                        self.adDelegate?.rewardedFailedToLoad?(error: "ADRewarded Placement '\(String(describing: self.placement))' Loaded Fail with Error: \(error.localizedDescription)")
-                    } else {
-                        self.amRewardedAd = ad
-                        self.amRewardedAd.fullScreenContentDelegate = self
-                        
-                        self.adDelegate?.rewardedDidReceiveAd?()
-                        PBMobileAds.shared.log(logType: .info, "ADRewarded Placement '\(String(describing: self.placement))' Loaded Success")
-                    }
-                }
-            } else {
-                self.isFetchingAD = false
+            GADRewardedAd.load(withAdUnitID: adInfor.adUnitID, request: self.amRequest) { [weak self] ad, error in
+                self?.isFetchingAD = false
                 
-                if resultCode == .prebidDemandNoBids {
-                    PBMobileAds.shared.log(logType: .info, "ADRewarded Placement '\(String(describing: self.placement))' No Bids.")
-                } else if resultCode == .prebidDemandTimedOut {
-                    PBMobileAds.shared.log(logType: .info, "ADRewarded Placement '\(String(describing: self.placement))' Timeout. Please check your internet connect.")
+                guard let self = self else { return }
+                
+                if let error = error {
+                    PBMobileAds.shared.log(logType: .debug, "Failed to load rewarded ad with error: \(error.localizedDescription)")
+                    self.adDelegate?.rewardedFailedToLoad?(error: "ADRewarded Placement '\(String(describing: self.placement))' Loaded Fail with Error: \(error.localizedDescription)")
+                } else {
+                    self.amRewardedAd = ad
+                    self.amRewardedAd.fullScreenContentDelegate = self
+                    
+                    self.adDelegate?.rewardedDidReceiveAd?()
+                    PBMobileAds.shared.log(logType: .info, "ADRewarded Placement '\(String(describing: self.placement))' Loaded Success")
                 }
             }
+            
+//            if resultCode == .prebidDemandFetchSuccess {
+//
+//            } else {
+//                self.isFetchingAD = false
+//
+//                if resultCode == .prebidDemandNoBids {
+//                    PBMobileAds.shared.log(logType: .info, "ADRewarded Placement '\(String(describing: self.placement))' No Bids.")
+//                } else if resultCode == .prebidDemandTimedOut {
+//                    PBMobileAds.shared.log(logType: .info, "ADRewarded Placement '\(String(describing: self.placement))' Timeout. Please check your internet connect.")
+//                }
+//            }
         }
     }
     

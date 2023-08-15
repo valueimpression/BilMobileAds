@@ -135,21 +135,22 @@ public class ADBanner : NSObject, GADBannerViewDelegate {
         self.resetAD()
         
         // Check Active
-        if !adUnitObj.isActive || self.adUnitObj.adInfor.count <= 0 {
+        if !adUnitObj.isActive || self.adUnitObj.adInfor.count == 0 {
             PBMobileAds.shared.log(logType: .info, "ADBanner Placement '\(String(describing: self.placement))' is not active or not exist.")
             return
         }
         
-        // Check and Set Default
-        self.adFormatDefault = ADFormat(rawValue: self.adUnitObj.defaultType)
-        if !self.setDefaultBidType && self.adUnitObj.adInfor.count >= 2 {
-            self.adFormatDefault = self.adFormatDefault == .vast ? .html : .vast
-            self.setDefaultBidType = true
-        }
+//        // Check and Set Default
+//        self.adFormatDefault = ADFormat(rawValue: self.adUnitObj.defaultType)
+//        if !self.setDefaultBidType && self.adUnitObj.adInfor.count >= 2 {
+//            self.adFormatDefault = self.adFormatDefault == .vast ? .html : .vast
+//            self.setDefaultBidType = true
+//        }
         
         // Get AdInfor
-        let isVideo = self.adFormatDefault == ADFormat.vast
-        guard let adInfor = PBMobileAds.shared.getAdInfor(isVideo: isVideo, adUnitObj: self.adUnitObj) else {
+//        let isVideo = self.adFormatDefault == ADFormat.vast
+//        guard let adInfor = PBMobileAds.shared.getAdInfor(isVideo: isVideo, adUnitObj: self.adUnitObj) else {
+        guard let adInfor = self.adUnitObj.adInfor.first else {
             PBMobileAds.shared.log(logType: .info, "AdInfor of ADBanner Placement '" + self.placement + "' is not exist.")
             return
         }
@@ -190,18 +191,20 @@ public class ADBanner : NSObject, GADBannerViewDelegate {
         self.adUnit?.fetchDemand(adObject: self.amRequest) { [weak self] (resultCode: ResultCode) in
             PBMobileAds.shared.log(logType: .debug, "Prebid demand fetch ADBanner placement '\(String(describing: self?.placement))' for DFP: \(resultCode.name())")
             
-            if resultCode == .prebidDemandFetchSuccess {
-                self?.amBanner?.load(self?.amRequest)
-            } else {
-                self?.isFetchingAD = false
-                self?.isLoadBannerSucc = false
-                
-                if resultCode == .prebidDemandNoBids {
-                    let _ = self?.processNoBids()
-                } else if resultCode == .prebidDemandTimedOut {
-                    PBMobileAds.shared.log(logType: .info, "ADBanner Placement '\(String(describing: self?.placement))' Timeout. Please check your internet connect.")
-                }
-            }
+            self?.amBanner?.load(self?.amRequest)
+            
+//            if resultCode == .prebidDemandFetchSuccess {
+//                self?.amBanner?.load(self?.amRequest)
+//            } else {
+//                self?.isFetchingAD = false
+//                self?.isLoadBannerSucc = false
+//
+//                if resultCode == .prebidDemandNoBids {
+//                    let _ = self?.processNoBids()
+//                } else if resultCode == .prebidDemandTimedOut {
+//                    PBMobileAds.shared.log(logType: .info, "ADBanner Placement '\(String(describing: self?.placement))' Timeout. Please check your internet connect.")
+//                }
+//            }
         }
     }
     
