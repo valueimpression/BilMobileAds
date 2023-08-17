@@ -212,12 +212,12 @@ public class ADInterstitial: NSObject, GADFullScreenContentDelegate  {
     public func adDidRecordImpression(_ ad: GADFullScreenPresentingAd) {
         PBMobileAds.shared.log(logType: .info, "ADInterstitial Placement '\(String(describing: self.placement))' adDidRecordImpression")
         self.adDelegate?.interstitialDidRecordImpression?()
-        self.amInterstitial = nil
     }
     
     public func adDidDismissFullScreenContent(_ ad: GADFullScreenPresentingAd) {
         PBMobileAds.shared.log(logType: .info, "ADInterstitial Placement '\(String(describing: self.placement))' adDidDismissFullScreenContent")
         self.adDelegate?.interstitialDidDismiss?()
+        self.amInterstitial = nil
     }
     
     public func ad(_ ad: GADFullScreenPresentingAd, didFailToPresentFullScreenContentWithError error: Error) {

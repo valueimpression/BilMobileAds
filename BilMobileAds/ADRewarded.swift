@@ -190,12 +190,12 @@ public class ADRewarded: NSObject, GADFullScreenContentDelegate {
     public func adDidRecordImpression(_ ad: GADFullScreenPresentingAd) {
         PBMobileAds.shared.log(logType: .info, "ADRewarded Placement '\(String(describing: self.placement))' adDidRecordImpression")
         self.adDelegate?.rewardedDidRecordImpression?()
-        self.amRewardedAd = nil
     }
     
     public func adDidDismissFullScreenContent(_ ad: GADFullScreenPresentingAd) {
         PBMobileAds.shared.log(logType: .info, "ADRewarded Placement '\(String(describing: self.placement))' adDidDismissFullScreenContent")
         self.adDelegate?.rewardedDidDismiss?()
+        self.amRewardedAd = nil
     }
     
     public func ad(_ ad: GADFullScreenPresentingAd, didFailToPresentFullScreenContentWithError error: Error) {

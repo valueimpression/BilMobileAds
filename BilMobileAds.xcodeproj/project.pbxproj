@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8AE6B1CB2A8CD07C005E14E5 /* ADAppOpen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AE6B1CA2A8CD07C005E14E5 /* ADAppOpen.swift */; };
 		F915DC5326317FE6008E6017 /* BilConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F915DC5226317FE6008E6017 /* BilConstants.swift */; };
 		F957B9F3249884C80022C6AC /* BilMobileAds.h in Headers */ = {isa = PBXBuildFile; fileRef = F957B9F1249884C80022C6AC /* BilMobileAds.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F957BA1A249887070022C6AC /* PBMobileAds.swift in Sources */ = {isa = PBXBuildFile; fileRef = F957BA19249887070022C6AC /* PBMobileAds.swift */; };
@@ -70,6 +71,7 @@
 /* Begin PBXFileReference section */
 		36F29D483D1D8498770F9B9D /* Pods-BilMobileAds.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BilMobileAds.debug.xcconfig"; path = "Target Support Files/Pods-BilMobileAds/Pods-BilMobileAds.debug.xcconfig"; sourceTree = "<group>"; };
 		89FAEB0E01FDE8EBFCCEF27E /* Pods-BilMobileAds.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BilMobileAds.release.xcconfig"; path = "Target Support Files/Pods-BilMobileAds/Pods-BilMobileAds.release.xcconfig"; sourceTree = "<group>"; };
+		8AE6B1CA2A8CD07C005E14E5 /* ADAppOpen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ADAppOpen.swift; sourceTree = "<group>"; };
 		F915DC5226317FE6008E6017 /* BilConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BilConstants.swift; sourceTree = "<group>"; };
 		F94F41AD250250900014E8C9 /* libxml2.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.2.dylib; path = ../../../../../../usr/lib/libxml2.2.dylib; sourceTree = "<group>"; };
 		F957B9EE249884C80022C6AC /* BilMobileAds.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BilMobileAds.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -187,6 +189,7 @@
 				F957BA1B249887910022C6AC /* Helper.swift */,
 				F957BA19249887070022C6AC /* PBMobileAds.swift */,
 				F957BA1F249888100022C6AC /* ADBanner.swift */,
+				8AE6B1CA2A8CD07C005E14E5 /* ADAppOpen.swift */,
 				F957BA212498882E0022C6AC /* ADInterstitial.swift */,
 				F957BA232498884C0022C6AC /* ADRewarded.swift */,
 				F98492F324FD235400E8DC45 /* ADNativeStyle.swift */,
@@ -455,6 +458,7 @@
 				F9D467FC24BF0561002E4113 /* CMPConsentV2Parser.m in Sources */,
 				F9D4681824BF0655002E4113 /* CMPSettings.m in Sources */,
 				F9D4681024BF0623002E4113 /* Reachability.m in Sources */,
+				8AE6B1CB2A8CD07C005E14E5 /* ADAppOpen.swift in Sources */,
 				F95A32AB2511B10600F3EBD5 /* ADNativeCustom.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
