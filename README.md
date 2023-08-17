@@ -2,7 +2,7 @@
 
 #### Step 1: Add to Podfile
 ```gradle
-  pod 'BilMobileAds', '~> 2.1.1'
+  pod 'BilMobileAds', '~> 2.2.0'
 ```
 ##### Note:
 If you dont have Podfile. Run command below in terminal at your project folder
