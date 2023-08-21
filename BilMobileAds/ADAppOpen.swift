@@ -116,10 +116,10 @@ public class ADAppOpen: NSObject, GADFullScreenContentDelegate {
         PBMobileAds.shared.log(logType: .info, "PreLoad ADAppOpen Placement: '\(String(describing: self.placement))'")
         PBMobileAds.shared.setupPBS(host: adInfor.host)
         
-        PBMobileAds.shared.log(logType: .debug, "[ADAppOpen] - configId: '\(adInfor.configId) | adUnitID: \(adInfor.adUnitID)'")
+        PBMobileAds.shared.log(logType: .debug, "[ADAppOpen] - configId: '\(adInfor.configId) | adUnitID: \(String(describing: adInfor.adUnitID))'")
         
         self.isLoadingAd = true
-        GADAppOpenAd.load(withAdUnitID: adInfor.adUnitID, request: self.amRequest) { ad, error in
+        GADAppOpenAd.load(withAdUnitID: adInfor.adUnitID!, request: self.amRequest) { ad, error in
             self.isLoadingAd = false
             
             if let error = error {

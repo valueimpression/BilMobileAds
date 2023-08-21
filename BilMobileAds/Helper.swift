@@ -42,7 +42,7 @@ class AdInfor: Decodable {
     var isVideo: Bool
     var host: HostAD
     var configId: String
-    var adUnitID: String
+    var adUnitID: String?
 }
 class AdUnitObj: Decodable {
     var placement: String

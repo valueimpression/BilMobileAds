@@ -24,7 +24,7 @@ public class PBMobileAds: NSObject, CloseListenerDelegate {
     var isShowCMP: Bool = false
     private var closure: (WorkComplete) -> Void
     // MARK: LOG
-    private final let DEBUG_MODE: Bool = true
+    private final let DEBUG_MODE: Bool = false
     
     private override init() {
         self.closure = {_ in return}

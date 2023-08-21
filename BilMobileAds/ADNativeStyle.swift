@@ -91,18 +91,6 @@ public class ADNativeStyle : NSObject, GADBannerViewDelegate, GADAdSizeDelegate 
         }
     }
     
-    func processNoBids() -> Bool {
-        if self.adUnitObj.adInfor.count >= 2 && self.adFormatDefault == ADFormat(rawValue: self.adUnitObj.defaultType)  {
-            self.setDefaultBidType = false
-            self.load()
-            return true
-        } else {
-            // Both or .video, .html is no bids -> wait and preload.
-            PBMobileAds.shared.log(logType: .info, "ADInterstitial Placement '\(String(describing: self.placement))' No Bids.")
-            return false
-        }
-    }
-    
     func resetAD() {
         if self.adUnit == nil || self.amNative == nil { return }
         
@@ -140,16 +128,7 @@ public class ADNativeStyle : NSObject, GADBannerViewDelegate, GADAdSizeDelegate 
             return
         }
         
-//        // Check and Set Default
-//        self.adFormatDefault = ADFormat(rawValue: self.adUnitObj.defaultType)
-//        if !self.setDefaultBidType && self.adUnitObj.adInfor.count >= 2 {
-//            self.adFormatDefault = self.adFormatDefault == .vast ? .html : .vast
-//            self.setDefaultBidType = true
-//        }
-        
         // Get AdInfor
-//        let isVideo = self.adFormatDefault == ADFormat.vast
-//        guard let adInfor = PBMobileAds.shared.getAdInfor(isVideo: isVideo, adUnitObj: self.adUnitObj) else {
         guard let adInfor = self.adUnitObj.adInfor.first else {
             PBMobileAds.shared.log(logType: .info, "AdInfor of ADNativeStyle Placement '" + self.placement + "' is not exist.")
             return
@@ -157,7 +136,7 @@ public class ADNativeStyle : NSObject, GADBannerViewDelegate, GADAdSizeDelegate 
         
         PBMobileAds.shared.log(logType: .info, "Load ADNativeStyle Placement: \(String(describing: self.placement))")
         PBMobileAds.shared.setupPBS(host: adInfor.host)
-        PBMobileAds.shared.log(logType: .debug, "[ADNativeStyle] - configID: '\(adInfor.configId)' | adUnitID: '\(adInfor.adUnitID)'")
+        PBMobileAds.shared.log(logType: .debug, "[ADNativeStyle] - configID: '\(adInfor.configId)' | adUnitID: '\(String(describing: adInfor.adUnitID))'")
         
         // Setup Native Asset
         let image = NativeAssetImage(minimumWidth: 200, minimumHeight: 200, required: true)
@@ -199,18 +178,6 @@ public class ADNativeStyle : NSObject, GADBannerViewDelegate, GADAdSizeDelegate 
             PBMobileAds.shared.log(logType: .debug, "Prebid demand fetch ADNativeStyle placement '\(String(describing: self?.placement))' for DFP: \(resultCode.name())")
             
             self?.amNative?.load(self?.amRequest)
-//            if resultCode == .prebidDemandFetchSuccess {
-//                self?.amNative?.load(self?.amRequest)
-//            } else {
-//                self?.isFetchingAD = false
-//                self?.isLoadNativeSucc = false
-//
-//                if resultCode == .prebidDemandNoBids {
-//                    let _ = self?.processNoBids()
-//                } else if resultCode == .prebidDemandTimedOut {
-//                    PBMobileAds.shared.log(logType: .info, "ADNativeStyle Placement '\(String(describing: self?.placement))' Timeout. Please check your internet connect.")
-//                }
-//            }
         }
     }
     
@@ -325,16 +292,9 @@ public class ADNativeStyle : NSObject, GADBannerViewDelegate, GADAdSizeDelegate 
     public func bannerView(_ bannerView: GADBannerView, didFailToReceiveAdWithError error: Error) {
         self.isLoadNativeSucc = false
         
-        //        if error.code == BilConstants.ERROR_NO_FILL {
-        //            if !self.processNoBids() {
-        //                self.isFetchingAD = false
-        //                self.adDelegate?.nativeStyleFailedToLoad?(error: "nativeFailedToLoad: ADNativeStyle Placement '\(String(describing: self.placement))' with error: \(error.localizedDescription)")
-        //            }
-        //        } else {
         self.isFetchingAD = false
         PBMobileAds.shared.log(logType: .info, "ADNativeStyle Placement '\(String(describing: self.placement))' with error: \(error.localizedDescription)")
         self.adDelegate?.nativeStyleFailedToLoad?(error: "nativeFailedToLoad: ADNativeStyle Placement '\(String(describing: self.placement))' with error: \(error.localizedDescription)")
-        //        }
     }
     
     public func bannerViewWillPresentScreen(_ bannerView: GADBannerView) {

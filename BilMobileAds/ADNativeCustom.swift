@@ -110,8 +110,6 @@ public class ADNativeCustom : NSObject,
         }
         
         // Get AdInfor
-//        let isVideo = ADFormat(rawValue: self.adUnitObj.defaultType) == ADFormat.vast
-//        guard let adInfor = PBMobileAds.shared.getAdInfor(isVideo: isVideo, adUnitObj: self.adUnitObj) else {
         guard let adInfor = self.adUnitObj.adInfor.first else {
             PBMobileAds.shared.log(logType: .info, "AdInfor of ADNativeCustom Placement '" + self.placement + "' is not exist.")
             return
@@ -141,7 +139,7 @@ public class ADNativeCustom : NSObject,
         
         let videoOptions = GADVideoOptions()
         videoOptions.startMuted = true
-        self.amNativeDFP = GADAdLoader(adUnitID: adInfor.adUnitID, rootViewController: self.adUIViewCtr, adTypes: [ .native, .customNative, .gamBanner], options: [videoOptions])
+        self.amNativeDFP = GADAdLoader(adUnitID: adInfor.adUnitID!, rootViewController: self.adUIViewCtr, adTypes: [ .native, .customNative, .gamBanner], options: [videoOptions])
         self.amNativeDFP.delegate = self
         
         self.isFetchingAD = true
@@ -149,17 +147,6 @@ public class ADNativeCustom : NSObject,
             PBMobileAds.shared.log(logType: .debug, "Prebid demand fetch ADNativeCustom placement '\(String(describing: self?.placement))' for DFP: \(resultCode.name())")
             
             self?.amNativeDFP?.load(self?.amRequest)
-//            if resultCode == ResultCode.prebidDemandFetchSuccess {
-//                self?.amNativeDFP?.load(self?.amRequest)
-//            } else {
-//                self?.isFetchingAD = false
-//
-//                if resultCode == ResultCode.prebidDemandNoBids {
-//                    PBMobileAds.shared.log(logType: .info, "ADNativeCustom Placement '\(String(describing: self?.placement))' No Bids.")
-//                } else if resultCode == ResultCode.prebidDemandTimedOut {
-//                    PBMobileAds.shared.log(logType: .info, "ADNativeCustom Placement '\(String(describing: self?.placement))' Timeout. Please check your internet connect.")
-//                }
-//            }
         }
     }
     

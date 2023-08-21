@@ -3,11 +3,19 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		8AE6B1CB2A8CD07C005E14E5 /* ADAppOpen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AE6B1CA2A8CD07C005E14E5 /* ADAppOpen.swift */; };
+		8AE6B1D52A9308C9005E14E5 /* nanopb.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AE6B1CD2A9308C8005E14E5 /* nanopb.xcframework */; };
+		8AE6B1D62A9308C9005E14E5 /* GoogleAppMeasurementIdentitySupport.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AE6B1CE2A9308C8005E14E5 /* GoogleAppMeasurementIdentitySupport.xcframework */; };
+		8AE6B1D72A9308C9005E14E5 /* GoogleMobileAds.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AE6B1CF2A9308C8005E14E5 /* GoogleMobileAds.xcframework */; };
+		8AE6B1D82A9308C9005E14E5 /* XCPrebidMobile.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AE6B1D02A9308C8005E14E5 /* XCPrebidMobile.xcframework */; };
+		8AE6B1D92A9308C9005E14E5 /* GoogleAppMeasurement.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AE6B1D12A9308C8005E14E5 /* GoogleAppMeasurement.xcframework */; };
+		8AE6B1DA2A9308C9005E14E5 /* GoogleUtilities.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AE6B1D22A9308C8005E14E5 /* GoogleUtilities.xcframework */; };
+		8AE6B1DB2A9308C9005E14E5 /* FBLPromises.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AE6B1D32A9308C8005E14E5 /* FBLPromises.xcframework */; };
+		8AE6B1DC2A9308C9005E14E5 /* UserMessagingPlatform.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AE6B1D42A9308C8005E14E5 /* UserMessagingPlatform.xcframework */; };
 		F915DC5326317FE6008E6017 /* BilConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F915DC5226317FE6008E6017 /* BilConstants.swift */; };
 		F957B9F3249884C80022C6AC /* BilMobileAds.h in Headers */ = {isa = PBXBuildFile; fileRef = F957B9F1249884C80022C6AC /* BilMobileAds.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F957BA1A249887070022C6AC /* PBMobileAds.swift in Sources */ = {isa = PBXBuildFile; fileRef = F957BA19249887070022C6AC /* PBMobileAds.swift */; };
@@ -72,6 +80,14 @@
 		36F29D483D1D8498770F9B9D /* Pods-BilMobileAds.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BilMobileAds.debug.xcconfig"; path = "Target Support Files/Pods-BilMobileAds/Pods-BilMobileAds.debug.xcconfig"; sourceTree = "<group>"; };
 		89FAEB0E01FDE8EBFCCEF27E /* Pods-BilMobileAds.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BilMobileAds.release.xcconfig"; path = "Target Support Files/Pods-BilMobileAds/Pods-BilMobileAds.release.xcconfig"; sourceTree = "<group>"; };
 		8AE6B1CA2A8CD07C005E14E5 /* ADAppOpen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ADAppOpen.swift; sourceTree = "<group>"; };
+		8AE6B1CD2A9308C8005E14E5 /* nanopb.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = nanopb.xcframework; path = "Prebid-2.1.2 GAM-10.9.0 Libs/nanopb.xcframework"; sourceTree = SOURCE_ROOT; };
+		8AE6B1CE2A9308C8005E14E5 /* GoogleAppMeasurementIdentitySupport.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = GoogleAppMeasurementIdentitySupport.xcframework; path = "Prebid-2.1.2 GAM-10.9.0 Libs/GoogleAppMeasurementIdentitySupport.xcframework"; sourceTree = SOURCE_ROOT; };
+		8AE6B1CF2A9308C8005E14E5 /* GoogleMobileAds.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = GoogleMobileAds.xcframework; path = "Prebid-2.1.2 GAM-10.9.0 Libs/GoogleMobileAds.xcframework"; sourceTree = SOURCE_ROOT; };
+		8AE6B1D02A9308C8005E14E5 /* XCPrebidMobile.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = XCPrebidMobile.xcframework; path = "Prebid-2.1.2 GAM-10.9.0 Libs/XCPrebidMobile.xcframework"; sourceTree = SOURCE_ROOT; };
+		8AE6B1D12A9308C8005E14E5 /* GoogleAppMeasurement.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = GoogleAppMeasurement.xcframework; path = "Prebid-2.1.2 GAM-10.9.0 Libs/GoogleAppMeasurement.xcframework"; sourceTree = SOURCE_ROOT; };
+		8AE6B1D22A9308C8005E14E5 /* GoogleUtilities.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = GoogleUtilities.xcframework; path = "Prebid-2.1.2 GAM-10.9.0 Libs/GoogleUtilities.xcframework"; sourceTree = SOURCE_ROOT; };
+		8AE6B1D32A9308C8005E14E5 /* FBLPromises.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = FBLPromises.xcframework; path = "Prebid-2.1.2 GAM-10.9.0 Libs/FBLPromises.xcframework"; sourceTree = SOURCE_ROOT; };
+		8AE6B1D42A9308C8005E14E5 /* UserMessagingPlatform.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = UserMessagingPlatform.xcframework; path = "Prebid-2.1.2 GAM-10.9.0 Libs/UserMessagingPlatform.xcframework"; sourceTree = SOURCE_ROOT; };
 		F915DC5226317FE6008E6017 /* BilConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BilConstants.swift; sourceTree = "<group>"; };
 		F94F41AD250250900014E8C9 /* libxml2.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.2.dylib; path = ../../../../../../usr/lib/libxml2.2.dylib; sourceTree = "<group>"; };
 		F957B9EE249884C80022C6AC /* BilMobileAds.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BilMobileAds.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -140,6 +156,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8AE6B1DB2A9308C9005E14E5 /* FBLPromises.xcframework in Frameworks */,
+				8AE6B1D52A9308C9005E14E5 /* nanopb.xcframework in Frameworks */,
+				8AE6B1D92A9308C9005E14E5 /* GoogleAppMeasurement.xcframework in Frameworks */,
+				8AE6B1D72A9308C9005E14E5 /* GoogleMobileAds.xcframework in Frameworks */,
+				8AE6B1D82A9308C9005E14E5 /* XCPrebidMobile.xcframework in Frameworks */,
+				8AE6B1D62A9308C9005E14E5 /* GoogleAppMeasurementIdentitySupport.xcframework in Frameworks */,
+				8AE6B1DC2A9308C9005E14E5 /* UserMessagingPlatform.xcframework in Frameworks */,
+				8AE6B1DA2A9308C9005E14E5 /* GoogleUtilities.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -163,6 +187,21 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		8AE6B1CC2A9308AD005E14E5 /* llibs */ = {
+			isa = PBXGroup;
+			children = (
+				8AE6B1D32A9308C8005E14E5 /* FBLPromises.xcframework */,
+				8AE6B1D12A9308C8005E14E5 /* GoogleAppMeasurement.xcframework */,
+				8AE6B1CE2A9308C8005E14E5 /* GoogleAppMeasurementIdentitySupport.xcframework */,
+				8AE6B1CF2A9308C8005E14E5 /* GoogleMobileAds.xcframework */,
+				8AE6B1D22A9308C8005E14E5 /* GoogleUtilities.xcframework */,
+				8AE6B1CD2A9308C8005E14E5 /* nanopb.xcframework */,
+				8AE6B1D42A9308C8005E14E5 /* UserMessagingPlatform.xcframework */,
+				8AE6B1D02A9308C8005E14E5 /* XCPrebidMobile.xcframework */,
+			);
+			path = llibs;
+			sourceTree = "<group>";
+		};
 		F957B9E4249884C80022C6AC = {
 			isa = PBXGroup;
 			children = (
@@ -184,6 +223,7 @@
 		F957B9F0249884C80022C6AC /* BilMobileAds */ = {
 			isa = PBXGroup;
 			children = (
+				8AE6B1CC2A9308AD005E14E5 /* llibs */,
 				F9D467C724BF035D002E4113 /* ConsentManager */,
 				F915DC5226317FE6008E6017 /* BilConstants.swift */,
 				F957BA1B249887910022C6AC /* Helper.swift */,
