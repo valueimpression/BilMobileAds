@@ -121,7 +121,6 @@ public class ADInterstitial: NSObject, GADFullScreenContentDelegate, Interstitia
         
         PBMobileAds.shared.log(logType: .debug, "[ADInterstitial] - configId: '\(adInfor.configId) | adUnitID: \(String(describing: adInfor.adUnitID))'")
         
-        adInfor.adUnitID = nil
         if(adInfor.adUnitID != nil) {
             self.adUnit = InterstitialAdUnit(configId: adInfor.configId, minWidthPerc: 60, minHeightPerc: 70)
             self.adUnit.adFormats = [.banner, .video]

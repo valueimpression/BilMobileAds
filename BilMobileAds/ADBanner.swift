@@ -145,7 +145,6 @@ public class ADBanner : NSObject, GADBannerViewDelegate, BannerViewDelegate {
         
         PBMobileAds.shared.log(logType: .debug, "[ADBanner] - configID: '\(adInfor.configId)' | adUnitID: '\(String(describing: adInfor.adUnitID))'")
         
-        adInfor.adUnitID = nil;
         if (adInfor.adUnitID != nil) {
             self.adUnit = BannerAdUnit(configId: adInfor.configId, size: self.curBannerSize.cgSize)
             self.adUnit.adFormats = [.banner, .video]

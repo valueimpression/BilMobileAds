@@ -116,7 +116,6 @@ public class ADRewarded: NSObject, GADFullScreenContentDelegate, RewardedAdUnitD
         PBMobileAds.shared.setupPBS(host: adInfor.host)
         PBMobileAds.shared.log(logType: .info, "[ADRewarded] - configId: '\(adInfor.configId)' | adUnitID: '\(String(describing: adInfor.adUnitID))'")
         
-        adInfor.adUnitID = nil
         if(adInfor.adUnitID != nil) {
             self.adUnit = RewardedVideoAdUnit(configId: adInfor.configId)
             
