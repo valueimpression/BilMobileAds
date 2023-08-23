@@ -38,10 +38,6 @@ public class PBMobileAds: NSObject, CloseListenerDelegate {
         //Declare in init to the user agent could be passed in first call
         Prebid.shared.shareGeoLocation = true
         
-        // Setup Test Mode
-//        if testMode {
-//            GADMobileAds.sharedInstance().requestConfiguration.testDeviceIdentifiers = [(kGADSimulatorID as! String), "cc7ca766f86b43ab6cdc92bed424069b"]
-//        }
         GADMobileAds.sharedInstance().start()
     }
     
@@ -198,6 +194,32 @@ public class PBMobileAds: NSObject, CloseListenerDelegate {
     
     @objc public func disableCOPPA() {
         Targeting.shared.subjectToCOPPA = false
+    }
+    
+    @objc public func setConsentString(consentString: String) {
+        if (consentString.isEmpty) {
+            log(logType: .error, "Consent String is empty")
+            return
+        }
+        Targeting.shared.subjectToGDPR = true
+        Targeting.shared.gdprConsentString = consentString
+    }
+    
+    @objc public func setPurposeConsents(purposeConsents: String) {
+        if (purposeConsents.isEmpty) {
+            log(logType: .error, "PurposeConsents is empty")
+            return
+        }
+        Targeting.shared.purposeConsents = purposeConsents
+    }
+    
+    @objc public func setCCPAString(ccpaString: String) {
+        if (ccpaString.isEmpty) {
+            log(logType: .error, "CCPA is empty")
+            return
+        }
+        let defaults = UserDefaults.standard
+        defaults.set(ccpaString, forKey: "IABUSPrivacy_String")
     }
     
     @objc public func setGender(gender: Gender) {
