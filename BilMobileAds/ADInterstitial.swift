@@ -94,8 +94,8 @@ public class ADInterstitial: NSObject, GADFullScreenContentDelegate, Interstitia
     // MARK: - Preload AD
     @objc public func preLoad() {
         PBMobileAds.shared.log(logType: .debug, "ADInterstitial Placement '\(String(describing: self.placement))' - isReady: \(self.isReady()) | isFetchingAD: \(self.isFetchingAD)")
-        if self.adUnitObj == nil || self.isReady() || self.isFetchingAD {
-            if self.adUnitObj == nil && !self.isFetchingAD {
+        if self.adUnitObj == nil || self.isReady() {
+            if self.adUnitObj == nil {
                 PBMobileAds.shared.log(logType: .info, "ADInterstitial placement: \(String(describing: self.placement)) is not ready to preLoad.");
                 self.getConfigAD();
                 return
@@ -118,10 +118,9 @@ public class ADInterstitial: NSObject, GADFullScreenContentDelegate, Interstitia
         
         PBMobileAds.shared.log(logType: .info, "PreLoad ADInterstitial Placement: '\(String(describing: self.placement))'")
         PBMobileAds.shared.setupPBS(host: adInfor.host)
-        
         PBMobileAds.shared.log(logType: .debug, "[ADInterstitial] - configId: '\(adInfor.configId) | adUnitID: \(String(describing: adInfor.adUnitID))'")
         
-        if(adInfor.adUnitID != nil) {
+        if (adInfor.adUnitID != nil && !adInfor.adUnitID!.isEmpty) {
             self.adUnit = InterstitialAdUnit(configId: adInfor.configId, minWidthPerc: 60, minHeightPerc: 70)
             self.adUnit.adFormats = [.banner, .video]
             
@@ -140,6 +139,11 @@ public class ADInterstitial: NSObject, GADFullScreenContentDelegate, Interstitia
                     } else if let ad = ad {
                         self.amInterstitial = ad
                         self.amInterstitial.fullScreenContentDelegate = self
+                        self.amInterstitial.paidEventHandler = { adValue in
+                            PBMobileAds.shared.log(logType: .info, "ADInterstitial placement '\(String(describing: self.placement))'")
+                            let adData = AdData(currencyCode: adValue.currencyCode, precision: adValue.precision.rawValue, microsValue: adValue.value)
+                            self.adDelegate?.interstitialPaidEvent?(adData: adData)
+                        }
                         
                         self.adDelegate?.interstitialDidReceiveAd?()
                         PBMobileAds.shared.log(logType: .info, "ADInterstitial Placement '\(String(describing: self.placement))' Ready")
@@ -198,6 +202,14 @@ public class ADInterstitial: NSObject, GADFullScreenContentDelegate, Interstitia
     public func interstitialWillPresentAd(_ interstitial: InterstitialRenderingAdUnit) {
         PBMobileAds.shared.log(logType: .info, "ADInterstitial Placement '" + placement + "' impression");
         self.adDelegate?.interstitialDidRecordImpression?()
+        
+        let bidResponse = interstitial.lastBidResponse
+        if (bidResponse != nil) {
+            PBMobileAds.shared.log(logType: .info, "ADInterstitial Placement '" + self.placement + "'");
+            let bidWin = bidResponse?.winningBid
+            let adData = AdData(currencyCode: "USD", precision: 3, microsValue: NSDecimalNumber(value: bidWin!.price * 1000))
+            self.adDelegate?.interstitialPaidEvent?(adData: adData)
+        }
     }
     
     public func interstitialDidDismissAd(_ interstitial: InterstitialRenderingAdUnit) {
@@ -253,4 +265,6 @@ public class ADInterstitial: NSObject, GADFullScreenContentDelegate, Interstitia
     
     // Called when an interstitial ad request fail.
     @objc optional func interstitialLoadFail(error: String)
+    
+    @objc optional func interstitialPaidEvent(adData: AdData)
 }

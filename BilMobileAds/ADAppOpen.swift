@@ -91,8 +91,8 @@ public class ADAppOpen: NSObject, GADFullScreenContentDelegate {
     // MARK: - Preload AD
     @objc public func preLoad() {
         PBMobileAds.shared.log(logType: .debug, "ADAppOpen Placement '\(String(describing: self.placement))' - isReady: \(self.isReady()) | isFetchingAD: \(self.isFetchingAD)")
-        if self.adUnitObj == nil || self.isReady() || self.isFetchingAD {
-            if self.adUnitObj == nil && !self.isFetchingAD {
+        if self.adUnitObj == nil || self.isReady() {
+            if self.adUnitObj == nil {
                 PBMobileAds.shared.log(logType: .info, "ADAppOpen placement: \(String(describing: self.placement)) is not ready to preLoad.");
                 self.getConfigAD();
                 return
@@ -115,7 +115,6 @@ public class ADAppOpen: NSObject, GADFullScreenContentDelegate {
         
         PBMobileAds.shared.log(logType: .info, "PreLoad ADAppOpen Placement: '\(String(describing: self.placement))'")
         PBMobileAds.shared.setupPBS(host: adInfor.host)
-        
         PBMobileAds.shared.log(logType: .debug, "[ADAppOpen] - configId: '\(adInfor.configId) | adUnitID: \(String(describing: adInfor.adUnitID))'")
         
         self.isLoadingAd = true
@@ -134,6 +133,11 @@ public class ADAppOpen: NSObject, GADFullScreenContentDelegate {
             self.loadTime = self.getDateNow()
             self.appOpenAd = ad
             self.appOpenAd.fullScreenContentDelegate = self
+            self.appOpenAd.paidEventHandler = { adValue in
+                PBMobileAds.shared.log(logType: .info, "ADAppOpen Placement '" + self.placement + "'");
+                let adData = AdData(currencyCode: adValue.currencyCode, precision: adValue.precision.rawValue, microsValue: adValue.value)
+                self.adDelegate?.appOpenOnPaidEvent?(adData: adData)
+            }
             
             self.adDelegate?.appOpenAdDidReceiveAd?()
             PBMobileAds.shared.log(logType: .info, "ADAppOpen Placement '\(String(describing: self.placement))' Ready")
@@ -221,4 +225,6 @@ public class ADAppOpen: NSObject, GADFullScreenContentDelegate {
     
     // Called when an appOpenAd ad request fail.
     @objc optional func appOpenAdLoadFail(error: String)
+    
+    @objc optional func appOpenOnPaidEvent(adData: AdData)
 }

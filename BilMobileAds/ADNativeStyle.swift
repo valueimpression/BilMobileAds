@@ -112,8 +112,8 @@ public class ADNativeStyle : NSObject, GADBannerViewDelegate, GADAdSizeDelegate 
             return
         }
         
-        if self.adUnitObj == nil || self.isLoaded() || self.isFetchingAD {
-            if self.adUnitObj == nil && !self.isFetchingAD {
+        if self.adUnitObj == nil || self.isLoaded() {
+            if self.adUnitObj == nil {
                 PBMobileAds.shared.log(logType: .info, "ADNativeStyle placement: \(String(describing: self.placement)) is not ready to load.");
                 self.getConfigAD();
                 return
@@ -165,6 +165,12 @@ public class ADNativeStyle : NSObject, GADBannerViewDelegate, GADAdSizeDelegate 
         self.amNative.adSizeDelegate = self
         self.amNative.rootViewController = self.adUIViewCtr
         self.adView.addSubview(self.amNative)
+
+        self.amNative.paidEventHandler = { adValue in
+            PBMobileAds.shared.log(logType: .info, "ADNativeStyle placement '\(String(describing: self.placement))'")
+            let adData = AdData(currencyCode: adValue.currencyCode, precision: adValue.precision.rawValue, microsValue: adValue.value)
+            self.adDelegate?.nativeStylePaidEvent?(adData: adData)
+        }
         
         var frameRect = self.amNative.frame
         frameRect.size.width = self.adView.bounds.width
@@ -352,5 +358,7 @@ public class ADNativeStyle : NSObject, GADBannerViewDelegate, GADAdSizeDelegate 
     // Called just before the application will background or terminate because the user clicked on an
     // ad that will launch another application (such as the App Store).
     @objc optional func nativeStyleWillLeaveApplication()
+    
+    @objc optional func nativeStylePaidEvent(adData: AdData)
     
 }

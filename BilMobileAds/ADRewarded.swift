@@ -91,8 +91,8 @@ public class ADRewarded: NSObject, GADFullScreenContentDelegate, RewardedAdUnitD
     // MARK: - Preload AD
     @objc public func preLoad() {
         PBMobileAds.shared.log(logType: .debug, "ADRewarded Placement '\(String(describing: self.placement))' - isReady: \(self.isReady()) |  isFetchingAD: \(self.isFetchingAD)")
-        if self.adUnitObj == nil || self.isReady() || self.isFetchingAD {
-            if self.adUnitObj == nil && !self.isFetchingAD {
+        if self.adUnitObj == nil || self.isReady() {
+            if self.adUnitObj == nil {
                 PBMobileAds.shared.log(logType: .info, "ADInterstitial placement: \(String(describing: self.placement)) is not ready to preLoad.");
                 self.getConfigAD();
                 return
@@ -114,9 +114,9 @@ public class ADRewarded: NSObject, GADFullScreenContentDelegate, RewardedAdUnitD
         }
         
         PBMobileAds.shared.setupPBS(host: adInfor.host)
-        PBMobileAds.shared.log(logType: .info, "[ADRewarded] - configId: '\(adInfor.configId)' | adUnitID: '\(String(describing: adInfor.adUnitID))'")
+        PBMobileAds.shared.log(logType: .debug, "[ADRewarded] - configId: '\(adInfor.configId)' | adUnitID: '\(String(describing: adInfor.adUnitID))'")
         
-        if(adInfor.adUnitID != nil) {
+        if (adInfor.adUnitID != nil && !adInfor.adUnitID!.isEmpty) {
             self.adUnit = RewardedVideoAdUnit(configId: adInfor.configId)
             
             self.isFetchingAD = true
@@ -134,6 +134,11 @@ public class ADRewarded: NSObject, GADFullScreenContentDelegate, RewardedAdUnitD
                     } else {
                         self.amRewardedAd = ad
                         self.amRewardedAd.fullScreenContentDelegate = self
+                        self.amRewardedAd.paidEventHandler = { adValue in
+                            PBMobileAds.shared.log(logType: .info, "ADRewarded placement '\(String(describing: self.placement))'")
+                            let adData = AdData(currencyCode: adValue.currencyCode, precision: adValue.precision.rawValue, microsValue: adValue.value)
+                            self.adDelegate?.rewardedPaidEvent?(adData: adData)
+                        }
                         
                         PBMobileAds.shared.log(logType: .info, "ADRewarded Placement '\(String(describing: self.placement))' Loaded Success")
                         self.adDelegate?.rewardedDidReceiveAd?()
@@ -153,8 +158,8 @@ public class ADRewarded: NSObject, GADFullScreenContentDelegate, RewardedAdUnitD
         if self.isReady() {
             self.amRewardedAd?.present(fromRootViewController: self.adUIViewCtr) {
                 PBMobileAds.shared.log(logType: .info, "ADRewarded Placement '\(String(describing: self.placement))' onUserEarnedReward")
-                let reward = self.amRewardedAd.adReward;
-                let adRewardedItem = ADRewardedItem(type: reward.type, amount: reward.amount)
+//                let reward = self.amRewardedAd.adReward;
+//                let adRewardedItem = ADRewardedItem(type: reward.type, amount: reward.amount)
                 self.adDelegate?.rewardedUserDidEarn?() // rewardedItem: adRewardedItem
             }
             self.rewardedAdUnit?.show(from: self.adUIViewCtr)
@@ -199,6 +204,14 @@ public class ADRewarded: NSObject, GADFullScreenContentDelegate, RewardedAdUnitD
     public func rewardedAdWillPresentAd(_ rewardedAd: RewardedAdUnit) {
         PBMobileAds.shared.log(logType: .info, "ADRewarded Placement '" + placement + "' impression");
         self.adDelegate?.rewardedDidRecordImpression?()
+        
+        let bidResponse = rewardedAd.lastBidResponse
+        if (bidResponse != nil) {
+            PBMobileAds.shared.log(logType: .info, "ADRewarded Placement '" + self.placement + "'");
+            let bidWin = bidResponse?.winningBid
+            let adData = AdData(currencyCode: "USD", precision: 3, microsValue: NSDecimalNumber(value: bidWin!.price * 1000))
+            self.adDelegate?.rewardedPaidEvent?(adData: adData)
+        }
     }
     
     public func rewardedAdDidDismissAd(_ rewardedAd: RewardedAdUnit) {
@@ -262,6 +275,8 @@ public class ADRewarded: NSObject, GADFullScreenContentDelegate, RewardedAdUnitD
     
     /// Tells the delegate that the rewarded ad failed to present.
     @objc optional func rewardedFailedToPresent(error: String)
+    
+    @objc optional func rewardedPaidEvent(adData: AdData)
     
 }
 

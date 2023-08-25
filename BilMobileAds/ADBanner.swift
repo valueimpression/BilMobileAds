@@ -114,8 +114,8 @@ public class ADBanner : NSObject, GADBannerViewDelegate, BannerViewDelegate {
             return
         }
         
-        if self.adUnitObj == nil || self.isLoaded() || self.isFetchingAD {
-            if self.adUnitObj == nil && !self.isFetchingAD {
+        if self.adUnitObj == nil || self.isLoaded() {
+            if self.adUnitObj == nil {
                 PBMobileAds.shared.log(logType: .info, "ADBanner placement: \(String(describing: self.placement)) is not ready to load.");
                 self.getConfigAD();
                 return
@@ -142,10 +142,9 @@ public class ADBanner : NSObject, GADBannerViewDelegate, BannerViewDelegate {
         
         PBMobileAds.shared.log(logType: .info, "Load ADBanner Placement: \(String(describing: self.placement))")
         PBMobileAds.shared.setupPBS(host: adInfor.host)
-        
         PBMobileAds.shared.log(logType: .debug, "[ADBanner] - configID: '\(adInfor.configId)' | adUnitID: '\(String(describing: adInfor.adUnitID))'")
         
-        if (adInfor.adUnitID != nil) {
+        if (adInfor.adUnitID != nil && !adInfor.adUnitID!.isEmpty) {
             self.adUnit = BannerAdUnit(configId: adInfor.configId, size: self.curBannerSize.cgSize)
             self.adUnit.adFormats = [.banner, .video]
             
@@ -165,6 +164,12 @@ public class ADBanner : NSObject, GADBannerViewDelegate, BannerViewDelegate {
             self.amBanner.delegate = self
             self.amBanner.rootViewController = self.adUIViewCtr
             self.adView.addSubview(self.amBanner)
+            
+            self.amBanner.paidEventHandler = { adValue in
+                PBMobileAds.shared.log(logType: .info, "ADBanner placement '\(String(describing: self.placement))'")
+                let adData = AdData(currencyCode: adValue.currencyCode, precision: adValue.precision.rawValue, microsValue: adValue.value)
+                self.adDelegate?.bannerOnPaidEvent?(adData: adData)
+            }
             
             self.isFetchingAD = true
             self.adUnit?.fetchDemand(adObject: self.amRequest) { [weak self] (resultCode: ResultCode) in
@@ -190,7 +195,6 @@ public class ADBanner : NSObject, GADBannerViewDelegate, BannerViewDelegate {
         NotificationCenter.default.removeObserver(self, name: UIApplication.didBecomeActiveNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: UIApplication.didEnterBackgroundNotification, object: nil)
         
-//        if self.adUnit == nil { return }
         PBMobileAds.shared.log(logType: .info, "Destroy ADBanner Placement: '\(String(describing: self.placement))'")
         self.resetAD()
     }
@@ -419,6 +423,14 @@ public class ADBanner : NSObject, GADBannerViewDelegate, BannerViewDelegate {
     public func bannerViewWillPresentModal(_ bannerView: BannerView) {
         PBMobileAds.shared.log(logType: .info, "ADBanner Placement '\(String(describing: self.placement))'")
         self.adDelegate?.bannerDidRecordImpression?()
+        
+        let bidResponse = bannerView.lastBidResponse
+        if (bidResponse != nil) {
+            PBMobileAds.shared.log(logType: .info, "ADBanner Placement '" + self.placement + "'");
+            let bidWin = bidResponse?.winningBid
+            let adData = AdData(currencyCode: "USD", precision: 3, microsValue: NSDecimalNumber(value: bidWin!.price * 1000))
+            self.adDelegate?.bannerOnPaidEvent?(adData: adData)    
+        }
     }
     
     public func bannerViewWillLeaveApplication(_ bannerView: BannerView) {
@@ -524,6 +536,8 @@ public class ADBanner : NSObject, GADBannerViewDelegate, BannerViewDelegate {
     // Called just before the application will background or terminate because the user clicked on an
     // ad that will launch another application (such as the App Store).
     @objc optional func bannerWillLeaveApplication()
+    
+    @objc optional func bannerOnPaidEvent(adData: AdData)
     
 }
 

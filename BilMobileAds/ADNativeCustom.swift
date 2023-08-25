@@ -93,12 +93,9 @@ public class ADNativeCustom : NSObject,
     // MARK: - Load AD
     public func preLoad() {
         PBMobileAds.shared.log(logType: .debug, "ADNativeCustom Placement '\(String(describing: self.placement))' - isFetchingAD: \(self.isFetchingAD)")
-        if self.adUnitObj == nil || self.isFetchingAD {
-            if self.adUnitObj == nil && !self.isFetchingAD {
-                PBMobileAds.shared.log(logType: .info, "ADNativeCustom placement: \(String(describing: self.placement)) is not ready to load.");
-                self.getConfigAD();
-                return
-            }
+        if self.adUnitObj == nil {
+            PBMobileAds.shared.log(logType: .info, "ADNativeCustom placement: \(String(describing: self.placement)) is not ready to load.");
+            self.getConfigAD();
             return
         }
         self.resetAD()
@@ -117,7 +114,7 @@ public class ADNativeCustom : NSObject,
         
         PBMobileAds.shared.log(logType: .info, "Load ADNativeCustom Placement: \(String(describing: self.placement))")
         PBMobileAds.shared.setupPBS(host: adInfor.host)
-        PBMobileAds.shared.log(logType: .debug, "[ADNativeCustom] - configID: '\(adInfor.configId)' | adUnitID: '\(adInfor.adUnitID)'")
+        PBMobileAds.shared.log(logType: .debug, "[ADNativeCustom] - configID: '\(adInfor.configId)' | adUnitID: '\(String(describing: adInfor.adUnitID))'")
         
         // Setup Native Asset
         let icon = NativeAssetImage(minimumWidth: 20, minimumHeight: 20, required: true)
@@ -194,6 +191,12 @@ public class ADNativeCustom : NSObject,
         let builder: ADNativeViewBuilder = ADNativeViewBuilder(placement: self.placement, unifiedNativeAd: nativeAd)
         self.adNativeDelegate?.nativeAdViewLoaded?(viewBuilder: builder)
         
+        nativeAd.paidEventHandler = { adValue in
+            PBMobileAds.shared.log(logType: .info, "ADNativeCustom Template placement '\(String(describing: self.placement))'")
+            let adData = AdData(currencyCode: adValue.currencyCode, precision: adValue.precision.rawValue, microsValue: adValue.value)
+            self.adNativeDelegate?.nativeAdPaidEvent?(adData: adData)
+        }
+        
         PBMobileAds.shared.log(logType: .info, "ADNativeCustom unifiedNativeAd Placement '\(String(describing: self.placement))' loaded")
     }
     public func adLoader(_ adLoader: GADAdLoader, didFailToReceiveAdWithError error: Error) {
@@ -215,6 +218,8 @@ public class ADNativeCustom : NSObject,
      * Called when a request native ad is loaded fail.
      * */
     @objc optional func nativeAdFailedToLoad(error: String)
+    
+    @objc optional func nativeAdPaidEvent(adData: AdData)
 }
 
 @objc public protocol NativeAdCustomDelegate {
