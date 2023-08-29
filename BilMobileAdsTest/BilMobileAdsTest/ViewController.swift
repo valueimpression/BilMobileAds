@@ -19,6 +19,7 @@ class ViewController: UIViewController, ADBannerDelegate, ADInterstitialDelegate
     private var rewardedAD: ADRewarded!
     private var nativeStyle: ADNativeStyle!
     private var nativeCustom: ADNativeCustom!
+    private var appOpenAd: ADAppOpen!
     
     var adManager: AdManager!
     
@@ -28,7 +29,9 @@ class ViewController: UIViewController, ADBannerDelegate, ADInterstitialDelegate
         bannerView1.backgroundColor = .blue
         bannerView2.backgroundColor = .red
         
-//        banner = ADBanner(self, view: bannerView1, placement: "1001")
+//        appOpenAd = ADAppOpen(self, placement: "1005")
+        
+        banner = ADBanner(self, view: bannerView1, placement: "1001")
         
 //        interstitialAD = ADInterstitial(self,  placement: "1002")
         
@@ -51,10 +54,12 @@ class ViewController: UIViewController, ADBannerDelegate, ADInterstitialDelegate
     }
     
     @IBAction func preloadIntersititial(_ sender: Any) {
+        appOpenAd?.preLoad()
         interstitialAD?.preLoad()
     }
     
     @IBAction func showIntersitial(_ sender: Any) {
+        appOpenAd?.show()
         interstitialAD?.show()
     }
     
@@ -188,4 +193,20 @@ class ViewController: UIViewController, ADBannerDelegate, ADInterstitialDelegate
     func bannerWillDismissScreen(data: String) {
         print("bannerWillDismissScreen: \(data)")
     }
+    func bannerOnPaidEvent(adData: AdData) {
+        print("bannerWillDismissScreen: \(adData)")
+    }
+    
+    var isShow: Bool = false
+    func bannerAdReturn(view: UIView) {
+        if (isShow) {
+            banner.setViewGroup(adView: bannerView1)
+            bannerView1.addSubview(view)
+        } else {
+            banner.setViewGroup(adView: bannerView2)
+            bannerView2.addSubview(view)
+        }
+        isShow = !isShow
+    }
+    
 }

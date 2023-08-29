@@ -37,8 +37,13 @@ public class PBMobileAds: NSObject, CloseListenerDelegate {
         Prebid.shared.logLevel = .severe
         //Declare in init to the user agent could be passed in first call
         Prebid.shared.shareGeoLocation = true
+        Prebid.shared.pbsDebug = testMode
         
         GADMobileAds.sharedInstance().start()
+    }
+    
+    @objc public func setTestDeviceIds(testDeviceIds: String) {
+        GADMobileAds.sharedInstance().requestConfiguration.testDeviceIdentifiers = [testDeviceIds] // Sample device ID: 2077ef9a63d2b398840261c8221a0c9b
     }
     
     // MARK: - Get Data Config
@@ -114,7 +119,7 @@ public class PBMobileAds: NSObject, CloseListenerDelegate {
             complete(.doWork)
         }
     }
-
+    
     public func onWebViewClosed(_ consentStr: String) {
         self.isShowCMP = false
         self.setGDPR()
@@ -171,7 +176,7 @@ public class PBMobileAds: NSObject, CloseListenerDelegate {
     }
     
     @objc public func log(logType: LogType, _ object: Any, filename: String = #file, line: Int = #line, column: Int = #column, funcName: String = #function) {
-
+        
         // Create Date
         let date = Date()
         // Create Date Formatter
@@ -228,10 +233,5 @@ public class PBMobileAds: NSObject, CloseListenerDelegate {
     
     @objc public func setYearOfBirth(yob: Int) {
         Targeting.shared.setYearOfBirth(yob: yob)
-//        do {
-//            try Targeting.shared.setYearOfBirth(yob: yob)
-//        } catch {
-//            log(logType: .debug, "Unexpected error: \(error).")
-//        }
     }
 }

@@ -63,12 +63,6 @@ public class ADBanner : NSObject, GADBannerViewDelegate, BannerViewDelegate {
         if self.adUnitObj == nil {
             self.isFetchingAD = true
             
-            // Setup Application Delegate
-            NotificationCenter.default.addObserver(self, selector: #selector(appDidBecomeActive),
-                                                   name: UIApplication.didBecomeActiveNotification, object: nil)
-            NotificationCenter.default.addObserver(self, selector: #selector(appDidEnterBackground),
-                                                   name: UIApplication.didEnterBackgroundNotification, object: nil)
-            
             // Get AdUnit Info
             PBMobileAds.shared.getADConfig(adUnit: self.placement) { [weak self] (res: Result<AdUnitObj, Error>) in
                 switch res{
@@ -94,7 +88,8 @@ public class ADBanner : NSObject, GADBannerViewDelegate, BannerViewDelegate {
     }
     
     func resetAD() {
-        if self.adUnit == nil || self.amBanner == nil { return }
+        NotificationCenter.default.removeObserver(self, name: UIApplication.didBecomeActiveNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIApplication.didEnterBackgroundNotification, object: nil)
         
         self.isFetchingAD = false
         self.isLoadBannerSucc = false
@@ -139,6 +134,12 @@ public class ADBanner : NSObject, GADBannerViewDelegate, BannerViewDelegate {
         // Setup ad size
         let bannerSize: BannerSize = self.getBannerType(w: self.adUnitObj.width!, h: self.adUnitObj.height!)
         self.setAdSize(size: bannerSize)
+        
+        // Setup Application Delegate
+        NotificationCenter.default.addObserver(self, selector: #selector(appDidBecomeActive),
+                                               name: UIApplication.didBecomeActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(appDidEnterBackground),
+                                               name: UIApplication.didEnterBackgroundNotification, object: nil)
         
         PBMobileAds.shared.log(logType: .info, "Load ADBanner Placement: \(String(describing: self.placement))")
         PBMobileAds.shared.setupPBS(host: adInfor.host)
@@ -192,14 +193,15 @@ public class ADBanner : NSObject, GADBannerViewDelegate, BannerViewDelegate {
     }
     
     @objc public func destroy() {
-        NotificationCenter.default.removeObserver(self, name: UIApplication.didBecomeActiveNotification, object: nil)
-        NotificationCenter.default.removeObserver(self, name: UIApplication.didEnterBackgroundNotification, object: nil)
-        
         PBMobileAds.shared.log(logType: .info, "Destroy ADBanner Placement: '\(String(describing: self.placement))'")
         self.resetAD()
     }
     
     // MARK: - Public FUNC
+    @objc public func setViewGroup(adView: UIView) {
+        self.adView = adView
+    }
+    
     @objc public func setAnchor(anchor: Anchor){
         self.defaultAnchor = anchor
     }
@@ -284,11 +286,6 @@ public class ADBanner : NSObject, GADBannerViewDelegate, BannerViewDelegate {
             return GADAdSizeLeaderboard
         case .SmartBanner:
             return GADAdSizeFluid
-            //            if UIApplication.shared.statusBarOrientation.isPortrait {
-            //                return GADAdSizeSmartBannerPortrait
-            //            } else {
-            //                return GADAdSizeSmartBannerLandscape
-            //            }
         }
     }
     
@@ -397,15 +394,13 @@ public class ADBanner : NSObject, GADBannerViewDelegate, BannerViewDelegate {
         AdViewUtils.findPrebidCreativeSize(self.bannerView, success: { (size) in
             self.setupAnchorPrebidRendering(bannerView)
             bannerView.sizeThatFits(size)
-
             PBMobileAds.shared.log(logType: .info, "ADBanner Placement '\(String(describing: self.placement))' ")
-            self.adDelegate?.bannerDidReceiveAd?()
         }, failure: { (error) in
-            self.self.setupAnchorPrebidRendering(bannerView)
-
+            self.setupAnchorPrebidRendering(bannerView)
             PBMobileAds.shared.log(logType: .info, "ADBanner Placement '\(String(describing: self.placement))' - \(error.localizedDescription)")
-            self.adDelegate?.bannerDidReceiveAd?()
         })
+        self.adDelegate?.bannerDidReceiveAd?()
+        self.adDelegate?.bannerAdReturn?(view: bannerView)
     }
     
     public func bannerView(_ bannerView: BannerView, didFailToReceiveAdWith error: Error) {
@@ -449,15 +444,13 @@ public class ADBanner : NSObject, GADBannerViewDelegate, BannerViewDelegate {
             }
             self.setupAnchor(bannerView)
             bannerView.resize(GADAdSizeFromCGSize(size))
-            
-            PBMobileAds.shared.log(logType: .info, "ADBanner Placement '\(String(describing: self.placement))' ")
-            self.adDelegate?.bannerDidReceiveAd?()
+            PBMobileAds.shared.log(logType: .info, "ADBanner Placement '\(String(describing: self.placement))'")
         }, failure: { (error) in
             self.setupAnchor(bannerView)
-            
             PBMobileAds.shared.log(logType: .info, "ADBanner Placement '\(String(describing: self.placement))' - \(error.localizedDescription)")
-            self.adDelegate?.bannerDidReceiveAd?()
         })
+        self.adDelegate?.bannerAdReturn?(view: bannerView)
+        self.adDelegate?.bannerDidReceiveAd?()
     }
     
     public func bannerViewDidRecordClick(_ bannerView: GADBannerView) {
@@ -514,6 +507,8 @@ public class ADBanner : NSObject, GADBannerViewDelegate, BannerViewDelegate {
     
     // Called when an ad request loaded an ad.
     @objc optional func bannerDidReceiveAd()
+    
+    @objc optional func bannerAdReturn(view: UIView)
     
     // Called when an ad request failed.
     @objc optional func bannerLoadFail(error: String)
