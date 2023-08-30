@@ -130,7 +130,20 @@ public class PBMobileAds: NSObject, CloseListenerDelegate {
     func getADConfig(adUnit: String, complete: @escaping (Result<AdUnitObj,Error>) -> Void) {
         self.log(logType: .debug, "Start Request Config adUnit: \(adUnit)")
         
-        Helper.shared.getAPI(api: BilConstants.GET_DATA_CONFIG + adUnit){ (res: Result<DataConfig, Error>) in
+        // Get the Info.plist file path
+        var paramAppID = ""
+        if let path = Bundle.main.path(forResource: "Info", ofType: "plist") {
+            // Load the Info.plist file into a dictionary
+            if let dict = NSDictionary(contentsOfFile: path) {
+                // Access specific keys in the Info.plist dictionary
+                if let appID = dict["GADApplicationIdentifier"] as? String {
+                    log(logType: .debug, "GAM APP_ID: \(appID)")
+                    paramAppID = "&appID=\(appID)"
+                }
+            }
+        }
+        
+        Helper.shared.getAPI(api: BilConstants.GET_DATA_CONFIG + adUnit + paramAppID){ (res: Result<DataConfig, Error>) in
             switch res{
             case .success(let dataJSON):
                 DispatchQueue.main.async {
